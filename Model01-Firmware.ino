@@ -71,7 +71,8 @@
   */
 
 enum { MACRO_VERSION_INFO,
-       MACRO_ANY
+       MACRO_ANY,
+       MACRO_TOGGLE_FACTORY_LAYOUT
      };
 
 
@@ -117,7 +118,8 @@ enum { MACRO_VERSION_INFO,
   * the numbers 0, 1 and 2.
   */
 
-enum { QWERTY, FUNCTION, NUMPAD }; // layers
+// enum { QWERTY, FUNCTION, NUMPAD }; // layers
+enum { DVORAK, FN, FACTORY_QWERTY, FACTORY_FN, FACTORY_NUMPAD };
 
 /* This comment temporarily turns off astyle's indent enforcement
  *   so we can make the keymaps actually resemble the physical key layout better
@@ -126,22 +128,68 @@ enum { QWERTY, FUNCTION, NUMPAD }; // layers
 
 const Key keymaps[][ROWS][COLS] PROGMEM = {
 
-  [QWERTY] = KEYMAP_STACKED
+//  // orgiginal dovark layout
+//  [DVORAK] = KEYMAP_STACKED
+//  (___,          Key_1,         Key_2,     Key_3,      Key_4, Key_5, Key_LEDEffectNext,
+//   Key_Backtick, Key_Quote,     Key_Comma, Key_Period, Key_P, Key_Y, Key_Tab,
+//   Key_PageUp,   Key_A,         Key_O,     Key_E,      Key_U, Key_I,
+//   Key_PageDown, Key_Semicolon, Key_Q,     Key_J,      Key_K, Key_X, Key_Escape,
+//   Key_LeftControl, Key_Backspace, Key_LeftGui, Key_LeftShift,
+//   ShiftToLayer(FUNCTION),
+//
+//   M(MACRO_ANY),   Key_6, Key_7, Key_8, Key_9, Key_0, Key_KeypadNumLock,
+//   Key_Enter,      Key_F, Key_G, Key_C, Key_R, Key_L, Key_Slash,
+//                   Key_D, Key_H, Key_T, Key_N, Key_S, Key_Minus,
+//   Key_RightAlt,   Key_B, Key_M, Key_W, Key_V, Key_Z, Key_Equals,
+//   Key_RightShift, Key_LeftAlt, Key_Spacebar, Key_RightControl,
+//   ShiftToLayer(FUNCTION)),
+
+  [DVORAK] = KEYMAP_STACKED
+  (___,          Key_1,         Key_2,     Key_3,      Key_4, Key_5, Key_LEDEffectNext,
+   Key_Backtick, Key_Quote,     Key_Comma, Key_Period, Key_P, Key_Y, Key_Tab,
+   Key_PageUp,   Key_A,         Key_O,     Key_E,      Key_U, Key_I,
+   Key_PageDown, Key_Semicolon, Key_Q,     Key_J,      Key_K, Key_X, Key_Escape,
+   Key_LeftControl, Key_Space, Key_LeftAlt, Key_LeftShift,
+   ShiftToLayer(FN),
+
+   M(MACRO_ANY),   Key_6, Key_7, Key_8, Key_9, Key_0, Key_KeypadNumLock,
+   Key_Enter,      Key_F, Key_G, Key_C, Key_R, Key_L, Key_Slash,
+                   Key_D, Key_H, Key_T, Key_N, Key_S, Key_Minus,
+   Key_RightAlt,   Key_B, Key_M, Key_W, Key_V, Key_Z, Key_Equals,
+   Key_RightShift, Key_Enter, Key_Backspace, Key_RightControl,
+   ShiftToLayer(FN)),
+
+  [FN] =  KEYMAP_STACKED
+  (___,      Key_F1,           Key_F2,      Key_F3,     Key_F4,        Key_F5,           XXX,
+   Key_Tab,  ___,              Key_mouseUp, ___,        Key_mouseBtnR, Key_mouseWarpEnd, Key_mouseWarpNE,
+   Key_Home, Key_mouseL,       Key_mouseDn, Key_mouseR, Key_mouseBtnL, Key_mouseWarpNW,
+   Key_End,  Key_PrintScreen,  Key_Insert,  ___,        Key_mouseBtnM, Key_mouseWarpSW,  Key_mouseWarpSE,
+   ___, Key_Delete, ___, ___,
+   ___,
+
+   Consumer_ScanPreviousTrack, Key_F6,                 Key_F7,                   Key_F8,                   Key_F9,          Key_F10,          Key_F11,
+   Consumer_PlaySlashPause,    Consumer_ScanNextTrack, Key_LeftCurlyBracket,     Key_RightCurlyBracket,    Key_LeftBracket, Key_RightBracket, Key_F12,
+                               Key_LeftArrow,          Key_DownArrow,            Key_UpArrow,              Key_RightArrow,  ___,              ___,
+   Key_PcApplication,          Key_Mute,               Consumer_VolumeDecrement, Consumer_VolumeIncrement, ___,             Key_Backslash,    Key_Pipe,
+   ___, ___, Key_Enter, ___,
+   ___),
+  
+  [FACTORY_QWERTY] = KEYMAP_STACKED
   (___,          Key_1, Key_2, Key_3, Key_4, Key_5, Key_LEDEffectNext,
    Key_Backtick, Key_Q, Key_W, Key_E, Key_R, Key_T, Key_Tab,
    Key_PageUp,   Key_A, Key_S, Key_D, Key_F, Key_G,
    Key_PageDown, Key_Z, Key_X, Key_C, Key_V, Key_B, Key_Escape,
    Key_LeftControl, Key_Backspace, Key_LeftGui, Key_LeftShift,
-   ShiftToLayer(FUNCTION),
+   ShiftToLayer(FACTORY_FN),
 
    M(MACRO_ANY),  Key_6, Key_7, Key_8,     Key_9,         Key_0,         Key_KeypadNumLock,
    Key_Enter,     Key_Y, Key_U, Key_I,     Key_O,         Key_P,         Key_Equals,
                   Key_H, Key_J, Key_K,     Key_L,         Key_Semicolon, Key_Quote,
    Key_RightAlt,  Key_N, Key_M, Key_Comma, Key_Period,    Key_Slash,     Key_Minus,
    Key_RightShift, Key_LeftAlt, Key_Spacebar, Key_RightControl,
-   ShiftToLayer(FUNCTION)),
+   ShiftToLayer(FACTORY_FN)),
 
-  [FUNCTION] =  KEYMAP_STACKED
+  [FACTORY_FN] =  KEYMAP_STACKED
   (___,      Key_F1,           Key_F2,      Key_F3,     Key_F4,        Key_F5,           XXX,
    Key_Tab,  ___,              Key_mouseUp, ___,        Key_mouseBtnR, Key_mouseWarpEnd, Key_mouseWarpNE,
    Key_Home, Key_mouseL,       Key_mouseDn, Key_mouseR, Key_mouseBtnL, Key_mouseWarpNW,
@@ -157,7 +205,7 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    ___),
 
 
-  [NUMPAD] =  KEYMAP_STACKED
+  [FACTORY_NUMPAD] =  KEYMAP_STACKED
   (___, ___, ___, ___, ___, ___, ___,
    ___, ___, ___, ___, ___, ___, ___,
    ___, ___, ___, ___, ___, ___,
@@ -174,7 +222,7 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
 };
 
 /* Re-enable astyle's indent enforcement */
-// *INDENT-ON*
+ // *INDENT-ON*
 
 /** versionInfoMacro handles the 'firmware version info' macro
  *  When a key bound to the macro is pressed, this macro
@@ -185,6 +233,24 @@ static void versionInfoMacro(uint8_t keyState) {
   if (keyToggledOn(keyState)) {
     Macros.type(PSTR("Keyboardio Model 01 - Kaleidoscope "));
     Macros.type(PSTR(BUILD_INFORMATION));
+  }
+}
+
+/** toggle between my dovark etc layouts and the standard 
+ *  querty layout that came with the factory firmware.
+ *  
+ *  algernon's code, source: 
+ *  https://community.keyboard.io/t/borrow-your-laptop/423/3
+ */
+
+static void toggleFactoryLayout(uint8_t keyState) {
+  if (!keyToggledOn(keyState))
+    return;
+
+  if (Layer.isOn(DVORAK)) {
+    Layer.move(FACTORY_QWERTY);
+  } else {
+    Layer.move(DVORAK);
   }
 }
 
@@ -227,6 +293,10 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
 
   case MACRO_ANY:
     anyKeyMacro(keyState);
+    break;
+
+  case MACRO_TOGGLE_FACTORY_LAYOUT:
+    toggleFactoryLayout(keyState);
     break;
   }
   return MACRO_NONE;
@@ -312,7 +382,7 @@ void setup() {
 
   // While we hope to improve this in the future, the NumLock plugin
   // needs to be explicitly told which keymap layer is your numpad layer
-  NumLock.numPadLayer = NUMPAD;
+  NumLock.numPadLayer = FACTORY_NUMPAD;
 
   // We configure the AlphaSquare effect to use RED letters
   AlphaSquare.color = { 255, 0, 0 };
