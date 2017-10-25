@@ -56,6 +56,10 @@
 // Support for Keyboardio's internal keyboard testing mode
 #include "Kaleidoscope-Model01-TestMode.h"
 
+// use Syster conjunction with Unicode
+// https://github.com/keyboardio/Kaleidoscope-Syster
+//#include "Kaleidoscope-Syster.h"
+//#include "Kaleidoscope-Unicode.h"
 
 /** This 'enum' is a list of all the macros used by the Model 01's firmware
   * The names aren't particularly important. What is important is that each
@@ -318,6 +322,27 @@ static kaleidoscope::LEDSolidColor solidIndigo(0, 0, 170);
 static kaleidoscope::LEDSolidColor solidViolet(130, 0, 120);
 
 
+//void systerAction(kaleidoscope::Syster::action_t action, const char *symbol) {
+//  switch (action) {
+//  case kaleidoscope::Syster::StartAction:
+//    Unicode.type (0x2328);
+//    break;
+//  case kaleidoscope::Syster::EndAction:
+//    handleKeyswitchEvent (Key_Backspace, UNKNOWN_KEYSWITCH_LOCATION, IS_PRESSED | INJECTED);
+//    kaleidoscope::hid::sendKeyboardReport ();
+//    handleKeyswitchEvent (Key_Backspace, UNKNOWN_KEYSWITCH_LOCATION, WAS_PRESSED | INJECTED);
+//    kaleidoscope::hid::sendKeyboardReport ();
+//    break;
+//  case kaleidoscope::Syster::SymbolAction:
+//    Serial.print ("systerAction: symbol=");
+//    Serial.println (symbol);
+//    if (strcmp (symbol, "coffee") == 0) {
+//      Unicode.type (0x2615);
+//    }
+//    break;
+//  }
+//}
+
 
 /** The 'setup' function is one of the two standard Arduino sketch functions.
   * It's called when your keyboard first powers up. This is where you set up
@@ -377,7 +402,11 @@ void setup() {
     &Macros,
 
     // The MouseKeys plugin lets you add keys to your keymap which move the mouse.
-    &MouseKeys
+    &MouseKeys//,
+
+    //    &Unicode,
+
+    //    &Syster
   );
 
   // While we hope to improve this in the future, the NumLock plugin
