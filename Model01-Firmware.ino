@@ -353,11 +353,17 @@ static kaleidoscope::LEDSolidColor solidViolet(130, 0, 120);
 void tapDanceAction(uint8_t tap_dance_index, uint8_t tap_count,
                     kaleidoscope::TapDance::ActionType tap_dance_action) {
   switch (tap_dance_index) {
-  case 0:
-    return tapDanceActionKeys(tap_count, tap_dance_action,
-                              Consumer_ScanNextTrack, Consumer_ScanPreviousTrack);
+  case TapDanceKey::LeftBrackets: {
+    if (tap_count < 3) {
+      return tapDanceActionKeys(tap_count, tap_dance_action,
+                                Key_LeftParen,
+                                Key_LeftBracket);
+      }
+      return;
+    }
   }
 }
+
 
 /** The 'setup' function is one of the two standard Arduino sketch functions.
   * It's called when your keyboard first powers up. This is where you set up
