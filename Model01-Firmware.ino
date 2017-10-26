@@ -56,6 +56,8 @@
 // Support for Keyboardio's internal keyboard testing mode
 #include "Kaleidoscope-Model01-TestMode.h"
 
+#include "Kaleidoscope-OneShot.h"
+
 // use Syster conjunction with Unicode
 // https://github.com/keyboardio/Kaleidoscope-Syster
 //#include "Kaleidoscope-Syster.h"
@@ -160,7 +162,7 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    Key_Enter,      Key_F, Key_G, Key_C, Key_R, Key_L, Key_Slash,
                    Key_D, Key_H, Key_T, Key_N, Key_S, Key_Minus,
    Key_RightAlt,   Key_B, Key_M, Key_W, Key_V, Key_Z, Key_Equals,
-   Key_RightShift, Key_Enter, Key_Backspace, Key_RightControl,
+   Key_RightShift, Key_Enter, Key_Backspace, OSM(RightShift),
    ShiftToLayer(FN)),
 
   [FN] =  KEYMAP_STACKED
@@ -402,7 +404,9 @@ void setup() {
     &Macros,
 
     // The MouseKeys plugin lets you add keys to your keymap which move the mouse.
-    &MouseKeys//,
+    &MouseKeys,
+
+    &OneShot//,
 
     //    &Unicode,
 
