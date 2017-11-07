@@ -82,7 +82,8 @@
 
 enum { MACRO_VERSION_INFO,
        MACRO_ANY,
-       MACRO_TOGGLE_FACTORY_LAYOUT
+       MACRO_TOGGLE_FACTORY_LAYOUT,
+       MACRO_LED_DEACTIVATION
      };
 
 
@@ -173,18 +174,18 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    ShiftToLayer(FN)),
 
   [FN] =  KEYMAP_STACKED
-  (___,      Key_F1,           Key_F2,      Key_F3,     Key_F4,        Key_F5,           XXX,
+  (___,      Key_F1,           Key_F2,      Key_F3,     Key_F4,        Key_F5,           M(MACRO_LED_DEACTIVATION),
    Key_Tab,  ___,              Key_mouseUp, ___,        Key_mouseBtnR, Key_mouseWarpEnd, Key_mouseWarpNE,
    Key_Home, Key_mouseL,       Key_mouseDn, Key_Tab, Key_mouseBtnL, Key_mouseWarpNW,
    Key_End,  Key_PrintScreen,  Key_Insert,  ___,        Key_mouseBtnM, Key_mouseWarpSW,  Key_mouseWarpSE,
-   ___, Key_Delete, ___, ___,
+   ___, ___, ___, ___,
    ___,
 
    Consumer_ScanPreviousTrack, Key_F6,                 Key_F7,                   Key_F8,                   Key_F9,          Key_F10,          Key_F11,
    Consumer_PlaySlashPause,    Consumer_ScanNextTrack, Key_LeftCurlyBracket,     Key_RightCurlyBracket,    Key_LeftBracket, Key_RightBracket, Key_F12,
                                Key_LeftArrow,          Key_DownArrow,            Key_UpArrow,              Key_RightArrow,  ___,              ___,
    Key_PcApplication,          Key_Mute,               Consumer_VolumeDecrement, Consumer_VolumeIncrement, ___,             Key_Backslash,    Key_Pipe,
-   ___, ___, Key_Enter, ___,
+   ___, ___, Key_Delete, ___,
    ___),
   
   [FACTORY_QWERTY] = KEYMAP_STACKED
@@ -267,6 +268,13 @@ static void toggleFactoryLayout(uint8_t keyState) {
   }
 }
 
+static void deactivateLeds(uint8_t keyState) {
+  if (!keyToggledOn(keyState))
+    return;
+
+  LEDOff.activate();
+}
+
 /** anyKeyMacro is used to provide the functionality of the 'Any' key.
  *
  * When the 'any key' macro is toggled on, a random alphanumeric key is
@@ -310,6 +318,10 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
 
   case MACRO_TOGGLE_FACTORY_LAYOUT:
     toggleFactoryLayout(keyState);
+    break;
+
+  case MACRO_LED_DEACTIVATION:
+    deactivateLeds(keyState);
     break;
   }
   return MACRO_NONE;
@@ -380,9 +392,6 @@ void setup() {
   // The order can be important. For example, LED effects are
   // added in the order they're listed here.
   Kaleidoscope.use(
-    // The boot greeting effect pulses the LED button for 10 seconds after the keyboard is first connected
-    &BootGreetingEffect,
-
     // The hardware test mode, which can be invoked by tapping Prog, LED and the left Fn button at the same time.
     &TestMode,
 
