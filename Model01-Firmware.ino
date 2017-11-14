@@ -6,7 +6,6 @@
 #define BUILD_INFORMATION "locally built"
 #endif
 
-
 /**
  * These #include directives pull in the Kaleidoscope firmware core,
  * as well as the Kaleidoscope plugins we use in the Model 01's firmware
@@ -67,7 +66,13 @@
 // use Syster conjunction with Unicode
 // https://github.com/keyboardio/Kaleidoscope-Syster
 //#include "Kaleidoscope-Syster.h"
-//#include "Kaleidoscope-Unicode.h"
+
+
+#define KALEIDOSCOPE_HOSTOS_GUESSER 1
+#include <Kaleidoscope-HostOS.h>
+#include <Kaleidoscope/HostOS-select.h>
+
+#include "Kaleidoscope-Unicode.h"
 
 /** This 'enum' is a list of all the macros used by the Model 01's firmware
   * The names aren't particularly important. What is important is that each
@@ -85,7 +90,9 @@
 enum { MACRO_VERSION_INFO,
        MACRO_ANY,
        MACRO_TOGGLE_FACTORY_LAYOUT,
-       MACRO_LED_DEACTIVATION
+       MACRO_LED_DEACTIVATION,
+
+       MACRO_UMLAUT_O
      };
 
 
@@ -135,7 +142,7 @@ enum { MACRO_VERSION_INFO,
 enum TapDanceKey { LeftBrackets, RightBrackets };
 
 // enum { QWERTY, FUNCTION, NUMPAD }; // layers
-enum { DVORAK, FN, FACTORY_QWERTY, FACTORY_FN, FACTORY_NUMPAD };
+enum { DVORAK, SHIFT, FN, FACTORY_QWERTY, FACTORY_FN, FACTORY_NUMPAD };
 
 /* This comment temporarily turns off astyle's indent enforcement
  *   so we can make the keymaps actually resemble the physical key layout better
@@ -175,10 +182,25 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    Key_RightGui, Key_Enter, Key_Backspace, OSM(RightShift),
    ShiftToLayer(FN)),
 
+  [SHIFT] = KEYMAP_STACKED
+  (___,          Key_1,         Key_2,     Key_3,      Key_4, Key_5, Key_LEDEffectNext,
+   Key_Backtick, Key_Quote,     Key_Comma, Key_Period, Key_P, Key_Y, TOPSY(9),//TD(LeftBrackets),
+   Key_Tab,   Key_A,         Key_O,     Key_E,      Key_U, Key_I,
+   Key_PageDown, Key_Semicolon, Key_Q,     Key_J,      Key_K, Key_X, Key_Escape,
+   OSM(LeftControl), Key_Space, OSM(LeftAlt), Key_Tab,
+   ShiftToLayer(FN),
+
+   M(MACRO_ANY),   Key_6, Key_7, Key_8, Key_9, Key_0, Key_KeypadNumLock,
+   TOPSY(0),/*TD(RightBrackets),*/      Key_F, Key_G, Key_C, Key_R, Key_L, Key_Slash,
+                   Key_D, Key_H, Key_T, Key_N, Key_S, Key_Minus,
+   Key_RightAlt,   Key_B, Key_M, Key_W, Key_V, Key_Z, Key_Equals,
+   Key_RightGui, Key_Enter, Key_Backspace, OSM(RightShift),
+   ShiftToLayer(FN)),
+
   [FN] =  KEYMAP_STACKED
   (___,      Key_F1,           Key_F2,      Key_F3,     Key_F4,        Key_F5,           M(MACRO_LED_DEACTIVATION),
    Key_Tab,  ___,              Key_mouseUp, ___,        Key_mouseBtnR, Key_mouseWarpEnd, Key_mouseWarpNE,
-   Key_Home, Key_mouseL,       Key_mouseDn, Key_Tab, Key_mouseBtnL, Key_mouseWarpNW,
+   Key_Home, Key_mouseL,       M(MACRO_UMLAUT_O),/*Key_mouseDn,*/ Key_Tab, Key_mouseBtnL, Key_mouseWarpNW,
    Key_End,  Key_PrintScreen,  Key_Insert,  ___,        Key_mouseBtnM, Key_mouseWarpSW,  Key_mouseWarpSE,
    ___, ___, ___, ___,
    ___,
@@ -286,12 +308,15 @@ static void deactivateLeds(uint8_t keyState) {
  */
 
 static void anyKeyMacro(uint8_t keyState) {
-  static Key lastKey;
+  /*static Key lastKey;
   if (keyToggledOn(keyState))
     lastKey.keyCode = Key_A.keyCode + (uint8_t)(millis() % 36);
 
   if (keyIsPressed(keyState))
     kaleidoscope::hid::pressKey(lastKey);
+  */
+
+  //Serial.print(::HostOS::os());
 }
 
 
@@ -324,6 +349,11 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
 
   case MACRO_LED_DEACTIVATION:
     deactivateLeds(keyState);
+    break;
+
+
+  case MACRO_UMLAUT_O:
+    unicode(0x00d6, keyState);
     break;
   }
   return MACRO_NONE;
@@ -387,8 +417,13 @@ void tapDanceAction(uint8_t tap_dance_index, uint8_t tap_count,
   */
 
 void setup() {
+  HostOS.os(kaleidoscope::hostos::WINDOWS);
+
+  
   // First, call Kaleidoscope's internal setup function
   Kaleidoscope.setup();
+
+  
 
   // Next, tell Kaleidoscope which plugins you want to use.
   // The order can be important. For example, LED effects are
@@ -396,6 +431,8 @@ void setup() {
   Kaleidoscope.use(
     // The hardware test mode, which can be invoked by tapping Prog, LED and the left Fn button at the same time.
     &TestMode,
+
+    &HostOS,
 
     // LEDControl provides support for other LED modes
     &LEDControl,
@@ -442,12 +479,11 @@ void setup() {
 
     &TapDance,
 
-    &ActiveModColorEffect,
+    &TopsyTurvy,
 
-    &TopsyTurvy//,
+    &Unicode,
 
-    //    &Unicode,
-
+    &ActiveModColorEffect // needs to go last     
     //    &Syster
   );
 
@@ -483,4 +519,10 @@ void setup() {
 
 void loop() {
   Kaleidoscope.loop();
+}
+
+static void unicode(uint32_t character, uint8_t keyState) {
+  if (keyToggledOn(keyState)) {
+    Unicode.type(character);
+  }
 }
