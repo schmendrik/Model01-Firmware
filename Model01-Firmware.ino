@@ -92,7 +92,18 @@ enum { MACRO_VERSION_INFO,
        MACRO_TOGGLE_FACTORY_LAYOUT,
        MACRO_LED_DEACTIVATION,
 
-       MACRO_UMLAUT_O
+       MACRO_UMLAUT_A,
+       MACRO_UMLAUT_CA, // C for capital
+       MACRO_UMLAUT_O,
+       MACRO_UMLAUT_CO,
+       MACRO_UMLAUT_U,
+       MACRO_UMLAUT_CU,
+       MACRO_UMLAUT_S,
+
+       MACRO_VIELE_GRUESSE,
+       MACRO_LENNY,
+       MACRO_SHRUG,
+       MACRO_DISAPPROVAL
      };
 
 
@@ -199,16 +210,16 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
 
   [FN] =  KEYMAP_STACKED
   (___,      Key_F1,           Key_F2,      Key_F3,     Key_F4,        Key_F5,           M(MACRO_LED_DEACTIVATION),
-   Key_Tab,  ___,              Key_mouseUp, ___,        Key_mouseBtnR, Key_mouseWarpEnd, Key_mouseWarpNE,
-   Key_Home, Key_mouseL,       M(MACRO_UMLAUT_O),/*Key_mouseDn,*/ Key_Tab, Key_mouseBtnL, Key_mouseWarpNW,
+   Key_Tab,  M(MACRO_UMLAUT_CA),      M(MACRO_UMLAUT_CO), ___,    M(MACRO_UMLAUT_CU), Key_mouseWarpEnd, Key_mouseWarpNE,
+   Key_Home, M(MACRO_UMLAUT_A),       M(MACRO_UMLAUT_O), Key_Tab, M(MACRO_UMLAUT_U), M(MACRO_UMLAUT_S),
    Key_End,  Key_PrintScreen,  Key_Insert,  ___,        Key_mouseBtnM, Key_mouseWarpSW,  Key_mouseWarpSE,
    ___, ___, ___, ___,
    ___,
 
    Consumer_ScanPreviousTrack, Key_F6,                 Key_F7,                   Key_F8,                   Key_F9,          Key_F10,          Key_F11,
-   Consumer_PlaySlashPause,    Consumer_ScanNextTrack, Key_LeftCurlyBracket,     Key_RightCurlyBracket,    Key_LeftBracket, Key_RightBracket, Key_F12,
-                               Key_LeftArrow,          Key_DownArrow,            Key_UpArrow,              Key_RightArrow,  ___,              ___,
-   Key_PcApplication,          Key_Mute,               Consumer_VolumeDecrement, Consumer_VolumeIncrement, ___,             Key_Backslash,    Key_Pipe,
+   Consumer_PlaySlashPause,    M(MACRO_DISAPPROVAL), Key_LeftCurlyBracket,     Key_RightCurlyBracket,    Key_LeftBracket, M(MACRO_LENNY), Key_F12,
+   Key_LeftArrow,          Key_DownArrow,            Key_UpArrow,              Key_RightArrow,  M(MACRO_SHRUG),              ___,
+   Key_PcApplication,          Key_Mute,               Consumer_VolumeDecrement, Consumer_VolumeIncrement, M(MACRO_VIELE_GRUESSE),             Key_Backslash,    Key_Pipe,
    ___, ___, Key_Delete, ___,
    ___),
   
@@ -307,17 +318,30 @@ static void deactivateLeds(uint8_t keyState) {
  *
  */
 
-static void anyKeyMacro(uint8_t keyState) {
-  /*static Key lastKey;
+static void anyKeyMacro(uint8_t keyState, Key key) {
+  static Key lastKey;
   if (keyToggledOn(keyState))
     lastKey.keyCode = Key_A.keyCode + (uint8_t)(millis() % 36);
 
   if (keyIsPressed(keyState))
-    kaleidoscope::hid::pressKey(lastKey);
-  */
+    kaleidoscope::hid::pressKey(key);
+  
 
   //Serial.print(::HostOS::os());
 }
+
+
+static void simulateUmlautUsingWinCompose(uint8_t keyState, Key key) {
+  /*static Key lastKey;
+  if (keyToggledOn(keyState))
+  lastKey.keyCode = Key_A.keyCode + (uint8_t)(millis() % 36);*/
+  if (keyIsPressed(keyState)) {
+    kaleidoscope::hid::pressKey(Key_RightGui);
+    kaleidoscope::hid::pressKey(key);
+    kaleidoscope::hid::pressKey(key);
+  }
+}
+
 
 
 /** macroAction dispatches keymap events that are tied to a macro
@@ -340,7 +364,7 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
     break;
 
   case MACRO_ANY:
-    anyKeyMacro(keyState);
+    anyKeyMacro(keyState, Key_O);
     break;
 
   case MACRO_TOGGLE_FACTORY_LAYOUT:
@@ -351,11 +375,56 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
     deactivateLeds(keyState);
     break;
 
+    //  case MACRO_UMLAUT_SIM_O:
+    //    simulateUmlautUsingWinCompose(keyState, Key_Quote);
+    //  break;
+
+  case MACRO_UMLAUT_A:
+    return MACRODOWN(D(LeftShift), D(LeftAlt), D(LeftGui), D(RightControl), T(A), U(RightControl), U(LeftGui), U(LeftAlt), U(LeftShift));
+    break;
+
+  case MACRO_UMLAUT_CA:
+    return MACRODOWN(D(LeftShift), D(LeftAlt), D(LeftGui), D(RightControl), T(Quote), U(RightControl), U(LeftGui), U(LeftAlt), U(LeftShift));
+    break;
 
   case MACRO_UMLAUT_O:
-    unicode(0x00d6, keyState);
+    return MACRODOWN(D(LeftShift), D(LeftAlt), D(LeftGui), D(RightControl), T(O), U(RightControl), U(LeftGui), U(LeftAlt), U(LeftShift));
+    //unicode(0x00d6, keyState);
+    break;
+
+  case MACRO_UMLAUT_CO:
+    return MACRODOWN(D(LeftShift), D(LeftAlt), D(LeftGui), D(RightControl), T(Comma), U(RightControl), U(LeftGui), U(LeftAlt), U(LeftShift));
+    break;
+
+  case MACRO_UMLAUT_U:
+    return MACRODOWN(D(LeftShift), D(LeftAlt), D(LeftGui), D(RightControl), T(U), U(RightControl), U(LeftGui), U(LeftAlt), U(LeftShift));
+    break;
+
+  case MACRO_UMLAUT_CU:
+    return MACRODOWN(D(LeftShift), D(LeftAlt), D(LeftGui), D(RightControl), T(P), U(RightControl), U(LeftGui), U(LeftAlt), U(LeftShift));
+    break;
+
+  case MACRO_UMLAUT_S:
+    return MACRODOWN(D(LeftShift), D(LeftAlt), D(LeftGui), D(RightControl), T(I), U(RightControl), U(LeftGui), U(LeftAlt), U(LeftShift));
+    break;
+
+  case MACRO_VIELE_GRUESSE:
+    return MACRODOWN(D(LeftShift), D(LeftAlt), D(LeftGui), D(RightControl), T(V), U(RightControl), U(LeftGui), U(LeftAlt), U(LeftShift));
+    break;
+
+  case MACRO_LENNY:
+    return MACRODOWN(D(LeftShift), D(LeftAlt), D(LeftGui), D(RightControl), T(L), U(RightControl), U(LeftGui), U(LeftAlt), U(LeftShift));
+    break;
+
+  case MACRO_SHRUG:
+    return MACRODOWN(D(LeftShift), D(LeftAlt), D(LeftGui), D(RightControl), T(S), U(RightControl), U(LeftGui), U(LeftAlt), U(LeftShift));
+    break;
+
+  case MACRO_DISAPPROVAL:
+    return MACRODOWN(D(LeftShift), D(LeftAlt), D(LeftGui), D(RightControl), T(F), U(RightControl), U(LeftGui), U(LeftAlt), U(LeftShift));
     break;
   }
+  
   return MACRO_NONE;
 }
 
