@@ -218,10 +218,10 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    Key_Tab, ___, ___, ___,
    ___,
 
-   Consumer_ScanPreviousTrack, Key_F6,                 Key_F7,                   Key_F8,                   Key_F9,          Key_F10,          Key_F11,
-   Consumer_PlaySlashPause,    M(MACRO_DISAPPROVAL),   Key_LeftCurlyBracket,     Key_RightCurlyBracket,    Key_LeftBracket, M(MACRO_LENNY), Key_F12,
-   Key_LeftArrow,          Key_DownArrow,              Key_UpArrow,              Key_RightArrow,           M(MACRO_SAVE_FILE),              ___,
-   Key_PcApplication,          Key_Mute,               Consumer_VolumeDecrement, Consumer_VolumeIncrement, M(MACRO_VIELE_GRUESSE),             Key_Backslash,    Key_Pipe,
+   Consumer_ScanPreviousTrack, Key_F6,                 Key_F7,                   Key_F8,                   Key_F9,                 Key_F10,            Key_F11,
+   Consumer_PlaySlashPause,    Key_mouseScrollUp,      Key_mouseBtnL,            Key_mouseUp,              Key_mouseBtnR,          M(MACRO_LENNY),     Key_F12,
+                               Key_mouseScrollDn,      Key_mouseL,               Key_mouseDn,              Key_mouseR,             M(MACRO_SAVE_FILE), ___,
+   Key_PcApplication,          Key_Mute,               Consumer_VolumeDecrement, Consumer_VolumeIncrement, M(MACRO_VIELE_GRUESSE), Key_Backslash,      Key_Pipe,
    ___, ___, Key_Delete, ___,
    ___),
 
@@ -582,6 +582,9 @@ void setup() {
   // This avoids over-taxing devices that don't have a lot of power to share
   // with USB devices
   LEDOff.activate();
+
+  MouseKeys.speedDelay = 5;
+  MouseKeys.accelDelay = 20;
 }
 
 /** loop is the second of the standard Arduino sketch functions.
