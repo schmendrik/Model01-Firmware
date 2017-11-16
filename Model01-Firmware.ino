@@ -89,6 +89,11 @@ enum { MACRO_VERSION_INFO,
        MACRO_TOGGLE_FACTORY_LAYOUT,
        MACRO_LED_DEACTIVATION,
 
+       // Save file macro: sends a long key combo that is translated by autohotkey
+       // to the proper save file keyboard shortcut, depending on the currently active
+       // program. ("C-x s" in emacs was too cumbersome in the end)
+       MACRO_SAVE_FILE,
+
        MACRO_UMLAUT_A,
        MACRO_UMLAUT_CA, // C for capital
        MACRO_UMLAUT_O,
@@ -215,7 +220,7 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
 
    Consumer_ScanPreviousTrack, Key_F6,                 Key_F7,                   Key_F8,                   Key_F9,          Key_F10,          Key_F11,
    Consumer_PlaySlashPause,    M(MACRO_DISAPPROVAL), Key_LeftCurlyBracket,     Key_RightCurlyBracket,    Key_LeftBracket, M(MACRO_LENNY), Key_F12,
-   Key_LeftArrow,          Key_DownArrow,            Key_UpArrow,              Key_RightArrow,  M(MACRO_SHRUG),              ___,
+   Key_LeftArrow,          Key_DownArrow,            Key_UpArrow,              Key_RightArrow,           M(MACRO_SAVE_FILE),              ___,
    Key_PcApplication,          Key_Mute,               Consumer_VolumeDecrement, Consumer_VolumeIncrement, M(MACRO_VIELE_GRUESSE),             Key_Backslash,    Key_Pipe,
    ___, ___, Key_Delete, ___,
    ___),
@@ -352,6 +357,9 @@ static void simulateUmlautUsingWinCompose(uint8_t keyState, Key key) {
 
  */
 
+
+#define FNTOAHK(KEY) MACRODOWN(D(RightGui), D(RightControl), T(KEY), U(RightControl), U(RightGui))
+
 const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
   switch (macroIndex) {
 
@@ -371,53 +379,56 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
     deactivateLeds(keyState);
     break;
 
-    //  case MACRO_UMLAUT_SIM_O:
-    //    simulateUmlautUsingWinCompose(keyState, Key_Quote);
-    //  break;
+
+  case MACRO_SAVE_FILE:
+    //return MACRODOWN(D(LeftShift), D(LeftAlt), D(LeftGui), D(RightControl), T(S), U(RightControl), U(LeftGui), U(LeftAlt), U(LeftShift));
+    //return MACRODOWN(D(RightGui), D(RightControl), T(S), U(RightControl), U(RightGui));
+    return FNTOAHK(S);
+    break;
 
   case MACRO_UMLAUT_A:
-    return MACRODOWN(D(LeftShift), D(LeftAlt), D(LeftGui), D(RightControl), T(A), U(RightControl), U(LeftGui), U(LeftAlt), U(LeftShift));
+    return FNTOAHK(A);
     break;
 
   case MACRO_UMLAUT_CA:
-    return MACRODOWN(D(LeftShift), D(LeftAlt), D(LeftGui), D(RightControl), T(Quote), U(RightControl), U(LeftGui), U(LeftAlt), U(LeftShift));
+    return FNTOAHK(Quote);
     break;
 
   case MACRO_UMLAUT_O:
-    return MACRODOWN(D(LeftShift), D(LeftAlt), D(LeftGui), D(RightControl), T(O), U(RightControl), U(LeftGui), U(LeftAlt), U(LeftShift));
+    return FNTOAHK(O);
     //unicode(0x00d6, keyState);
     break;
 
   case MACRO_UMLAUT_CO:
-    return MACRODOWN(D(LeftShift), D(LeftAlt), D(LeftGui), D(RightControl), T(Comma), U(RightControl), U(LeftGui), U(LeftAlt), U(LeftShift));
+    return FNTOAHK(Comma);
     break;
 
   case MACRO_UMLAUT_U:
-    return MACRODOWN(D(LeftShift), D(LeftAlt), D(LeftGui), D(RightControl), T(U), U(RightControl), U(LeftGui), U(LeftAlt), U(LeftShift));
+    return FNTOAHK(U);
     break;
 
   case MACRO_UMLAUT_CU:
-    return MACRODOWN(D(LeftShift), D(LeftAlt), D(LeftGui), D(RightControl), T(P), U(RightControl), U(LeftGui), U(LeftAlt), U(LeftShift));
+    return FNTOAHK(P);
     break;
 
   case MACRO_UMLAUT_S:
-    return MACRODOWN(D(LeftShift), D(LeftAlt), D(LeftGui), D(RightControl), T(I), U(RightControl), U(LeftGui), U(LeftAlt), U(LeftShift));
+    return FNTOAHK(I);
     break;
 
   case MACRO_VIELE_GRUESSE:
-    return MACRODOWN(D(LeftShift), D(LeftAlt), D(LeftGui), D(RightControl), T(V), U(RightControl), U(LeftGui), U(LeftAlt), U(LeftShift));
+    return FNTOAHK(V);
     break;
 
   case MACRO_LENNY:
-    return MACRODOWN(D(LeftShift), D(LeftAlt), D(LeftGui), D(RightControl), T(L), U(RightControl), U(LeftGui), U(LeftAlt), U(LeftShift));
+    return FNTOAHK(L);
     break;
 
   case MACRO_SHRUG:
-    return MACRODOWN(D(LeftShift), D(LeftAlt), D(LeftGui), D(RightControl), T(S), U(RightControl), U(LeftGui), U(LeftAlt), U(LeftShift));
+    //return FNTOAHK(TODO);
     break;
 
   case MACRO_DISAPPROVAL:
-    return MACRODOWN(D(LeftShift), D(LeftAlt), D(LeftGui), D(RightControl), T(F), U(RightControl), U(LeftGui), U(LeftAlt), U(LeftShift));
+    return FNTOAHK(F);
     break;
   }
   
