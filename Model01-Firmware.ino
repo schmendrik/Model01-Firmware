@@ -182,14 +182,14 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
 
   [DVORAK] = KEYMAP_STACKED
   (___,          Key_1,         Key_2,     Key_3,      Key_4, Key_5, Key_LEDEffectNext,
-   Key_Backtick, Key_Quote,     Key_Comma, Key_Period, Key_P, Key_Y, TOPSY(9),//TD(LeftBrackets),
+   Key_Backtick, Key_Quote,     Key_Comma, Key_Period, Key_P, Key_Y, LSHIFT(Key_9),//TD(LeftBrackets),
    Key_Tab,   Key_A,         Key_O,     Key_E,      Key_U, Key_I,
    Key_PageDown, Key_Semicolon, Key_Q,     Key_J,      Key_K, Key_X, Key_Escape,
    OSM(LeftControl), Key_Space, OSM(LeftAlt), ShiftToLayer(FN2),
    ShiftToLayer(FN),
 
    M(MACRO_ANY),   Key_6, Key_7, Key_8, Key_9, Key_0, XXX,
-   TOPSY(0),/*TD(RightBrackets),*/      Key_F, Key_G, Key_C, Key_R, Key_L, Key_Slash,
+   LSHIFT(Key_0),/*TD(RightBrackets),*/      Key_F, Key_G, Key_C, Key_R, Key_L, Key_Slash,
                    Key_D, Key_H, Key_T, Key_N, Key_S, Key_Minus,
    Key_RightAlt,   Key_B, Key_M, Key_W, Key_V, Key_Z, Key_Equals,
    Key_RightGui, Key_Enter, Key_Backspace, OSM(RightShift),
@@ -219,8 +219,8 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    ___,
 
    Consumer_ScanPreviousTrack, Key_F6,                 Key_F7,                   Key_F8,                   Key_F9,          Key_F10,          Key_F11,
-   Consumer_PlaySlashPause,    M(MACRO_DISAPPROVAL), Key_LeftCurlyBracket,     Key_RightCurlyBracket,    Key_LeftBracket, M(MACRO_LENNY), Key_F12,
-   Key_LeftArrow,          Key_DownArrow,            Key_UpArrow,              Key_RightArrow,           M(MACRO_SAVE_FILE),              ___,
+   Consumer_PlaySlashPause,    M(MACRO_DISAPPROVAL),   Key_LeftCurlyBracket,     Key_RightCurlyBracket,    Key_LeftBracket, M(MACRO_LENNY), Key_F12,
+   Key_LeftArrow,          Key_DownArrow,              Key_UpArrow,              Key_RightArrow,           M(MACRO_SAVE_FILE),              ___,
    Key_PcApplication,          Key_Mute,               Consumer_VolumeDecrement, Consumer_VolumeIncrement, M(MACRO_VIELE_GRUESSE),             Key_Backslash,    Key_Pipe,
    ___, ___, Key_Delete, ___,
    ___),
@@ -554,8 +554,6 @@ void setup() {
     &OneShot,
 
     &TapDance,
-
-    &TopsyTurvy,
 
     &Unicode,
 
