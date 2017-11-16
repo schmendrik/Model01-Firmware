@@ -24,9 +24,6 @@
 // Support for controlling the keyboard's LEDs
 #include "Kaleidoscope-LEDControl.h"
 
-// Support for "Numlock" mode, which is mostly just the Numlock specific LED mode
-#include "Kaleidoscope-Numlock.h"
-
 // Support for an "LED off mode"
 #include "LED-Off.h"
 
@@ -153,7 +150,7 @@ enum { MACRO_VERSION_INFO,
 enum TapDanceKey { LeftBrackets, RightBrackets };
 
 // enum { QWERTY, FUNCTION, NUMPAD }; // layers
-enum { DVORAK, SHIFT, FN, FACTORY_QWERTY, FACTORY_FN, FACTORY_NUMPAD };
+enum { DVORAK, SHIFT, FN, FN2, FACTORY_QWERTY, FACTORY_FN };
 
 /* This comment temporarily turns off astyle's indent enforcement
  *   so we can make the keymaps actually resemble the physical key layout better
@@ -183,10 +180,10 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    Key_Backtick, Key_Quote,     Key_Comma, Key_Period, Key_P, Key_Y, TOPSY(9),//TD(LeftBrackets),
    Key_Tab,   Key_A,         Key_O,     Key_E,      Key_U, Key_I,
    Key_PageDown, Key_Semicolon, Key_Q,     Key_J,      Key_K, Key_X, Key_Escape,
-   OSM(LeftControl), Key_Space, OSM(LeftAlt), Key_Tab,
+   OSM(LeftControl), Key_Space, OSM(LeftAlt), ShiftToLayer(FN2),
    ShiftToLayer(FN),
 
-   M(MACRO_ANY),   Key_6, Key_7, Key_8, Key_9, Key_0, Key_KeypadNumLock,
+   M(MACRO_ANY),   Key_6, Key_7, Key_8, Key_9, Key_0, XXX,
    TOPSY(0),/*TD(RightBrackets),*/      Key_F, Key_G, Key_C, Key_R, Key_L, Key_Slash,
                    Key_D, Key_H, Key_T, Key_N, Key_S, Key_Minus,
    Key_RightAlt,   Key_B, Key_M, Key_W, Key_V, Key_Z, Key_Equals,
@@ -201,7 +198,7 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    OSM(LeftControl), Key_Space, OSM(LeftAlt), Key_Tab,
    ShiftToLayer(FN),
 
-   M(MACRO_ANY),   Key_6, Key_7, Key_8, Key_9, Key_0, Key_KeypadNumLock,
+   M(MACRO_ANY),   Key_6, Key_7, Key_8, Key_9, Key_0, XXX,
    TOPSY(0),/*TD(RightBrackets),*/      Key_F, Key_G, Key_C, Key_R, Key_L, Key_Slash,
                    Key_D, Key_H, Key_T, Key_N, Key_S, Key_Minus,
    Key_RightAlt,   Key_B, Key_M, Key_W, Key_V, Key_Z, Key_Equals,
@@ -213,7 +210,7 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    Key_Tab,  M(MACRO_UMLAUT_CA),      M(MACRO_UMLAUT_CO), ___,    M(MACRO_UMLAUT_CU), Key_mouseWarpEnd, Key_mouseWarpNE,
    Key_Home, M(MACRO_UMLAUT_A),       M(MACRO_UMLAUT_O), Key_Tab, M(MACRO_UMLAUT_U), M(MACRO_UMLAUT_S),
    Key_End,  Key_PrintScreen,  Key_Insert,  ___,        Key_mouseBtnM, Key_mouseWarpSW,  Key_mouseWarpSE,
-   ___, ___, ___, ___,
+   Key_Tab, ___, ___, ___,
    ___,
 
    Consumer_ScanPreviousTrack, Key_F6,                 Key_F7,                   Key_F8,                   Key_F9,          Key_F10,          Key_F11,
@@ -221,6 +218,21 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    Key_LeftArrow,          Key_DownArrow,            Key_UpArrow,              Key_RightArrow,  M(MACRO_SHRUG),              ___,
    Key_PcApplication,          Key_Mute,               Consumer_VolumeDecrement, Consumer_VolumeIncrement, M(MACRO_VIELE_GRUESSE),             Key_Backslash,    Key_Pipe,
    ___, ___, Key_Delete, ___,
+   ___),
+
+  [FN2] =  KEYMAP_STACKED
+  (___, ___, ___, ___, ___, ___, ___,
+   ___, ___, ___, ___, ___, ___, ___,
+   ___, ___, ___, ___, ___, ___,
+   ___, ___, ___, ___, ___, ___, ___,
+   ___, ___, ___, ___,
+   ___,
+
+   M(MACRO_VERSION_INFO),  ___,                 ___,         ___,           ___,       ___,                ___,
+   ___,                    Key_KeypadAdd,      Key_Keypad4, Key_Keypad5, Key_Keypad6, Key_Equals,         ___,
+                           Key_Keypad0,        Key_Keypad1, Key_Keypad2, Key_Keypad3, Key_KeypadMultiply, ___,
+   ___,                    Key_KeypadSubtract, Key_Keypad7, Key_Keypad8, Key_Keypad9, Key_KeypadDivide,    ___,
+   ___, Key_Enter, Key_KeypadDot, ___,
    ___),
   
   [FACTORY_QWERTY] = KEYMAP_STACKED
@@ -231,7 +243,7 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    Key_LeftControl, Key_Backspace, Key_LeftGui, Key_LeftShift,
    ShiftToLayer(FACTORY_FN),
 
-   M(MACRO_ANY),  Key_6, Key_7, Key_8,     Key_9,         Key_0,         Key_KeypadNumLock,
+   M(MACRO_ANY),  Key_6, Key_7, Key_8,     Key_9,         Key_0,         XXX,
    Key_Enter,     Key_Y, Key_U, Key_I,     Key_O,         Key_P,         Key_Equals,
                   Key_H, Key_J, Key_K,     Key_L,         Key_Semicolon, Key_Quote,
    Key_RightAlt,  Key_N, Key_M, Key_Comma, Key_Period,    Key_Slash,     Key_Minus,
@@ -251,22 +263,6 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
                                Key_LeftArrow,          Key_DownArrow,            Key_UpArrow,              Key_RightArrow,  ___,              ___,
    Key_PcApplication,          Key_Mute,               Consumer_VolumeDecrement, Consumer_VolumeIncrement, ___,             Key_Backslash,    Key_Pipe,
    ___, ___, Key_Enter, ___,
-   ___),
-
-
-  [FACTORY_NUMPAD] =  KEYMAP_STACKED
-  (___, ___, ___, ___, ___, ___, ___,
-   ___, ___, ___, ___, ___, ___, ___,
-   ___, ___, ___, ___, ___, ___,
-   ___, ___, ___, ___, ___, ___, ___,
-   ___, ___, ___, ___,
-   ___,
-
-   M(MACRO_VERSION_INFO),  ___, Key_Keypad7, Key_Keypad8,   Key_Keypad9,        Key_KeypadSubtract, ___,
-   ___,                    ___, Key_Keypad4, Key_Keypad5,   Key_Keypad6,        Key_KeypadAdd,      ___,
-                           ___, Key_Keypad1, Key_Keypad2,   Key_Keypad3,        Key_Equals,         Key_Quote,
-   ___,                    ___, Key_Keypad0, Key_KeypadDot, Key_KeypadMultiply, Key_KeypadDivide,   Key_Enter,
-   ___, ___, ___, ___,
    ___)
 };
 
@@ -536,7 +532,7 @@ void setup() {
 
     // The numlock plugin is responsible for lighting up the 'numpad' mode
     // with a custom LED effect
-    &NumLock,
+    //&NumLock,
 
     // The macros plugin adds support for macros
     &Macros,
@@ -558,7 +554,7 @@ void setup() {
 
   // While we hope to improve this in the future, the NumLock plugin
   // needs to be explicitly told which keymap layer is your numpad layer
-  NumLock.numPadLayer = FACTORY_NUMPAD;
+  //NumLock.numPadLayer = FACTORY_NUMPAD;
 
   // We configure the AlphaSquare effect to use RED letters
   AlphaSquare.color = { 255, 0, 0 };
