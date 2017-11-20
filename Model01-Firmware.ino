@@ -200,7 +200,7 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    Key_Backtick, Key_Quote,     Key_Comma, Key_Period, Key_P, Key_Y, TOPSY(9),//TD(LeftBrackets),
    Key_Tab,   Key_A,         Key_O,     Key_E,      Key_U, Key_I,
    Key_PageDown, Key_Semicolon, Key_Q,     Key_J,      Key_K, Key_X, Key_Escape,
-   OSM(LeftControl), Key_Space, OSM(LeftAlt), Key_Tab,
+   OSM(LeftControl), Key_Space, OSM(LeftAlt), ___,
    ShiftToLayer(FN),
 
    M(MACRO_ANY),   Key_6, Key_7, Key_8, Key_9, Key_0, XXX,
@@ -233,10 +233,10 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    ___, ___, ___, ___,
    ___,
 
-   M(MACRO_VERSION_INFO),  ___,                 ___,         ___,           ___,       ___,                ___,
-   ___,                    Key_KeypadAdd,      Key_Keypad4, Key_Keypad5, Key_Keypad6, Key_Equals,         ___,
-                           Key_Keypad0,        Key_Keypad1, Key_Keypad2, Key_Keypad3, Key_KeypadMultiply, ___,
-   ___,                    Key_KeypadSubtract, Key_Keypad7, Key_Keypad8, Key_Keypad9, Key_KeypadDivide,    ___,
+   M(MACRO_VERSION_INFO),  ___,                ___,   ___,   ___,   ___,                ___,
+   ___,                    Key_KeypadAdd,      Key_4, Key_5, Key_6, Key_Equals,         ___,
+                           Key_0,              Key_1, Key_2, Key_3, Key_KeypadMultiply, ___,
+   ___,                    Key_KeypadSubtract, Key_7, Key_8, Key_9, Key_KeypadDivide,   ___,
    ___, Key_Enter, Key_KeypadDot, ___,
    ___),
   
