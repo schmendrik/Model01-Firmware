@@ -212,14 +212,14 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
 
   [FN] =  KEYMAP_STACKED
   (___,      Key_F1,           Key_F2,      Key_F3,     Key_F4,        Key_F5,           M(MACRO_LED_DEACTIVATION),
-   Key_Tab,  M(MACRO_UMLAUT_CA),      M(MACRO_UMLAUT_CO), ___,    M(MACRO_UMLAUT_CU), Key_mouseWarpEnd, Key_mouseWarpNE,
+   Key_Tab,  M(MACRO_UMLAUT_CA),      M(MACRO_UMLAUT_CO), ___,    M(MACRO_UMLAUT_CU), XXX, Key_LeftCurlyBracket,
    Key_Home, M(MACRO_UMLAUT_A),       M(MACRO_UMLAUT_O), Key_Tab, M(MACRO_UMLAUT_U), M(MACRO_UMLAUT_S),
    Key_End,  Key_PrintScreen,  Key_Insert,  ___,        Key_mouseBtnM, Key_mouseWarpSW,  Key_mouseWarpSE,
    Key_Tab, ___, ___, ___,
    ___,
 
    Consumer_ScanPreviousTrack, Key_F6,                 Key_F7,                   Key_F8,                   Key_F9,                 Key_F10,            Key_F11,
-   Consumer_PlaySlashPause,    Key_mouseScrollUp,      Key_mouseBtnL,            Key_mouseUp,              Key_mouseBtnR,          M(MACRO_LENNY),     Key_F12,
+   Key_RightCurlyBracket,    Key_mouseScrollUp,      Key_mouseBtnL,            Key_mouseUp,              Key_mouseBtnR,          M(MACRO_LENNY),     Key_F12,
                                Key_mouseScrollDn,      Key_mouseL,               Key_mouseDn,              Key_mouseR,             M(MACRO_SAVE_FILE), ___,
    Key_PcApplication,          Key_Mute,               Consumer_VolumeDecrement, Consumer_VolumeIncrement, M(MACRO_VIELE_GRUESSE), Key_Backslash,      Key_Pipe,
    ___, ___, Key_Delete, ___,
@@ -227,14 +227,14 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
 
   [FN2] =  KEYMAP_STACKED
   (___, ___, ___, ___, ___, ___, ___,
-   ___, ___, ___, ___, ___, ___, ___,
+   ___, ___, ___, ___, ___, ___, Key_LeftBracket,
    ___, ___, ___, ___, ___, ___,
    ___, ___, ___, ___, ___, ___, ___,
    ___, ___, ___, ___,
    ___,
 
    M(MACRO_VERSION_INFO),  ___,                ___,   ___,   ___,   ___,                ___,
-   ___,                    Key_KeypadAdd,      Key_4, Key_5, Key_6, Key_Equals,         ___,
+   Key_RightBracket,                    Key_KeypadAdd,      Key_4, Key_5, Key_6, Key_Equals,         ___,
                            Key_0,              Key_1, Key_2, Key_3, Key_KeypadMultiply, ___,
    ___,                    Key_KeypadSubtract, Key_7, Key_8, Key_9, Key_KeypadDivide,   ___,
    ___, Key_Enter, Key_KeypadDot, ___,
