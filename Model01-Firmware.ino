@@ -219,8 +219,8 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    ___,
 
    Consumer_ScanPreviousTrack, Key_F6,                 Key_F7,                   Key_F8,                   Key_F9,                 Key_F10,            Key_F11,
-   Key_RightCurlyBracket,    Key_mouseScrollUp,      Key_mouseBtnL,            Key_mouseUp,              Key_mouseBtnR,          M(MACRO_LENNY),     Key_F12,
-                               Key_mouseScrollDn,      Key_mouseL,               Key_mouseDn,              Key_mouseR,             M(MACRO_SAVE_FILE), ___,
+   Key_RightCurlyBracket,      Key_mouseScrollUp,      Key_mouseBtnL,            Key_UpArrow,              Key_mouseBtnR,          M(MACRO_LENNY),     Key_F12,
+                               Key_mouseScrollDn,      Key_LeftArrow,            Key_DownArrow,            Key_RightArrow,         M(MACRO_SAVE_FILE), ___,
    Key_PcApplication,          Key_Mute,               Consumer_VolumeDecrement, Consumer_VolumeIncrement, M(MACRO_VIELE_GRUESSE), Key_Backslash,      Key_Pipe,
    ___, ___, Key_Delete, ___,
    ___),
