@@ -237,7 +237,7 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    Key_RightBracket,       Key_KeypadAdd,      Key_4, Key_5, Key_6, Key_Equals,         ___,
                            Key_0,              Key_1, Key_2, Key_3, Key_KeypadMultiply, ___,
    ___,                    Key_KeypadSubtract, Key_7, Key_8, Key_9, Key_KeypadDivide,   ___,
-   ___, Key_Enter, ___, Key_Period,
+   Key_Space, Key_Enter, ___, Key_Period,
    ___),
   
   [FACTORY_QWERTY] = KEYMAP_STACKED
