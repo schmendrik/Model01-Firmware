@@ -237,11 +237,11 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    Key_RightBracket,       Key_KeypadAdd,      Key_4, Key_5, Key_6, Key_Equals,         ___,
                            Key_0,              Key_1, Key_2, Key_3, Key_KeypadMultiply, ___,
    ___,                    Key_KeypadSubtract, Key_7, Key_8, Key_9, Key_KeypadDivide,   ___,
-   ___, Key_Enter, ___, Key_Period,
+   Key_Space, Key_Enter, ___, Key_Period,
    ___),
   
   [FACTORY_QWERTY] = KEYMAP_STACKED
-  (___,          Key_1, Key_2, Key_3, Key_4, Key_5, Key_LEDEffectNext,
+  (LGUI(Key_L),          Key_1, Key_2, Key_3, Key_4, Key_5, Key_LEDEffectNext,
    Key_Backtick, Key_Q, Key_W, Key_E, Key_R, Key_T, Key_Tab,
    Key_PageUp,   Key_A, Key_S, Key_D, Key_F, Key_G,
    Key_PageDown, Key_Z, Key_X, Key_C, Key_V, Key_B, Key_Escape,
