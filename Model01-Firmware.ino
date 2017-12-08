@@ -2,6 +2,8 @@
 // Copyright 2016 Keyboardio, inc. <jesse@keyboard.io>
 // See "LICENSE" for license details
 
+// keycode definitions: https://github.com/keyboardio/Kaleidoscope/wiki/Keycode-meanings
+
 #ifndef BUILD_INFORMATION
 #define BUILD_INFORMATION "locally built"
 #endif
@@ -183,8 +185,8 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
   [DVORAK] = KEYMAP_STACKED
   (___,          Key_1,         Key_2,     Key_3,      Key_4, Key_5, Key_LEDEffectNext,
    Key_Backtick, Key_Quote,     Key_Comma, Key_Period, Key_P, Key_Y, LSHIFT(Key_9),//TD(LeftBrackets),
-   Key_Tab,   Key_A,         Key_O,     Key_E,      Key_U, Key_I,
-   Key_PageDown, Key_Semicolon, Key_Q,     Key_J,      Key_K, Key_X, Key_Escape,
+   Key_Copy,   Key_A,         Key_O,     Key_E,      Key_U, Key_I,
+   Key_Paste, Key_Semicolon, Key_Q,     Key_J,      Key_K, Key_X, Key_Escape,
    OSM(LeftShift), Key_Space, OSM(LeftAlt), ShiftToLayer(FN2),
    ShiftToLayer(FN),
 
@@ -213,8 +215,8 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
   [FN] =  KEYMAP_STACKED
   (___,      Key_F1,           Key_F2,      Key_F3,     Key_F4,        Key_F5,           M(MACRO_LED_DEACTIVATION),
    Key_Tab,  M(MACRO_UMLAUT_CA),      M(MACRO_UMLAUT_CO), ___,    M(MACRO_UMLAUT_CU), XXX, Key_LeftCurlyBracket,
-   Key_Home, M(MACRO_UMLAUT_A),       M(MACRO_UMLAUT_O), Key_Tab, M(MACRO_UMLAUT_U), M(MACRO_UMLAUT_S),
-   Key_End,  Key_PrintScreen,  Key_Insert,  ___,        Key_mouseBtnM, Key_mouseWarpSW,  Key_mouseWarpSE,
+   Key_PageUp, Key_Home/*M(MACRO_UMLAUT_A)*/,       M(MACRO_UMLAUT_O), Key_End, Key_Tab/*M(MACRO_UMLAUT_U)*/, M(MACRO_UMLAUT_S),
+   Key_PageDown,  Key_PrintScreen,  Key_Insert,  ___,        Key_mouseBtnM, Key_mouseWarpSW,  Key_mouseWarpSE,
    Key_Tab, ___, ___, ___,
    ___,
 
