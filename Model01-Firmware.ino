@@ -491,6 +491,36 @@ void tapDanceAction(uint8_t tap_dance_index, uint8_t tap_count,
   }
 }
 
+// this makes flux dim up/down.. ALT is still being pressed down with PageUp/Down
+// it's the releaseKey that doesn't seem to work
+Key customControls(Key mapped_key, byte row, byte col, uint8_t key_state) {
+    // If none of the controls are pressed, fall through.useEventHandlerHook
+    if (kaleidoscope::hid::wasModifierKeyActive(Key_LeftAlt) ||
+        kaleidoscope::hid::wasModifierKeyActive(Key_RightAlt)) {
+  
+    // If we are idle, fall through
+    if (!keyWasPressed(key_state) && !keyIsPressed(key_state))
+      return mapped_key;
+  
+    if (mapped_key == Key_C) {
+      // So we are not idle, one of the controls are held
+      // Time to release the Kraken, and replace the keys with other ones.
+      kaleidoscope::hid::releaseKey(Key_LeftAlt);
+      kaleidoscope::hid::releaseKey(Key_RightAlt);
+      return Key_PageUp;  
+    }
+  
+    if (mapped_key == Key_T) {
+      // So we are not idle, one of the controls are held
+      // Time to release the Kraken, and replace the keys with other ones.
+      kaleidoscope::hid::releaseKey(Key_LeftAlt);
+      kaleidoscope::hid::releaseKey(Key_RightAlt);
+      return Key_PageDown;  
+    }
+  }
+  
+  return mapped_key; 
+}
 
 /** The 'setup' function is one of the two standard Arduino sketch functions.
   * It's called when your keyboard first powers up. This is where you set up
@@ -504,7 +534,7 @@ void setup() {
   // First, call Kaleidoscope's internal setup function
   Kaleidoscope.setup();
 
-  
+  //Kaleidoscope.useEventHandlerHook(customControls);  
 
   // Next, tell Kaleidoscope which plugins you want to use.
   // The order can be important. For example, LED effects are
@@ -610,3 +640,4 @@ static void unicode(uint32_t character, uint8_t keyState) {
     Unicode.type(character);
   }
 }
+
