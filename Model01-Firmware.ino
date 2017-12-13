@@ -223,7 +223,7 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    Consumer_ScanPreviousTrack, Key_F6,                 Key_F7,                   Key_F8,                   Key_F9,                 Key_F10,            Key_F11,
    Key_RightCurlyBracket,      XXX,      Key_mouseBtnL,            Key_UpArrow,              Key_mouseBtnR,          LCTRL(Key_L)/*for emacs*/,     Key_F12,
                                LCTRL(Key_D)/*for emacs*/,      Key_LeftArrow,            Key_DownArrow,            Key_RightArrow,         M(MACRO_SAVE_FILE), ___,
-   Key_PcApplication,          Key_Mute,               Consumer_VolumeDecrement, Consumer_VolumeIncrement, M(MACRO_VIELE_GRUESSE), Key_Backslash,      Key_Pipe,
+   Key_PcApplication,          Key_Mute,               Consumer_VolumeDecrement, LCTRL(Key_W), M(MACRO_VIELE_GRUESSE), Key_Backslash,      Key_Pipe,
    ___, ___, Key_Delete, ___,
    ___),
 
