@@ -216,7 +216,7 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
   (___,      Key_F1,           Key_F2,      Key_F3,     Key_F4,        Key_F5,           M(MACRO_LED_DEACTIVATION),
    Key_Tab,  M(MACRO_UMLAUT_CA),      M(MACRO_UMLAUT_CO), ___,    M(MACRO_UMLAUT_CU), XXX, Key_LeftCurlyBracket,
    Key_PageUp, Key_Home/*M(MACRO_UMLAUT_A)*/,       M(MACRO_UMLAUT_O), Key_End, Key_Tab/*M(MACRO_UMLAUT_U)*/, M(MACRO_UMLAUT_S),
-   Key_PageDown,  Key_PrintScreen,  Key_Insert,  ___,        Key_mouseBtnM, LCTRL(Key_X),  Key_mouseWarpSE,
+   Key_PageDown,  Key_PrintScreen,  Key_Insert,  ___,        LCTRL(Key_K), LCTRL(Key_X),  Key_mouseWarpSE,
    ___,  LCTRL(Key_Space), ___, ___,
    ___,
 
