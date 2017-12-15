@@ -157,7 +157,7 @@ enum { MACRO_VERSION_INFO,
 enum TapDanceKey { LeftBrackets, RightBrackets };
 
 // enum { QWERTY, FUNCTION, NUMPAD }; // layers
-enum { DVORAK, SHIFT, FN, FN2, FACTORY_QWERTY, FACTORY_FN };
+enum { DVORAK, SHIFT, LFN, RFN, FN2, FACTORY_QWERTY, FACTORY_FN };
 
 /* This comment temporarily turns off astyle's indent enforcement
  *   so we can make the keymaps actually resemble the physical key layout better
@@ -188,14 +188,14 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    Key_Copy,   Key_A,         Key_O,     Key_E,      Key_U, Key_I,
    Key_Paste, Key_Semicolon, Key_Q,     Key_J,      Key_K, Key_X, Key_Escape,
    OSM(LeftShift), Key_Space, OSM(LeftAlt), ShiftToLayer(FN2),
-   ShiftToLayer(FN),
+   ShiftToLayer(LFN),
 
    M(MACRO_ANY),   Key_6, Key_7, Key_8, Key_9, Key_0, XXX,
    LSHIFT(Key_0),/*TD(RightBrackets),*/      Key_F, Key_G, Key_C, Key_R, Key_L, Key_Slash,
                    Key_D, Key_H, Key_T, Key_N, Key_S, Key_Minus,
    Key_RightAlt,   Key_B, Key_M, Key_W, Key_V, Key_Z, Key_Equals,
    Key_RightGui, Key_Enter, Key_Backspace, OSM(RightControl),
-   ShiftToLayer(FN)),
+   ShiftToLayer(RFN)),
 
   [SHIFT] = KEYMAP_STACKED
   (___,          Key_1,         Key_2,     Key_3,      Key_4, Key_5, Key_LEDEffectNext,
@@ -203,29 +203,44 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    Key_Tab,   Key_A,         Key_O,     Key_E,      Key_U, Key_I,
    Key_PageDown, Key_Semicolon, Key_Q,     Key_J,      Key_K, Key_X, Key_Escape,
    OSM(LeftControl), Key_Space, OSM(LeftAlt), ___,
-   ShiftToLayer(FN),
+   ShiftToLayer(LFN),
 
    M(MACRO_ANY),   Key_6, Key_7, Key_8, Key_9, Key_0, XXX,
    TOPSY(0),/*TD(RightBrackets),*/      Key_F, Key_G, Key_C, Key_R, Key_L, Key_Slash,
                    Key_D, Key_H, Key_T, Key_N, Key_S, Key_Minus,
    Key_RightAlt,   Key_B, Key_M, Key_W, Key_V, Key_Z, Key_Equals,
    Key_RightGui, Key_Enter, Key_Backspace, OSM(RightShift),
-   ShiftToLayer(FN)),
+   ShiftToLayer(RFN)),
 
-  [FN] =  KEYMAP_STACKED
+  [LFN] =  KEYMAP_STACKED
   (___,      Key_F1,           Key_F2,      Key_F3,     Key_F4,        Key_F5,           M(MACRO_LED_DEACTIVATION),
    Key_Tab,  M(MACRO_UMLAUT_CA),      M(MACRO_UMLAUT_CO), ___,    M(MACRO_UMLAUT_CU), XXX, Key_LeftCurlyBracket,
-   Key_PageUp, Key_Home/*M(MACRO_UMLAUT_A)*/,       M(MACRO_UMLAUT_O), Key_End, Key_Tab/*M(MACRO_UMLAUT_U)*/, M(MACRO_UMLAUT_S),
+   Key_PageUp, Key_Home,       M(MACRO_UMLAUT_O), Key_End, Key_Tab/*M(MACRO_UMLAUT_U)*/, M(MACRO_UMLAUT_S),
    Key_PageDown,  Key_PrintScreen,  Key_Insert,  ___,        LCTRL(Key_K), LCTRL(Key_X),  Key_mouseWarpSE,
    ___,  LCTRL(Key_Space), ___, ___,
    ___,
 
    Consumer_ScanPreviousTrack, Key_F6,                 Key_F7,                   Key_F8,                   Key_F9,                 Key_F10,            Key_F11,
-   Key_RightCurlyBracket,      XXX,      LCTRL(Key_G),            Key_UpArrow,              Key_mouseBtnR,          LCTRL(Key_L)/*for emacs*/,     Key_F12,
+   Key_RightCurlyBracket,      XXX,      LCTRL(Key_G),            Key_UpArrow,              XXX,          LCTRL(Key_L)/*for emacs*/,     Key_F12,
                                LCTRL(Key_D)/*for emacs*/,      Key_LeftArrow,            Key_DownArrow,            Key_RightArrow,         M(MACRO_SAVE_FILE), ___,
    Key_PcApplication,          Key_Mute,               Consumer_VolumeDecrement, LCTRL(Key_W), M(MACRO_VIELE_GRUESSE), Key_Backslash,      Key_Pipe,
    ___, ___, Key_Delete, ___,
    ___),
+
+  [RFN] =  KEYMAP_STACKED
+  (___, ___, ___, ___, ___, ___, ___,
+   ___, M(MACRO_UMLAUT_CA), M(MACRO_UMLAUT_CO), ___, M(MACRO_UMLAUT_CU), ___, ___,
+   ___, M(MACRO_UMLAUT_A),  M(MACRO_UMLAUT_O),  ___, M(MACRO_UMLAUT_U),  M(MACRO_UMLAUT_S),
+   ___, ___, ___, ___, ___, ___, ___,
+   ___, ___, ___, ___,
+   ___,
+ 
+   ___, ___,           ___,           ___,         ___,          ___,          ___,
+   ___, Key_mouseBtnR, Key_mouseBtnL, Key_mouseUp, LCTRL(Key_R), ___,          ___,
+        ___,           Key_mouseL,    Key_mouseDn, Key_mouseR,   LCTRL(Key_S), ___,
+   ___, ___, ___, ___, ___, ___, ___,
+   ___, ___, ___, ___,
+   ___),  
 
   [FN2] =  KEYMAP_STACKED
   (___, ___, ___, ___, ___, ___, ___,
