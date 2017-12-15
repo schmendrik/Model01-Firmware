@@ -1,6 +1,6 @@
 // -*- mode: c++ -*-
 // Copyright 2016 Keyboardio, inc. <jesse@keyboard.io>
-// See "LICENSE" for license details
+// See "LICENSE" for 
 
 // keycode definitions: https://github.com/keyboardio/Kaleidoscope/wiki/Keycode-meanings
 
@@ -229,9 +229,9 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
 
   [RFN] =  KEYMAP_STACKED
   (___, ___, ___, ___, ___, ___, ___,
-   ___, M(MACRO_UMLAUT_CA), M(MACRO_UMLAUT_CO), ___, M(MACRO_UMLAUT_CU), ___, ___,
+   ___, M(MACRO_UMLAUT_CA), M(MACRO_UMLAUT_CO), ___, M(MACRO_UMLAUT_CU), LCTRL(Key_Y), ___,
    ___, M(MACRO_UMLAUT_A),  M(MACRO_UMLAUT_O),  ___, M(MACRO_UMLAUT_U),  M(MACRO_UMLAUT_S),
-   ___, ___, ___, ___, ___, ___, ___,
+   ___, ___, ___, ___, ___, LCTRL(Key_X), ___,
    ___, ___, ___, ___,
    ___,
  
