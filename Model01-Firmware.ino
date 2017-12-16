@@ -193,7 +193,7 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    M(MACRO_ANY),   Key_6, Key_7, Key_8, Key_9, Key_0, XXX,
    LSHIFT(Key_0),/*TD(RightBrackets),*/      Key_F, Key_G, Key_C, Key_R, Key_L, Key_Slash,
                    Key_D, Key_H, Key_T, Key_N, Key_S, Key_Minus,
-   Key_RightAlt,   Key_B, Key_M, Key_W, Key_V, Key_Z, Key_Equals,
+   Key_F6,   Key_B, Key_M, Key_W, Key_V, Key_Z, Key_Equals,
    Key_RightGui, Key_Enter, Key_Backspace, OSM(RightControl),
    ShiftToLayer(RFN)),
 
