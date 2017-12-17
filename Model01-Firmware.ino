@@ -228,15 +228,15 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    ___),
 
   [RFN] =  KEYMAP_STACKED
-  (___, ___, ___, ___, ___, ___, ___,
+  (___, Key_F1,           Key_F2,      Key_F3,     Key_F4,        Key_F5,           ___,
    ___, M(MACRO_UMLAUT_CA), M(MACRO_UMLAUT_CO), ___, M(MACRO_UMLAUT_CU), LCTRL(Key_Y), ___,
    ___, M(MACRO_UMLAUT_A),  M(MACRO_UMLAUT_O),  ___, M(MACRO_UMLAUT_U),  M(MACRO_UMLAUT_S),
    ___, ___, ___, ___, ___, LCTRL(Key_X), ___,
    ___, ___, ___, ___,
    ___,
  
-   ___, ___,           ___,           ___,         ___,          ___,          ___,
-   ___, Key_mouseBtnR, Key_mouseBtnL, Key_mouseUp, LCTRL(Key_R), ___,          ___,
+   ___, Key_F6,                 Key_F7,                   Key_F8,                   Key_F9,                 Key_F10,            Key_F11,
+   ___, Key_mouseBtnR, Key_mouseBtnL, Key_mouseUp, LCTRL(Key_R), ___,          Key_F12,
         ___,           Key_mouseL,    Key_mouseDn, Key_mouseR,   LCTRL(Key_S), ___,
    ___, ___, ___, ___, ___, ___, ___,
    ___, ___, ___, ___,
