@@ -62,6 +62,9 @@
 
 #include "Kaleidoscope-TopsyTurvy.h"
 
+// Support for host power management (suspend & wakeup)
+#include "Kaleidoscope-HostPowerManagement.h"
+
 // use Syster conjunction with Unicode
 // https://github.com/keyboardio/Kaleidoscope-Syster
 //#include "Kaleidoscope-Syster.h"
@@ -607,6 +610,8 @@ void setup() {
 
     &Unicode,
 
+    &HostPowerManagement,
+
     &ActiveModColorEffect // needs to go last     
     //    &Syster
   );
@@ -637,6 +642,14 @@ void setup() {
   MouseKeys.accelDelay = 20;
 
   OneShot.time_out = 1200;
+
+  // We want the keyboard to be able to wake the host up from suspend.
+  HostPowerManagement.enableWakeup();
+
+  // We want to make sure that the firmware starts with LED effects off
+  // This avoids over-taxing devices that don't have a lot of power to share
+  // with USB devices
+  LEDOff.activate();
 }
 
 /** loop is the second of the standard Arduino sketch functions.
