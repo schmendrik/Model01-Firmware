@@ -227,7 +227,7 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    Key_RightCurlyBracket,      XXX,      LCTRL(Key_G),            Key_UpArrow,              XXX,          LCTRL(Key_L)/*for emacs*/,     Key_F12,
                                LCTRL(Key_D)/*for emacs*/,      Key_LeftArrow,            Key_DownArrow,            Key_RightArrow,         M(MACRO_SAVE_FILE), ___,
    Key_PcApplication,          Key_Mute,               Consumer_VolumeDecrement, LCTRL(Key_W), M(MACRO_VIELE_GRUESSE), Key_Backslash,      Key_Pipe,
-   ___, ___, Key_Delete, ___,
+   ___, LCTRL(Key_Enter), Key_Delete, ___,
    ___),
 
   [RFN] =  KEYMAP_STACKED
