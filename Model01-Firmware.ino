@@ -197,7 +197,7 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    LSHIFT(Key_0),/*TD(RightBrackets),*/      Key_F, Key_G, Key_C, Key_R, Key_L, Key_Slash,
                    Key_D, Key_H, Key_T, Key_N, Key_S, Key_Minus,
    Key_F6,   Key_B, Key_M, Key_W, Key_V, Key_Z, Key_Equals,
-   Key_RightGui, Key_Enter, Key_Backspace, OSM(RightControl),
+   Key_RightGui, Key_Enter, Key_Backspace, Key_RightControl,
    ShiftToLayer(RFN)),
 
   [SHIFT] = KEYMAP_STACKED
@@ -217,7 +217,7 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
 
   [LFN] =  KEYMAP_STACKED
   (___,      Key_F1,           Key_F2,      Key_F3,     Key_F4,        Key_F5,           M(MACRO_LED_DEACTIVATION),
-   Key_Tab,  M(MACRO_UMLAUT_CA),      M(MACRO_UMLAUT_CO), ___,    M(MACRO_UMLAUT_CU), XXX, Key_LeftCurlyBracket,
+   Key_Tab,  M(MACRO_UMLAUT_CA),      M(MACRO_UMLAUT_CO), ___,    M(MACRO_UMLAUT_CU), LCTRL(Key_Y), Key_LeftCurlyBracket,
    Key_PageUp, Key_Home,       M(MACRO_UMLAUT_O), Key_End, Key_Tab/*M(MACRO_UMLAUT_U)*/, M(MACRO_UMLAUT_S),
    Key_PageDown,  Key_PrintScreen,  Key_Insert,  ___,        LCTRL(Key_K), LCTRL(Key_X),  Key_mouseWarpSE,
    ___,  LCTRL(Key_Space), ___, ___,
@@ -232,7 +232,7 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
 
   [RFN] =  KEYMAP_STACKED
   (___, Key_F1,           Key_F2,      Key_F3,     Key_F4,        Key_F5,           ___,
-   ___, M(MACRO_UMLAUT_CA), M(MACRO_UMLAUT_CO), ___, M(MACRO_UMLAUT_CU), LCTRL(Key_Y), ___,
+   ___, M(MACRO_UMLAUT_CA), M(MACRO_UMLAUT_CO), ___, M(MACRO_UMLAUT_CU), ___, ___,
    ___, M(MACRO_UMLAUT_A),  M(MACRO_UMLAUT_O),  ___, M(MACRO_UMLAUT_U),  M(MACRO_UMLAUT_S),
    ___, ___, ___, ___, ___, LCTRL(Key_X), ___,
    ___, ___, ___, ___,
