@@ -110,7 +110,9 @@ enum { MACRO_VERSION_INFO,
        MACRO_VIELE_GRUESSE,
        MACRO_LENNY,
        MACRO_SHRUG,
-       MACRO_DISAPPROVAL
+       MACRO_DISAPPROVAL,
+
+       MACRO_ACE_JUMP
      };
 
 
@@ -157,7 +159,7 @@ enum { MACRO_VERSION_INFO,
   */
 
 
-enum TapDanceKey { LeftBrackets, RightBrackets };
+enum TapDanceKey { AUml, OUml, UUml, LeftBrackets, RightBrackets };
 
 // enum { QWERTY, FUNCTION, NUMPAD }; // layers
 enum { DVORAK, SHIFT, LFN, RFN, FN2, FACTORY_QWERTY, FACTORY_FN };
@@ -187,14 +189,14 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
 
   [DVORAK] = KEYMAP_STACKED
   (___,          Key_1,         Key_2,     Key_3,      Key_4, Key_5, Key_LEDEffectNext,
-   Key_Backtick, Key_Quote,     Key_Comma, Key_Period, Key_P, Key_Y, LSHIFT(Key_9),//TD(LeftBrackets),
+   Key_Backtick, Key_Quote,     Key_Comma, Key_Period, Key_P, Key_Y, TD(LeftBrackets),//LSHIFT(Key_9),
    Key_Copy,   Key_A,         Key_O,     Key_E,      Key_U, Key_I,
    Key_Paste, Key_Semicolon, Key_Q,     Key_J,      Key_K, Key_X, Key_Escape,
-   OSM(LeftShift), Key_Space, OSM(LeftAlt), ShiftToLayer(FN2),
+   OSM(LeftShift), Key_Space, Key_LeftAlt, ShiftToLayer(FN2),
    ShiftToLayer(LFN),
 
    M(MACRO_ANY),   Key_6, Key_7, Key_8, Key_9, Key_0, XXX,
-   LSHIFT(Key_0),/*TD(RightBrackets),*/      Key_F, Key_G, Key_C, Key_R, Key_L, Key_Slash,
+   /*LSHIFT(Key_0),*/TD(RightBrackets),      Key_F, Key_G, Key_C, Key_R, Key_L, Key_Slash,
                    Key_D, Key_H, Key_T, Key_N, Key_S, Key_Minus,
    Key_F6,   Key_B, Key_M, Key_W, Key_V, Key_Z, Key_Equals,
    Key_RightGui, Key_Enter, Key_Backspace, Key_RightControl,
@@ -202,7 +204,7 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
 
   [SHIFT] = KEYMAP_STACKED
   (___,          Key_1,         Key_2,     Key_3,      Key_4, Key_5, Key_LEDEffectNext,
-   Key_Backtick, Key_Quote,     Key_Comma, Key_Period, Key_P, Key_Y, TOPSY(9),//TD(LeftBrackets),
+   Key_Backtick, Key_Quote,     Key_Comma, Key_Period, Key_P, Key_Y, TOPSY(9),
    Key_Tab,   Key_A,         Key_O,     Key_E,      Key_U, Key_I,
    Key_PageDown, Key_Semicolon, Key_Q,     Key_J,      Key_K, Key_X, Key_Escape,
    OSM(LeftControl), Key_Space, OSM(LeftAlt), ___,
@@ -217,14 +219,14 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
 
   [LFN] =  KEYMAP_STACKED
   (___,      Key_F1,           Key_F2,      Key_F3,     Key_F4,        Key_F5,           M(MACRO_LED_DEACTIVATION),
-   Key_Tab,  M(MACRO_UMLAUT_CA),      M(MACRO_UMLAUT_CO), ___,    M(MACRO_UMLAUT_CU), LCTRL(Key_Y), Key_LeftCurlyBracket,
-   Key_PageUp, Key_Home,       M(MACRO_UMLAUT_O), Key_End, Key_Tab/*M(MACRO_UMLAUT_U)*/, M(MACRO_UMLAUT_S),
+   Key_Tab,  ___,      ___, ___,    ___, LCTRL(Key_Y), Key_LeftCurlyBracket,
+   Key_PageUp, Key_Home,       M(MACRO_UMLAUT_O), Key_End, Key_Tab/*M(MACRO_UMLAUT_U)*/, M(MACRO_ACE_JUMP),
    Key_PageDown,  Key_PrintScreen,  Key_Insert,  ___,        LCTRL(Key_K), LCTRL(Key_X),  Key_mouseWarpSE,
-   ___,  LCTRL(Key_Space), ___, ___,
+   ___,  ___, ___, ___,
    ___,
 
    Consumer_ScanPreviousTrack, Key_F6,                 Key_F7,                   Key_F8,                   Key_F9,                 Key_F10,            Key_F11,
-   Key_RightCurlyBracket,      XXX,      LCTRL(Key_G),            Key_UpArrow,              XXX,          LCTRL(Key_L)/*for emacs*/,     Key_F12,
+   Key_RightCurlyBracket,      XXX,      LCTRL(Key_Space),            Key_UpArrow,              XXX,          LCTRL(Key_L)/*for emacs*/,     Key_F12,
                                LCTRL(Key_D)/*for emacs*/,      Key_LeftArrow,            Key_DownArrow,            Key_RightArrow,         M(MACRO_SAVE_FILE), ___,
    Key_PcApplication,          Key_Mute,               Consumer_VolumeDecrement, LCTRL(Key_W), M(MACRO_VIELE_GRUESSE), Key_Backslash,      Key_Pipe,
    ___, LCTRL(Key_Enter), Key_Delete, ___,
@@ -232,8 +234,8 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
 
   [RFN] =  KEYMAP_STACKED
   (___, Key_F1,           Key_F2,      Key_F3,     Key_F4,        Key_F5,           ___,
-   ___, M(MACRO_UMLAUT_CA), M(MACRO_UMLAUT_CO), ___, M(MACRO_UMLAUT_CU), ___, Key_LeftCurlyBracket,
-   ___, M(MACRO_UMLAUT_A),  M(MACRO_UMLAUT_O),  ___, M(MACRO_UMLAUT_U),  M(MACRO_UMLAUT_S),
+   ___, ___, ___, ___, ___, ___, ___, //   ___, M(MACRO_UMLAUT_CA), M(MACRO_UMLAUT_CO), ___, M(MACRO_UMLAUT_CU), ___, Key_LeftCurlyBracket,
+   ___, TD(TapDanceKey::AUml), TD(TapDanceKey::OUml), ___, TD(TapDanceKey::UUml), M(MACRO_UMLAUT_S), //   ___, M(MACRO_UMLAUT_A),  M(MACRO_UMLAUT_O),  ___, M(MACRO_UMLAUT_U),  M(MACRO_UMLAUT_S),
    ___, ___, ___, ___, ___, LCTRL(Key_X), ___,
    ___, ___, ___, ___,
    ___,
@@ -453,6 +455,10 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
   case MACRO_DISAPPROVAL:
     return FNTOAHK(F);
     break;
+
+  case MACRO_ACE_JUMP:
+    return FNTOAHK(J);
+    break;
   }
   
   return MACRO_NONE;
@@ -495,16 +501,23 @@ static kaleidoscope::LEDSolidColor solidViolet(130, 0, 120);
 //  }
 //}
 
-void tapDanceAction(uint8_t tap_dance_index, uint8_t tap_count,
+void tapDanceAction(uint8_t tap_dance_index, byte row, byte col, uint8_t tap_count,
                     kaleidoscope::TapDance::ActionType tap_dance_action) {
   switch (tap_dance_index) {
-  case TapDanceKey::LeftBrackets: {
-    if (tap_count < 3) {
-      return tapDanceActionKeys(tap_count, tap_dance_action,
-                                Key_LeftParen,
-                                Key_LeftBracket);
-      }
-      return;
+    case TapDanceKey::LeftBrackets: {
+      return tapDanceActionKeys(tap_count, tap_dance_action, Key_LeftParen, Key_LeftBracket, Key_LeftCurlyBracket);
+    }
+    case TapDanceKey::RightBrackets: {
+      return tapDanceActionKeys(tap_count, tap_dance_action, Key_RightParen, Key_RightBracket, Key_RightCurlyBracket);
+    }      
+    case TapDanceKey::AUml: {
+      return tapDanceActionKeys(tap_count, tap_dance_action, M(MACRO_UMLAUT_A), M(MACRO_UMLAUT_CA));
+    }
+    case TapDanceKey::OUml: {
+      return tapDanceActionKeys(tap_count, tap_dance_action, M(MACRO_UMLAUT_O), M(MACRO_UMLAUT_CO));
+    }
+    case TapDanceKey::UUml: {
+      return tapDanceActionKeys(tap_count, tap_dance_action, M(MACRO_UMLAUT_U), M(MACRO_UMLAUT_CU));
     }
   }
 }
