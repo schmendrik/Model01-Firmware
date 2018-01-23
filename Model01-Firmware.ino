@@ -117,9 +117,9 @@ enum { MACRO_VERSION_INFO,
        // program. ("C-x s" in emacs was too cumbersome in the end)
        MACRO_SAVE_FILE,       
        MACRO_ACE_JUMP,
-       // Instantly go to prev buffer
+       // Instantly go to prev/next buffer
        MACRO_GOTO_PREV_BUFFER,
-     
+       MACRO_GOTO_NEXT_BUFFER,     
        
      };
 
@@ -242,9 +242,9 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
 
   [RFN] =  KEYMAP_STACKED
   (___, Key_F1,           Key_F2,      Key_F3,     Key_F4,        Key_F5,           ___,
-   ___, M(MACRO_GOTO_PREV_BUFFER), ___, ___, ___, ___, ___,
+   ___, ___, ___, ___, ___, ___, ___,
    ___, TD(TapDanceKey::AUml), TD(TapDanceKey::OUml), ___, TD(TapDanceKey::UUml), M(MACRO_UMLAUT_S),
-   ___, ___, ___, ___, ___, LCTRL(Key_X), ___,
+   ___, ___, ___, ___, M(MACRO_GOTO_PREV_BUFFER), M(MACRO_GOTO_NEXT_BUFFER), ___,
    ___, ___, ___, ___,
    ___,
  
@@ -470,7 +470,11 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
 
   case MACRO_GOTO_PREV_BUFFER:
     return FNTOAHK(1);
-    break;  
+    break;
+
+  case MACRO_GOTO_NEXT_BUFFER:
+    return FNTOAHK(2);
+    break;      
   }
   
   return MACRO_NONE;
