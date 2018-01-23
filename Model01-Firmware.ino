@@ -94,11 +94,7 @@ enum { MACRO_VERSION_INFO,
        MACRO_TOGGLE_FACTORY_LAYOUT,
        MACRO_LED_DEACTIVATION,
 
-       // Save file macro: sends a long key combo that is translated by autohotkey
-       // to the proper save file keyboard shortcut, depending on the currently active
-       // program. ("C-x s" in emacs was too cumbersome in the end)
-       MACRO_SAVE_FILE,
-
+      
        MACRO_UMLAUT_A,
        MACRO_UMLAUT_CA, // C for capital
        MACRO_UMLAUT_O,
@@ -112,7 +108,19 @@ enum { MACRO_VERSION_INFO,
        MACRO_SHRUG,
        MACRO_DISAPPROVAL,
 
-       MACRO_ACE_JUMP
+       ////////////////////////////////////////////////////
+       // Emacs Macros
+       ////////////////////////////////////////////////////
+       
+       // Save file macro: sends a long key combo that is translated by autohotkey
+       // to the proper save file keyboard shortcut, depending on the currently active
+       // program. ("C-x s" in emacs was too cumbersome in the end)
+       MACRO_SAVE_FILE,       
+       MACRO_ACE_JUMP,
+       // Instantly go to prev buffer
+       MACRO_GOTO_PREV_BUFFER,
+     
+       
      };
 
 
@@ -234,8 +242,8 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
 
   [RFN] =  KEYMAP_STACKED
   (___, Key_F1,           Key_F2,      Key_F3,     Key_F4,        Key_F5,           ___,
-   ___, ___, ___, ___, ___, ___, ___, //   ___, M(MACRO_UMLAUT_CA), M(MACRO_UMLAUT_CO), ___, M(MACRO_UMLAUT_CU), ___, Key_LeftCurlyBracket,
-   ___, TD(TapDanceKey::AUml), TD(TapDanceKey::OUml), ___, TD(TapDanceKey::UUml), M(MACRO_UMLAUT_S), //   ___, M(MACRO_UMLAUT_A),  M(MACRO_UMLAUT_O),  ___, M(MACRO_UMLAUT_U),  M(MACRO_UMLAUT_S),
+   ___, M(MACRO_GOTO_PREV_BUFFER), ___, ___, ___, ___, ___,
+   ___, TD(TapDanceKey::AUml), TD(TapDanceKey::OUml), ___, TD(TapDanceKey::UUml), M(MACRO_UMLAUT_S),
    ___, ___, ___, ___, ___, LCTRL(Key_X), ___,
    ___, ___, ___, ___,
    ___,
@@ -459,6 +467,10 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
   case MACRO_ACE_JUMP:
     return FNTOAHK(J);
     break;
+
+  case MACRO_GOTO_PREV_BUFFER:
+    return FNTOAHK(1);
+    break;  
   }
   
   return MACRO_NONE;
