@@ -119,8 +119,10 @@ enum { MACRO_VERSION_INFO,
        MACRO_ACE_JUMP,
        // Instantly go to prev/next buffer
        MACRO_GOTO_PREV_BUFFER,
-       MACRO_GOTO_NEXT_BUFFER,     
-       
+       MACRO_GOTO_NEXT_BUFFER,
+
+       MACRO_SHOW_BOOKMARKS,
+       MACRO_SET_BOOKMARK       
      };
 
 
@@ -167,7 +169,18 @@ enum { MACRO_VERSION_INFO,
   */
 
 
-enum TapDanceKey { AUml, OUml, UUml, LeftBrackets, RightBrackets };
+enum TapDanceKey {
+  AUml,
+  OUml,
+  UUml,
+  
+  LeftBrackets,
+  RightBrackets,
+
+  // single tap: call helm-filtered-bookmarks
+  // double tap: set bookmark
+  Bookmarks
+};
 
 // enum { QWERTY, FUNCTION, NUMPAD }; // layers
 enum { DVORAK, SHIFT, LFN, RFN, FN2, FACTORY_QWERTY, FACTORY_FN };
@@ -236,7 +249,7 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    Consumer_ScanPreviousTrack, Key_F6,                 Key_F7,                   Key_F8,                   Key_F9,                 Key_F10,            Key_F11,
    Key_RightCurlyBracket,      XXX,      LCTRL(Key_Space),            Key_UpArrow,              XXX,          LCTRL(Key_L)/*for emacs*/,     Key_F12,
                                LCTRL(Key_D)/*for emacs*/,      Key_LeftArrow,            Key_DownArrow,            Key_RightArrow,         M(MACRO_SAVE_FILE), ___,
-   Key_PcApplication,          Key_Mute,               Consumer_VolumeDecrement, LCTRL(Key_W), M(MACRO_VIELE_GRUESSE), Key_Backslash,      Key_Pipe,
+   Key_PcApplication,          TD(TapDanceKey::Bookmarks),               Consumer_VolumeDecrement, LCTRL(Key_W), M(MACRO_VIELE_GRUESSE), Key_Backslash,      Key_Pipe,
    ___, LCTRL(Key_Enter), Key_Delete, ___,
    ___),
 
@@ -474,7 +487,15 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
 
   case MACRO_GOTO_NEXT_BUFFER:
     return FNTOAHK(2);
-    break;      
+    break;
+
+  case MACRO_SHOW_BOOKMARKS:
+    return FNTOAHK(3);
+    break;
+
+  case MACRO_SET_BOOKMARK:
+    return FNTOAHK(4);
+    break;    
   }
   
   return MACRO_NONE;
@@ -534,6 +555,9 @@ void tapDanceAction(uint8_t tap_dance_index, byte row, byte col, uint8_t tap_cou
     }
     case TapDanceKey::UUml: {
       return tapDanceActionKeys(tap_count, tap_dance_action, M(MACRO_UMLAUT_U), M(MACRO_UMLAUT_CU));
+    }
+    case TapDanceKey::Bookmarks: {
+      return tapDanceActionKeys(tap_count, tap_dance_action, M(MACRO_SHOW_BOOKMARKS), M(MACRO_SET_BOOKMARK));
     }
   }
 }
