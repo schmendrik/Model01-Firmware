@@ -3,6 +3,7 @@
 // See "LICENSE" for 
 
 // keycode definitions: https://github.com/keyboardio/Kaleidoscope/wiki/Keycode-meanings
+// Empty template for keymap: https://community.keyboard.io/t/boilerplate-for-empty-layer/760/2?u=rumpel
 
 #ifndef BUILD_INFORMATION
 #define BUILD_INFORMATION "locally built"
@@ -108,9 +109,13 @@ enum { MACRO_VERSION_INFO,
        MACRO_SHRUG,
        MACRO_DISAPPROVAL,
 
+       MACRO_APP_BROWSER_OPEN_SEARCH,
+
        ////////////////////////////////////////////////////
        // Emacs Macros
        ////////////////////////////////////////////////////
+
+       MACRO_FOCUS_EMACS,
        
        // Save file macro: sends a long key combo that is translated by autohotkey
        // to the proper save file keyboard shortcut, depending on the currently active
@@ -122,7 +127,17 @@ enum { MACRO_VERSION_INFO,
        MACRO_GOTO_NEXT_BUFFER,
 
        MACRO_SHOW_BOOKMARKS,
-       MACRO_SET_BOOKMARK       
+       MACRO_SET_BOOKMARK,
+       MACRO_SHOW_BUFFERS,
+
+       ////////////////////////////////////////////////////
+       // App Macros
+       ////////////////////////////////////////////////////
+
+       // Foobar2k
+       MACRO_APP_FOOBAR2K_SEEK_FW1MIN,
+       MACRO_APP_FOOBAR2K_RATE1,
+       MACRO_APP_FOOBAR2K_PAUSE
      };
 
 
@@ -183,7 +198,24 @@ enum TapDanceKey {
 };
 
 // enum { QWERTY, FUNCTION, NUMPAD }; // layers
-enum { DVORAK, SHIFT, LFN, RFN, FN2, FACTORY_QWERTY, FACTORY_FN };
+enum {
+  DVORAK,
+  SHIFT,
+
+  // Left FN
+  LFN,
+
+  // Right FN
+  RFN,
+
+  // For numpad, etc
+  FN2,
+
+  // For app control (foobar2k etc)
+  FN3,
+  
+  FACTORY_QWERTY,
+  FACTORY_FN };
 
 /* This comment temporarily turns off astyle's indent enforcement
  *   so we can make the keymaps actually resemble the physical key layout better
@@ -210,17 +242,17 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
 
   [DVORAK] = KEYMAP_STACKED
   (___,          Key_1,         Key_2,     Key_3,      Key_4, Key_5, Key_LEDEffectNext,
-   Key_Backtick, Key_Quote,     Key_Comma, Key_Period, Key_P, Key_Y, TD(LeftBrackets),//LSHIFT(Key_9),
+   M(MACRO_APP_BROWSER_OPEN_SEARCH), Key_Quote,     Key_Comma, Key_Period, Key_P, Key_Y, TD(LeftBrackets),//LSHIFT(Key_9),
    Key_Copy,   Key_A,         Key_O,     Key_E,      Key_U, Key_I,
    Key_Paste, Key_Semicolon, Key_Q,     Key_J,      Key_K, Key_X, Key_Escape,
    OSM(LeftShift), Key_Space, Key_LeftAlt, ShiftToLayer(FN2),
    ShiftToLayer(LFN),
 
-   M(MACRO_ANY),   Key_6, Key_7, Key_8, Key_9, Key_0, XXX,
+   Key_RightGui,   Key_6, Key_7, Key_8, Key_9, Key_0, XXX,
    /*LSHIFT(Key_0),*/TD(RightBrackets),      Key_F, Key_G, Key_C, Key_R, Key_L, Key_Slash,
                    Key_D, Key_H, Key_T, Key_N, Key_S, Key_Minus,
    Key_F6,   Key_B, Key_M, Key_W, Key_V, Key_Z, Key_Equals,
-   Key_RightGui, Key_Enter, Key_Backspace, Key_RightControl,
+   ShiftToLayer(FN3), Key_Enter, Key_Backspace, Key_RightControl,
    ShiftToLayer(RFN)),
 
   [SHIFT] = KEYMAP_STACKED
@@ -246,7 +278,7 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    ___,  ___, ___, ___,
    ___,
 
-   Consumer_ScanPreviousTrack, Key_F6,                 Key_F7,                   Key_F8,                   Key_F9,                 Key_F10,            Key_F11,
+   M(MACRO_ANY), Key_F6,                 Key_F7,                   Key_F8,                   Key_F9,                 Key_F10,            Key_F11,
    Key_RightCurlyBracket,      XXX,      LCTRL(Key_Space),            Key_UpArrow,              XXX,          LCTRL(Key_L)/*for emacs*/,     Key_F12,
                                LCTRL(Key_D)/*for emacs*/,      Key_LeftArrow,            Key_DownArrow,            Key_RightArrow,         M(MACRO_SAVE_FILE), ___,
    Key_PcApplication,          TD(TapDanceKey::Bookmarks),               Consumer_VolumeDecrement, LCTRL(Key_W), M(MACRO_VIELE_GRUESSE), Key_Backslash,      Key_Pipe,
@@ -255,9 +287,9 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
 
   [RFN] =  KEYMAP_STACKED
   (___, Key_F1,           Key_F2,      Key_F3,     Key_F4,        Key_F5,           ___,
-   ___, ___, ___, ___, ___, ___, ___,
+   Key_Backtick, ___, ___, M(MACRO_FOCUS_EMACS), ___, ___, ___,
    ___, TD(TapDanceKey::AUml), TD(TapDanceKey::OUml), ___, TD(TapDanceKey::UUml), M(MACRO_UMLAUT_S),
-   ___, ___, ___, ___, M(MACRO_GOTO_PREV_BUFFER), M(MACRO_GOTO_NEXT_BUFFER), ___,
+   ___, ___, ___, M(MACRO_GOTO_PREV_BUFFER), M(MACRO_GOTO_NEXT_BUFFER), ___, ___,
    ___, ___, ___, ___,
    ___,
  
@@ -270,9 +302,9 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
 
   [FN2] =  KEYMAP_STACKED
   (___, ___, ___, ___, ___, ___, ___,
-   ___, ___, ___, ___, ___, ___, Key_LeftBracket,
-   ___, LSHIFT(Key_Semicolon), ___, ___, ___, ___,
-   ___, ___, ___, ___, ___, ___, ___,
+   Key_Backtick, ___, ___, ___, ___, ___, Key_LeftBracket,
+   ___, ___, ___, ___, ___, ___,
+   ___, LSHIFT(Key_Semicolon), ___, ___, ___, ___, ___,
    ___, ___, ___, ___,
    ___,
 
@@ -282,6 +314,22 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    ___,                    Key_KeypadSubtract, Key_7, Key_8, Key_9, Key_KeypadDivide,   ___,
    Key_Space, Key_Enter, ___, Key_Period,
    ___),
+
+  // For apps
+ [FN3] =  KEYMAP_STACKED
+ (___, ___, ___, ___, ___, ___, ___,
+  ___, ___, ___, ___, ___, ___, ___,
+  ___, M(MACRO_APP_BROWSER_OPEN_SEARCH), ___, M(MACRO_APP_FOOBAR2K_PAUSE), M(MACRO_APP_FOOBAR2K_SEEK_FW1MIN), M(MACRO_APP_FOOBAR2K_RATE1),
+  ___, ___, ___, ___, ___, ___, ___,
+  ___, ___, ___, ___,
+  ___,
+
+  ___, ___, ___, ___, ___, ___, ___,
+  ___, ___, ___, ___, ___, ___, ___,
+       ___, ___, ___, ___, ___, ___,
+  ___, ___, ___, ___, ___, ___, ___,
+  ___, ___, ___, ___,
+  ___),  
   
   [FACTORY_QWERTY] = KEYMAP_STACKED
   (LGUI(Key_L),          Key_1, Key_2, Key_3, Key_4, Key_5, Key_LEDEffectNext,
@@ -405,6 +453,7 @@ static void simulateUmlautUsingWinCompose(uint8_t keyState, Key key) {
 
 
 #define FNTOAHK(KEY) MACRODOWN(D(RightGui), D(RightControl), T(KEY), U(RightControl), U(RightGui))
+#define FNtoAHK(N1, N2, N3) MACRODOWN(T(F12), T(N1), T(N2), T(N3))
 
 const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
   switch (macroIndex) {
@@ -458,7 +507,8 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
     break;
 
   case MACRO_UMLAUT_S:
-    return FNTOAHK(I);
+    //return FNTOAHK(I);
+    return FNtoAHK(0,0,0);
     break;
 
   case MACRO_VIELE_GRUESSE:
@@ -495,8 +545,34 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
 
   case MACRO_SET_BOOKMARK:
     return FNTOAHK(4);
-    break;    
+    break;
+
+  case MACRO_APP_FOOBAR2K_SEEK_FW1MIN:
+    return FNTOAHK(5);
+    break;
+
+  case MACRO_APP_FOOBAR2K_RATE1:
+    return FNTOAHK(6);
+    break;
+
+    case MACRO_APP_FOOBAR2K_PAUSE:
+    return FNTOAHK(7);
+    break;
+
+  case MACRO_APP_BROWSER_OPEN_SEARCH:
+    return FNTOAHK(8);
+    break;
+
+  case MACRO_SHOW_BUFFERS:
+    return FNTOAHK(9);
+    break;
+
+  case MACRO_FOCUS_EMACS:
+    return FNTOAHK(0);
+    break;        
   }
+
+  // When nums are out, take Numpad_1, ...
   
   return MACRO_NONE;
 }
@@ -556,8 +632,8 @@ void tapDanceAction(uint8_t tap_dance_index, byte row, byte col, uint8_t tap_cou
     case TapDanceKey::UUml: {
       return tapDanceActionKeys(tap_count, tap_dance_action, M(MACRO_UMLAUT_U), M(MACRO_UMLAUT_CU));
     }
-    case TapDanceKey::Bookmarks: {
-      return tapDanceActionKeys(tap_count, tap_dance_action, M(MACRO_SHOW_BOOKMARKS), M(MACRO_SET_BOOKMARK));
+    case TapDanceKey::Bookmarks: { // show also buffers
+      return tapDanceActionKeys(tap_count, tap_dance_action, M(MACRO_SHOW_BUFFERS), M(MACRO_SHOW_BOOKMARKS), M(MACRO_SET_BOOKMARK));
     }
   }
 }
