@@ -452,7 +452,7 @@ static void simulateUmlautUsingWinCompose(uint8_t keyState, Key key) {
  */
 
 
-#define FNTOAHK(KEY) MACRODOWN(D(RightGui), D(RightControl), T(KEY), U(RightControl), U(RightGui))
+//#define FNTOAHK(KEY) MACRODOWN(D(RightGui), D(RightControl), T(KEY), U(RightControl), U(RightGui))
 #define FNtoAHK(N1, N2, N3) MACRODOWN(T(F12), T(N1), T(N2), T(N3))
 
 const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
@@ -476,99 +476,96 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
 
 
   case MACRO_SAVE_FILE:
-    //return MACRODOWN(D(LeftShift), D(LeftAlt), D(LeftGui), D(RightControl), T(S), U(RightControl), U(LeftGui), U(LeftAlt), U(LeftShift));
-    //return MACRODOWN(D(RightGui), D(RightControl), T(S), U(RightControl), U(RightGui));
-    return FNTOAHK(S);
+    return FNtoAHK(0,0,0);
+    break;
+
+  case MACRO_UMLAUT_S:
+    return FNtoAHK(0,0,1);
     break;
 
   case MACRO_UMLAUT_A:
-    return FNTOAHK(A);
+    return FNtoAHK(0,0,2);
     break;
 
   case MACRO_UMLAUT_CA:
-    return FNTOAHK(Quote);
+    return FNtoAHK(0,0,3);
     break;
 
   case MACRO_UMLAUT_O:
-    return FNTOAHK(O);
+    return FNtoAHK(0,0,4);
     //unicode(0x00d6, keyState);
     break;
 
   case MACRO_UMLAUT_CO:
-    return FNTOAHK(Comma);
+    return FNtoAHK(0,0,5);
     break;
 
   case MACRO_UMLAUT_U:
-    return FNTOAHK(U);
+    return FNtoAHK(0,0,6);
     break;
 
   case MACRO_UMLAUT_CU:
-    return FNTOAHK(P);
+    return FNtoAHK(0,0,7);
     break;
 
-  case MACRO_UMLAUT_S:
-    //return FNTOAHK(I);
-    return FNtoAHK(0,0,0);
-    break;
-
-  case MACRO_VIELE_GRUESSE:
-    return FNTOAHK(V);
-    break;
-
-  case MACRO_LENNY:
-    return FNTOAHK(L);
-    break;
-
-  case MACRO_SHRUG:
-    //return FNTOAHK(TODO);
-    break;
-
-  case MACRO_DISAPPROVAL:
-    return FNTOAHK(F);
-    break;
+//  case MACRO_VIELE_GRUESSE:
+//    return FNtoAHK(0,0,8);
+//    break;
+//
+//  case MACRO_LENNY:
+//    return FNtoAHK(0,0,9);
+//    break;
+//
+//  case MACRO_SHRUG:
+//    //return FNTOAHK(TODO);
+//    break;
+//
+//  case MACRO_DISAPPROVAL:
+//    return FNTOAHK(F);
+//    break;
 
   case MACRO_ACE_JUMP:
-    return FNTOAHK(J);
+    return FNtoAHK(0,0,8);
     break;
 
   case MACRO_GOTO_PREV_BUFFER:
-    return FNTOAHK(1);
+    return FNtoAHK(0,0,9);
     break;
 
   case MACRO_GOTO_NEXT_BUFFER:
-    return FNTOAHK(2);
+    return FNtoAHK(0,1,0);
     break;
 
   case MACRO_SHOW_BOOKMARKS:
-    return FNTOAHK(3);
+    return FNtoAHK(0,1,1);
     break;
 
   case MACRO_SET_BOOKMARK:
-    return FNTOAHK(4);
+    return FNtoAHK(0,1,2);
     break;
 
   case MACRO_APP_FOOBAR2K_SEEK_FW1MIN:
-    return FNTOAHK(5);
+    return FNtoAHK(0,1,3);
     break;
 
   case MACRO_APP_FOOBAR2K_RATE1:
-    return FNTOAHK(6);
+    return FNtoAHK(0,1,4);
     break;
 
     case MACRO_APP_FOOBAR2K_PAUSE:
-    return FNTOAHK(7);
+    return FNtoAHK(0,1,5);
     break;
 
   case MACRO_APP_BROWSER_OPEN_SEARCH:
-    return FNTOAHK(8);
+    return FNtoAHK(0,1,6);
     break;
 
   case MACRO_SHOW_BUFFERS:
-    return FNTOAHK(9);
+    return FNtoAHK(0,1,7);
     break;
 
   case MACRO_FOCUS_EMACS:
-    return FNTOAHK(0);
+    return FNtoAHK(0,1,8);
     break;        
   }
 
