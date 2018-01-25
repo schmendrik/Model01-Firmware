@@ -125,6 +125,7 @@ enum { MACRO_VERSION_INFO,
        // Instantly go to prev/next buffer
        MACRO_GOTO_PREV_BUFFER,
        MACRO_GOTO_NEXT_BUFFER,
+       MACRO_KILL_BUFFER,
 
        MACRO_SHOW_BOOKMARKS,
        MACRO_SET_BOOKMARK,
@@ -289,7 +290,7 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
   (___, Key_F1,           Key_F2,      Key_F3,     Key_F4,        Key_F5,           ___,
    Key_Backtick, ___, ___, M(MACRO_FOCUS_EMACS), ___, ___, ___,
    ___, TD(TapDanceKey::AUml), TD(TapDanceKey::OUml), ___, TD(TapDanceKey::UUml), M(MACRO_UMLAUT_S),
-   ___, ___, ___, M(MACRO_GOTO_PREV_BUFFER), M(MACRO_GOTO_NEXT_BUFFER), ___, ___,
+   ___, ___, M(MACRO_KILL_BUFFER), M(MACRO_GOTO_PREV_BUFFER), M(MACRO_GOTO_NEXT_BUFFER), ___, ___,
    ___, ___, ___, ___,
    ___,
  
@@ -566,7 +567,11 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
 
   case MACRO_FOCUS_EMACS:
     return FNtoAHK(0,1,8);
-    break;        
+    break;
+
+  case MACRO_KILL_BUFFER:
+    return FNtoAHK(0,1,9);
+    break;  
   }
 
   // When nums are out, take Numpad_1, ...
