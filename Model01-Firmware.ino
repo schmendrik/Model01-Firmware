@@ -64,7 +64,7 @@
 #include "Kaleidoscope-TopsyTurvy.h"
 
 // Support for host power management (suspend & wakeup)
-#include "Kaleidoscope-HostPowerManagement.h"
+//#include "Kaleidoscope-HostPowerManagement.h"
 
 // use Syster conjunction with Unicode
 // https://github.com/keyboardio/Kaleidoscope-Syster
@@ -131,11 +131,18 @@ enum { MACRO_VERSION_INFO,
        MACRO_SET_BOOKMARK,
        MACRO_SHOW_BUFFERS,
 
+       MACRO_ORG_AGENDA,
+       MACRO_ORG_CAPTURE,
+       MACRO_ORG_CLOCK_GOTO,
+       MACRO_ORG_CLOCK_IN,
+       MACRO_ORG_CLOCK_OUT,
+
        ////////////////////////////////////////////////////
        // App Macros
        ////////////////////////////////////////////////////
 
        // Foobar2k
+       MACRO_APP_FOOBAR2K_UnFOCUS,
        MACRO_APP_FOOBAR2K_SEEK_FW1MIN,
        MACRO_APP_FOOBAR2K_RATE1,
        MACRO_APP_FOOBAR2K_PAUSE
@@ -195,7 +202,10 @@ enum TapDanceKey {
 
   // single tap: call helm-filtered-bookmarks
   // double tap: set bookmark
-  Bookmarks
+  Bookmarks,
+
+  OrgAgendaAndCapture,
+  OrgClocking
 };
 
 // enum { QWERTY, FUNCTION, NUMPAD }; // layers
@@ -243,16 +253,16 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
 
   [DVORAK] = KEYMAP_STACKED
   (___,          Key_1,         Key_2,     Key_3,      Key_4, Key_5, Key_LEDEffectNext,
-   M(MACRO_APP_BROWSER_OPEN_SEARCH), Key_Quote,     Key_Comma, Key_Period, Key_P, Key_Y, TD(LeftBrackets),//LSHIFT(Key_9),
+   M(MACRO_APP_BROWSER_OPEN_SEARCH), Key_Quote,     Key_Comma, Key_Period, Key_P, Key_Y, TD(TapDanceKey::LeftBrackets),//LSHIFT(Key_9),
    Key_Copy,   Key_A,         Key_O,     Key_E,      Key_U, Key_I,
    Key_Paste, Key_Semicolon, Key_Q,     Key_J,      Key_K, Key_X, Key_Escape,
    OSM(LeftShift), Key_Space, Key_LeftAlt, ShiftToLayer(FN2),
    ShiftToLayer(LFN),
 
    Key_RightGui,   Key_6, Key_7, Key_8, Key_9, Key_0, XXX,
-   /*LSHIFT(Key_0),*/TD(RightBrackets),      Key_F, Key_G, Key_C, Key_R, Key_L, Key_Slash,
+   TD(TapDanceKey::OrgClocking),      Key_F, Key_G, Key_C, Key_R, Key_L, Key_Slash,
                    Key_D, Key_H, Key_T, Key_N, Key_S, Key_Minus,
-   Key_F6,   Key_B, Key_M, Key_W, Key_V, Key_Z, Key_Equals,
+   TD(TapDanceKey::OrgAgendaAndCapture),   Key_B, Key_M, Key_W, Key_V, Key_Z, Key_Equals,
    ShiftToLayer(FN3), Key_Enter, Key_Backspace, Key_RightControl,
    ShiftToLayer(RFN)),
 
@@ -280,7 +290,7 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    ___,
 
    M(MACRO_ANY), Key_F6,                 Key_F7,                   Key_F8,                   Key_F9,                 Key_F10,            Key_F11,
-   Key_RightCurlyBracket,      XXX,      LCTRL(Key_Space),            Key_UpArrow,              XXX,          LCTRL(Key_L)/*for emacs*/,     Key_F12,
+   TD(TapDanceKey::RightBrackets),      XXX,      LCTRL(Key_Space),            Key_UpArrow,              XXX,          LCTRL(Key_L)/*for emacs*/,     Key_F12,
                                LCTRL(Key_D)/*for emacs*/,      Key_LeftArrow,            Key_DownArrow,            Key_RightArrow,         M(MACRO_SAVE_FILE), ___,
    Key_PcApplication,          TD(TapDanceKey::Bookmarks),               Consumer_VolumeDecrement, LCTRL(Key_W), M(MACRO_VIELE_GRUESSE), Key_Backslash,      Key_Pipe,
    ___, LCTRL(Key_Enter), Key_Delete, ___,
@@ -288,7 +298,7 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
 
   [RFN] =  KEYMAP_STACKED
   (___, Key_F1,           Key_F2,      Key_F3,     Key_F4,        Key_F5,           ___,
-   Key_Backtick, ___, ___, M(MACRO_FOCUS_EMACS), ___, ___, ___,
+   Key_Backtick, ___, ___, M(MACRO_FOCUS_EMACS), ___, ___, TD(TapDanceKey::RightBrackets),
    ___, TD(TapDanceKey::AUml), TD(TapDanceKey::OUml), ___, TD(TapDanceKey::UUml), M(MACRO_UMLAUT_S),
    ___, ___, M(MACRO_KILL_BUFFER), M(MACRO_GOTO_PREV_BUFFER), M(MACRO_GOTO_NEXT_BUFFER), ___, ___,
    ___, ___, ___, ___,
@@ -320,7 +330,7 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
  [FN3] =  KEYMAP_STACKED
  (___, ___, ___, ___, ___, ___, ___,
   ___, ___, ___, ___, ___, ___, ___,
-  ___, M(MACRO_APP_BROWSER_OPEN_SEARCH), ___, M(MACRO_APP_FOOBAR2K_PAUSE), M(MACRO_APP_FOOBAR2K_SEEK_FW1MIN), M(MACRO_APP_FOOBAR2K_RATE1),
+  ___, M(MACRO_APP_BROWSER_OPEN_SEARCH), M(MACRO_APP_FOOBAR2K_UnFOCUS), M(MACRO_APP_FOOBAR2K_PAUSE), M(MACRO_APP_FOOBAR2K_SEEK_FW1MIN), M(MACRO_APP_FOOBAR2K_RATE1),
   ___, ___, ___, ___, ___, ___, ___,
   ___, ___, ___, ___,
   ___,
@@ -571,7 +581,31 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
 
   case MACRO_KILL_BUFFER:
     return FNtoAHK(0,1,9);
-    break;  
+    break;
+
+  case MACRO_ORG_AGENDA:
+    return FNtoAHK(0,2,0);
+    break;
+
+  case MACRO_ORG_CAPTURE:
+    return FNtoAHK(0,2,1);
+    break;
+
+  case MACRO_ORG_CLOCK_GOTO:
+    return FNtoAHK(0,2,2);
+    break;
+
+  case MACRO_ORG_CLOCK_IN:
+    return FNtoAHK(0,2,3);
+    break;
+
+  case MACRO_ORG_CLOCK_OUT:
+    return FNtoAHK(0,2,4);
+    break;
+
+  case MACRO_APP_FOOBAR2K_UnFOCUS:
+    return FNtoAHK(0,2,5);
+    break;
   }
 
   // When nums are out, take Numpad_1, ...
@@ -635,8 +669,14 @@ void tapDanceAction(uint8_t tap_dance_index, byte row, byte col, uint8_t tap_cou
       return tapDanceActionKeys(tap_count, tap_dance_action, M(MACRO_UMLAUT_U), M(MACRO_UMLAUT_CU));
     }
     case TapDanceKey::Bookmarks: { // show also buffers
-      return tapDanceActionKeys(tap_count, tap_dance_action, M(MACRO_SHOW_BUFFERS), M(MACRO_SHOW_BOOKMARKS), M(MACRO_SET_BOOKMARK));
+      return tapDanceActionKeys(tap_count, tap_dance_action, M(MACRO_SHOW_BOOKMARKS), M(MACRO_SHOW_BUFFERS), M(MACRO_SET_BOOKMARK));
     }
+    case TapDanceKey::OrgAgendaAndCapture: {
+      return tapDanceActionKeys(tap_count, tap_dance_action, M(MACRO_ORG_AGENDA), M(MACRO_ORG_CAPTURE));
+    }
+    case TapDanceKey::OrgClocking: {
+      return tapDanceActionKeys(tap_count, tap_dance_action, M(MACRO_ORG_CLOCK_GOTO), M(MACRO_ORG_CLOCK_IN), M(MACRO_ORG_CLOCK_OUT));
+    }      
   }
 }
 
@@ -741,7 +781,7 @@ void setup() {
 
     &Unicode,
 
-    &HostPowerManagement,
+    //&HostPowerManagement,
 
     &ActiveModColorEffect // needs to go last     
     //    &Syster
@@ -775,7 +815,7 @@ void setup() {
   OneShot.time_out = 1200;
 
   // We want the keyboard to be able to wake the host up from suspend.
-  HostPowerManagement.enableWakeup();
+  //HostPowerManagement.enableWakeup();
 
   // We want to make sure that the firmware starts with LED effects off
   // This avoids over-taxing devices that don't have a lot of power to share
