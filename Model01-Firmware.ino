@@ -71,7 +71,7 @@
 //#include "Kaleidoscope-Syster.h"
 
 
-#define KALEIDOSCOPE_HOSTOS_GUESSER 1
+//#define KALEIDOSCOPE_HOSTOS_GUESSER 0
 #include <Kaleidoscope-HostOS.h>
 #include <Kaleidoscope/HostOS-select.h>
 
@@ -110,6 +110,10 @@ enum { MACRO_VERSION_INFO,
        MACRO_DISAPPROVAL,
 
        MACRO_APP_BROWSER_OPEN_SEARCH,
+
+       MACRO_COPY,
+       MACRO_CUT,
+       MACRO_PASTE,
 
        ////////////////////////////////////////////////////
        // Emacs Macros
@@ -205,7 +209,11 @@ enum TapDanceKey {
   Bookmarks,
 
   OrgAgendaAndCapture,
-  OrgClocking
+  OrgClocking,
+
+  // Because something like Key_Copy hasn't worked yet
+  // (maybe it'll work after setting the HostID to Windows or smth)
+  CopyCut 
 };
 
 // enum { QWERTY, FUNCTION, NUMPAD }; // layers
@@ -226,7 +234,8 @@ enum {
   FN3,
   
   FACTORY_QWERTY,
-  FACTORY_FN };
+  FACTORY_FN
+};
 
 /* This comment temporarily turns off astyle's indent enforcement
  *   so we can make the keymaps actually resemble the physical key layout better
@@ -253,9 +262,9 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
 
   [DVORAK] = KEYMAP_STACKED
   (___,          Key_1,         Key_2,     Key_3,      Key_4, Key_5, Key_LEDEffectNext,
-   M(MACRO_APP_BROWSER_OPEN_SEARCH), Key_Quote,     Key_Comma, Key_Period, Key_P, Key_Y, TD(TapDanceKey::LeftBrackets),//LSHIFT(Key_9),
-   Key_Copy,   Key_A,         Key_O,     Key_E,      Key_U, Key_I,
-   Key_Paste, Key_Semicolon, Key_Q,     Key_J,      Key_K, Key_X, Key_Escape,
+   Key_Backtick, Key_Quote,     Key_Comma, Key_Period, Key_P, Key_Y, TD(TapDanceKey::LeftBrackets),//LSHIFT(Key_9),
+   M(MACRO_PASTE),   Key_A,         Key_O,     Key_E,      Key_U, Key_I,
+   TD(TapDanceKey::CopyCut), Key_Semicolon, Key_Q,     Key_J,      Key_K, Key_X, Key_Escape,
    OSM(LeftShift), Key_Space, Key_LeftAlt, ShiftToLayer(FN2),
    ShiftToLayer(LFN),
 
@@ -283,7 +292,7 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
 
   [LFN] =  KEYMAP_STACKED
   (___,      Key_F1,           Key_F2,      Key_F3,     Key_F4,        Key_F5,           M(MACRO_LED_DEACTIVATION),
-   Key_Tab,  ___,      ___, ___,    ___, LCTRL(Key_Y), Key_LeftCurlyBracket,
+   Key_Tab,  ___,      ___, ___,    ___, M(MACRO_PASTE), Key_LeftCurlyBracket,
    Key_PageUp, Key_Home,       M(MACRO_UMLAUT_O), Key_End, Key_Tab/*M(MACRO_UMLAUT_U)*/, M(MACRO_ACE_JUMP),
    Key_PageDown,  Key_PrintScreen,  Key_Insert,  ___,        LCTRL(Key_K), LCTRL(Key_X),  Key_mouseWarpSE,
    ___,  ___, ___, ___,
@@ -292,7 +301,7 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    M(MACRO_ANY), Key_F6,                 Key_F7,                   Key_F8,                   Key_F9,                 Key_F10,            Key_F11,
    TD(TapDanceKey::RightBrackets),      XXX,      LCTRL(Key_Space),            Key_UpArrow,              XXX,          LCTRL(Key_L)/*for emacs*/,     Key_F12,
                                LCTRL(Key_D)/*for emacs*/,      Key_LeftArrow,            Key_DownArrow,            Key_RightArrow,         M(MACRO_SAVE_FILE), ___,
-   Key_PcApplication,          TD(TapDanceKey::Bookmarks),               Consumer_VolumeDecrement, LCTRL(Key_W), M(MACRO_VIELE_GRUESSE), Key_Backslash,      Key_Pipe,
+   Key_PcApplication,          TD(TapDanceKey::Bookmarks),               Consumer_VolumeDecrement, M(MACRO_CUT), M(MACRO_VIELE_GRUESSE), Key_Backslash,      Key_Pipe,
    ___, LCTRL(Key_Enter), Key_Delete, ___,
    ___),
 
@@ -314,7 +323,7 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
   [FN2] =  KEYMAP_STACKED
   (___, ___, ___, ___, ___, ___, ___,
    Key_Backtick, ___, ___, ___, ___, ___, Key_LeftBracket,
-   ___, ___, ___, ___, ___, ___,
+   ___, M(MACRO_APP_BROWSER_OPEN_SEARCH), M(MACRO_APP_FOOBAR2K_UnFOCUS), M(MACRO_APP_FOOBAR2K_PAUSE), M(MACRO_APP_FOOBAR2K_SEEK_FW1MIN), M(MACRO_APP_FOOBAR2K_RATE1),
    ___, LSHIFT(Key_Semicolon), ___, ___, ___, ___, ___,
    ___, ___, ___, ___,
    ___,
@@ -323,7 +332,7 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    Key_RightBracket,       Key_KeypadAdd,      Key_4, Key_5, Key_6, Key_Equals,         ___,
                            Key_0,              Key_1, Key_2, Key_3, Key_KeypadMultiply, ___,
    ___,                    Key_KeypadSubtract, Key_7, Key_8, Key_9, Key_KeypadDivide,   ___,
-   Key_Space, Key_Enter, ___, Key_Period,
+   Key_Space, Key_Enter, ___, Key_Space,
    ___),
 
   // For apps
@@ -506,7 +515,6 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
     return FNtoAHK(0,0,4);
     //unicode(0x00d6, keyState);
     break;
-
   case MACRO_UMLAUT_CO:
     return FNtoAHK(0,0,5);
     break;
@@ -606,6 +614,18 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
   case MACRO_APP_FOOBAR2K_UnFOCUS:
     return FNtoAHK(0,2,5);
     break;
+
+  case MACRO_COPY:
+    return FNtoAHK(0,2,6);
+    break;
+
+  case MACRO_CUT:
+    return FNtoAHK(0,2,7);
+    break;
+
+  case MACRO_PASTE:
+    return FNtoAHK(0,2,8);
+    break;    
   }
 
   // When nums are out, take Numpad_1, ...
@@ -676,6 +696,9 @@ void tapDanceAction(uint8_t tap_dance_index, byte row, byte col, uint8_t tap_cou
     }
     case TapDanceKey::OrgClocking: {
       return tapDanceActionKeys(tap_count, tap_dance_action, M(MACRO_ORG_CLOCK_GOTO), M(MACRO_ORG_CLOCK_IN), M(MACRO_ORG_CLOCK_OUT));
+    }      
+    case TapDanceKey::CopyCut: {
+      return tapDanceActionKeys(tap_count, tap_dance_action, M(MACRO_COPY), M(MACRO_CUT));
     }      
   }
 }
@@ -839,4 +862,3 @@ static void unicode(uint32_t character, uint8_t keyState) {
     Unicode.type(character);
   }
 }
-
