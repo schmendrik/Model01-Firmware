@@ -149,7 +149,17 @@ enum { MACRO_VERSION_INFO,
        MACRO_APP_FOOBAR2K_UnFOCUS,
        MACRO_APP_FOOBAR2K_SEEK_FW1MIN,
        MACRO_APP_FOOBAR2K_RATE1,
-       MACRO_APP_FOOBAR2K_PAUSE
+       MACRO_APP_FOOBAR2K_PAUSE,
+
+       ////////////////////////////////////////////////////
+       // "Abstract" AHK Command Keys
+       // (as opposed to named ones)
+       // Their actual function is assigned in AHK
+       ////////////////////////////////////////////////////
+
+       MACRO_RFN_PGDN, // RFN+PGDN
+       MACRO_RFN_PGUP  // RFN+PGUP
+       
      };
 
 
@@ -291,10 +301,10 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    ShiftToLayer(RFN)),
 
   [LFN] =  KEYMAP_STACKED
-  (___,      Key_F1,           Key_F2,      Key_F3,     Key_F4,        Key_F5,           M(MACRO_LED_DEACTIVATION),
+  (LGUI(Key_L),      Key_F1,           Key_F2,      Key_F3,     Key_F4,        Key_F5,           M(MACRO_LED_DEACTIVATION),
    Key_Tab,  ___,      ___, ___,    ___, M(MACRO_PASTE), Key_LeftCurlyBracket,
-   Key_PageUp, Key_Home,       M(MACRO_UMLAUT_O), Key_End, Key_Tab/*M(MACRO_UMLAUT_U)*/, M(MACRO_ACE_JUMP),
-   Key_PageDown,  Key_PrintScreen,  Key_Insert,  ___,        LCTRL(Key_K), LCTRL(Key_X),  Key_mouseWarpSE,
+   Key_PageUp, Key_Home, M(MACRO_ACE_JUMP), Key_End, Key_Tab, XXX,
+   Key_PageDown,  Key_PrintScreen,  Key_Insert,  ___,  LCTRL(Key_K), LCTRL(Key_X),  Key_mouseWarpSE,
    ___,  ___, ___, ___,
    ___,
 
@@ -306,10 +316,10 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    ___),
 
   [RFN] =  KEYMAP_STACKED
-  (___, Key_F1,           Key_F2,      Key_F3,     Key_F4,        Key_F5,           ___,
+  (LGUI(Key_L), Key_F1,           Key_F2,      Key_F3,     Key_F4,        Key_F5,           ___,
    Key_Backtick, ___, ___, M(MACRO_FOCUS_EMACS), ___, ___, TD(TapDanceKey::RightBrackets),
-   ___, TD(TapDanceKey::AUml), TD(TapDanceKey::OUml), ___, TD(TapDanceKey::UUml), M(MACRO_UMLAUT_S),
-   ___, ___, M(MACRO_KILL_BUFFER), M(MACRO_GOTO_PREV_BUFFER), M(MACRO_GOTO_NEXT_BUFFER), ___, ___,
+   M(MACRO_RFN_PGUP), TD(TapDanceKey::AUml), TD(TapDanceKey::OUml), ___, TD(TapDanceKey::UUml), M(MACRO_UMLAUT_S),
+   M(MACRO_RFN_PGDN), ___, M(MACRO_KILL_BUFFER), M(MACRO_GOTO_PREV_BUFFER), M(MACRO_GOTO_NEXT_BUFFER), ___, ___,
    ___, ___, ___, ___,
    ___,
  
@@ -626,6 +636,14 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
   case MACRO_PASTE:
     return FNtoAHK(0,2,8);
     break;    
+
+  case MACRO_RFN_PGDN:
+    return FNtoAHK(0,2,9);
+    break;
+
+  case MACRO_RFN_PGUP:
+    return FNtoAHK(0,3,0);
+    break;        
   }
 
   // When nums are out, take Numpad_1, ...
