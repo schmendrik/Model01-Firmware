@@ -5,6 +5,14 @@
 // keycode definitions: https://github.com/keyboardio/Kaleidoscope/wiki/Keycode-meanings
 // Empty template for keymap: https://community.keyboard.io/t/boilerplate-for-empty-layer/760/2?u=rumpel
 
+/* Modifiers (in file key_defs.h):
+#define LCTRL(k)  ((Key) { k.keyCode, k.flags | CTRL_HELD })
+#define LALT(k)   ((Key) { k.keyCode, k.flags | LALT_HELD })
+#define RALT(k)   ((Key) { k.keyCode, k.flags | RALT_HELD })    // Would that be AltGr?
+#define LSHIFT(k) ((Key) { k.keyCode, k.flags | SHIFT_HELD })
+#define LGUI(k)   ((Key) { k.keyCode, k.flags | GUI_HELD })
+*/
+
 #ifndef BUILD_INFORMATION
 #define BUILD_INFORMATION "locally built"
 #endif
@@ -510,31 +518,38 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
     break;
 
   case MACRO_UMLAUT_S:
-    return FNtoAHK(0,0,1);
+    //return FNtoAHK(0,0,1);
+    return MACRODOWN(D(RightAlt), T(S), U(RightAlt));
     break;
 
   case MACRO_UMLAUT_A:
-    return FNtoAHK(0,0,2);
+    //return FNtoAHK(0,0,2);
+    return MACRODOWN(D(RightAlt), T(A), U(RightAlt));    
     break;
 
   case MACRO_UMLAUT_CA:
-    return FNtoAHK(0,0,3);
+    //return FNtoAHK(0,0,3);
+    return MACRODOWN(D(RightAlt), D(LeftShift), T(A), U(LeftShift), U(RightAlt));
     break;
 
   case MACRO_UMLAUT_O:
-    return FNtoAHK(0,0,4);
+    //return FNtoAHK(0,0,4);
+    return MACRODOWN(D(RightAlt), T(O), U(RightAlt));
     //unicode(0x00d6, keyState);
     break;
   case MACRO_UMLAUT_CO:
-    return FNtoAHK(0,0,5);
+    //return FNtoAHK(0,0,5);
+    return MACRODOWN(D(RightAlt), D(LeftShift), T(O), U(LeftShift), U(RightAlt));
     break;
 
   case MACRO_UMLAUT_U:
-    return FNtoAHK(0,0,6);
+    //return FNtoAHK(0,0,6);
+    return MACRODOWN(D(RightAlt), T(U), U(RightAlt));
     break;
 
   case MACRO_UMLAUT_CU:
-    return FNtoAHK(0,0,7);
+    //return FNtoAHK(0,0,7);
+    return MACRODOWN(D(RightAlt), D(LeftShift), T(U), U(LeftShift), U(RightAlt));
     break;
 
 //  case MACRO_VIELE_GRUESSE:
