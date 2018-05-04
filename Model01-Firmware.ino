@@ -8,7 +8,7 @@
 /* Modifiers (in file key_defs.h):
 #define LCTRL(k)  ((Key) { k.keyCode, k.flags | CTRL_HELD })
 #define LALT(k)   ((Key) { k.keyCode, k.flags | LALT_HELD })
-#define RALT(k)   ((Key) { k.keyCode, k.flags | RALT_HELD })    // Would that be AltGr?
+#define RALT(k)   ((Key) { k.keyCode, k.flags | RALT_HELD })    // AltGr
 #define LSHIFT(k) ((Key) { k.keyCode, k.flags | SHIFT_HELD })
 #define LGUI(k)   ((Key) { k.keyCode, k.flags | GUI_HELD })
 */
@@ -143,11 +143,12 @@ enum { MACRO_VERSION_INFO,
        MACRO_SET_BOOKMARK,
        MACRO_SHOW_BUFFERS,
 
-       MACRO_ORG_AGENDA,
+       MACRO_ENTER_KEY,
        MACRO_ORG_CAPTURE,
        MACRO_ORG_CLOCK_GOTO,
        MACRO_ORG_CLOCK_IN,
        MACRO_ORG_CLOCK_OUT,
+       MACRO_EMACS_AGENDA_SEARCH,
 
        ////////////////////////////////////////////////////
        // App Macros
@@ -166,8 +167,8 @@ enum { MACRO_VERSION_INFO,
        ////////////////////////////////////////////////////
 
        MACRO_RFN_PGDN, // RFN+PGDN
-       MACRO_RFN_PGUP  // RFN+PGUP
-       
+       MACRO_RFN_PGUP,  // RFN+PGUP
+       MACRO_BUTTERFLY, // butterfly key
      };
 
 
@@ -215,9 +216,18 @@ enum { MACRO_VERSION_INFO,
 
 
 enum TapDanceKey {
+
+  // 2 taps: small and capital umlaute
   AUml,
   OUml,
   UUml,
+
+  // 3 taps (without a function key): umlaute (small and capital)
+  // activate starting on the second tap
+  AUml2, 
+  OUml2,
+  UUml2,  
+  SUml2,
   
   LeftBrackets,
   RightBrackets,
@@ -228,6 +238,8 @@ enum TapDanceKey {
 
   OrgAgendaAndCapture,
   OrgClocking,
+
+  Butterfly,
 
   // Because something like Key_Copy hasn't worked yet
   // (maybe it'll work after setting the HostID to Windows or smth)
@@ -275,25 +287,26 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
 //   Key_Enter,      Key_F, Key_G, Key_C, Key_R, Key_L, Key_Slash,
 //                   Key_D, Key_H, Key_T, Key_N, Key_S, Key_Minus,
 //   Key_RightAlt,   Key_B, Key_M, Key_W, Key_V, Key_Z, Key_Equals,
-//   Key_RightShift, Key_LeftAlt, Key_Spacebar, Key_RightControl,
-//   ShiftToLayer(FUNCTION)),
+//   Key_RightShift, Key_LeftAlt, Key_Spacebar, Key_RightControl, 
+//  ShiftToLayer(FUNCTION)),
 
   [DVORAK] = KEYMAP_STACKED
   (___,          Key_1,         Key_2,     Key_3,      Key_4, Key_5, Key_LEDEffectNext,
    Key_Backtick, Key_Quote,     Key_Comma, Key_Period, Key_P, Key_Y, TD(TapDanceKey::LeftBrackets),//LSHIFT(Key_9),
-   M(MACRO_PASTE),   Key_A,         Key_O,     Key_E,      Key_U, Key_I,
+   //M(MACRO_PASTE), TD(TapDanceKey::AUml2), TD(TapDanceKey::OUml2), Key_E, TD(TapDanceKey::UUml2), TD(TapDanceKey::SUml2),
+      M(MACRO_PASTE), TD(TapDanceKey::AUml), TD(TapDanceKey::OUml), Key_E, TD(TapDanceKey::UUml), Key_I,
    TD(TapDanceKey::CopyCut), Key_Semicolon, Key_Q,     Key_J,      Key_K, Key_X, Key_Escape,
    OSM(LeftShift), Key_Space, Key_LeftAlt, ShiftToLayer(FN2),
    ShiftToLayer(LFN),
 
    Key_RightGui,   Key_6, Key_7, Key_8, Key_9, Key_0, XXX,
-   TD(TapDanceKey::OrgClocking),      Key_F, Key_G, Key_C, Key_R, Key_L, Key_Slash,
+   M(MACRO_ENTER_KEY),      Key_F, Key_G, Key_C, Key_R, Key_L, Key_Slash,
                    Key_D, Key_H, Key_T, Key_N, Key_S, Key_Minus,
-   TD(TapDanceKey::OrgAgendaAndCapture),   Key_B, Key_M, Key_W, Key_V, Key_Z, Key_Equals,
+   M(MACRO_BUTTERFLY),   Key_B, Key_M, Key_W, Key_V, Key_Z, Key_Equals,
    ShiftToLayer(FN3), Key_Enter, Key_Backspace, Key_RightControl,
    ShiftToLayer(RFN)),
 
-  [SHIFT] = KEYMAP_STACKED
+  [SHIFT] = KEYMAP_STACKED // This one is not used...
   (___,          Key_1,         Key_2,     Key_3,      Key_4, Key_5, Key_LEDEffectNext,
    Key_Backtick, Key_Quote,     Key_Comma, Key_Period, Key_P, Key_Y, TOPSY(9),
    Key_Tab,   Key_A,         Key_O,     Key_E,      Key_U, Key_I,
@@ -326,14 +339,15 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
   [RFN] =  KEYMAP_STACKED
   (LGUI(Key_L), Key_F1,           Key_F2,      Key_F3,     Key_F4,        Key_F5,           ___,
    Key_Backtick, ___, ___, M(MACRO_FOCUS_EMACS), ___, ___, TD(TapDanceKey::RightBrackets),
-   M(MACRO_RFN_PGUP), TD(TapDanceKey::AUml), TD(TapDanceKey::OUml), ___, TD(TapDanceKey::UUml), M(MACRO_UMLAUT_S),
+//   M(MACRO_RFN_PGUP), TD(TapDanceKey::AUml), TD(TapDanceKey::OUml), ___, TD(TapDanceKey::UUml), M(MACRO_UMLAUT_S),
+   M(MACRO_RFN_PGUP), XXX, XXX, ___, XXX, XXX,   
    M(MACRO_RFN_PGDN), ___, M(MACRO_KILL_BUFFER), M(MACRO_GOTO_PREV_BUFFER), M(MACRO_GOTO_NEXT_BUFFER), ___, ___,
-   ___, ___, ___, ___,
+   Key_mouseBtnR, Key_mouseBtnL, Key_mouseBtnR,  ___,
    ___,
  
    ___, Key_F6,                 Key_F7,                   Key_F8,                   Key_F9,                 Key_F10,            Key_F11,
-   Key_RightCurlyBracket, Key_mouseBtnR, Key_mouseBtnL, Key_mouseUp, LCTRL(Key_R), ___,          Key_F12,
-        ___,           Key_mouseL,    Key_mouseDn, Key_mouseR,   LCTRL(Key_S), ___,
+   Key_RightCurlyBracket, XXX, XXX,   Key_mouseUp, LCTRL(Key_R), ___,          Key_F12,
+   ___,           Key_mouseL,    Key_mouseDn, Key_mouseR,   M(MACRO_EMACS_AGENDA_SEARCH), ___,
    ___, ___, ___, ___, ___, ___, ___,
    ___, ___, ___, ___,
    ___),  
@@ -353,7 +367,6 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    Key_Space, Key_Enter, ___, Key_Space,
    ___),
 
-  // For apps
  [FN3] =  KEYMAP_STACKED
  (___, ___, ___, ___, ___, ___, ___,
   ___, ___, ___, ___, ___, ___, ___,
@@ -517,6 +530,11 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
     return FNtoAHK(0,0,0);
     break;
 
+
+    // Note: Umlaute are not realized through AHK anymore.
+    // I installed a special Dvorak-based European keyboard layout
+    // on Windows, via which umlaute are activated holding the
+    // AltGr (RightAlt) key
   case MACRO_UMLAUT_S:
     //return FNtoAHK(0,0,1);
     return MACRODOWN(D(RightAlt), T(S), U(RightAlt));
@@ -616,7 +634,7 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
     return FNtoAHK(0,1,9);
     break;
 
-  case MACRO_ORG_AGENDA:
+  case MACRO_ENTER_KEY:
     return FNtoAHK(0,2,0);
     break;
 
@@ -658,7 +676,16 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
 
   case MACRO_RFN_PGUP:
     return FNtoAHK(0,3,0);
-    break;        
+    break;
+
+  case MACRO_BUTTERFLY:
+    return FNtoAHK(0,3,1);
+    break;
+
+  case MACRO_EMACS_AGENDA_SEARCH:
+    return FNtoAHK(0,3,2);
+    break;    
+    
   }
 
   // When nums are out, take Numpad_1, ...
@@ -712,6 +739,7 @@ void tapDanceAction(uint8_t tap_dance_index, byte row, byte col, uint8_t tap_cou
     case TapDanceKey::RightBrackets: {
       return tapDanceActionKeys(tap_count, tap_dance_action, Key_RightParen, Key_RightBracket, Key_RightCurlyBracket);
     }      
+
     case TapDanceKey::AUml: {
       return tapDanceActionKeys(tap_count, tap_dance_action, M(MACRO_UMLAUT_A), M(MACRO_UMLAUT_CA));
     }
@@ -721,12 +749,26 @@ void tapDanceAction(uint8_t tap_dance_index, byte row, byte col, uint8_t tap_cou
     case TapDanceKey::UUml: {
       return tapDanceActionKeys(tap_count, tap_dance_action, M(MACRO_UMLAUT_U), M(MACRO_UMLAUT_CU));
     }
+
+    case TapDanceKey::AUml2: {
+       return tapDanceActionKeys(tap_count, tap_dance_action, Key_A, M(MACRO_UMLAUT_A), M(MACRO_UMLAUT_CA));
+    }
+    case TapDanceKey::OUml2: {
+       return tapDanceActionKeys(tap_count, tap_dance_action, Key_O, M(MACRO_UMLAUT_O), M(MACRO_UMLAUT_CO));
+    }
+    case TapDanceKey::UUml2: {
+       return tapDanceActionKeys(tap_count, tap_dance_action, Key_U, M(MACRO_UMLAUT_U), M(MACRO_UMLAUT_CU));
+    }
+    case TapDanceKey::SUml2: {
+       return tapDanceActionKeys(tap_count, tap_dance_action, Key_I, M(MACRO_UMLAUT_S));
+    }      
+      
     case TapDanceKey::Bookmarks: { // show also buffers
       return tapDanceActionKeys(tap_count, tap_dance_action, M(MACRO_SHOW_BOOKMARKS), M(MACRO_SHOW_BUFFERS), M(MACRO_SET_BOOKMARK));
     }
-    case TapDanceKey::OrgAgendaAndCapture: {
-      return tapDanceActionKeys(tap_count, tap_dance_action, M(MACRO_ORG_AGENDA), M(MACRO_ORG_CAPTURE));
-    }
+      //    case TapDanceKey::OrgAgendaAndCapture: {
+       //      return tapDanceActionKeys(tap_count, tap_dance_action, M(MACRO_ENTER_KEY), M(MACRO_ORG_CAPTURE));
+      //    }
     case TapDanceKey::OrgClocking: {
       return tapDanceActionKeys(tap_count, tap_dance_action, M(MACRO_ORG_CLOCK_GOTO), M(MACRO_ORG_CLOCK_IN), M(MACRO_ORG_CLOCK_OUT));
     }      
