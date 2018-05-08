@@ -26,6 +26,8 @@
 // The Kaleidoscope core
 #include "Kaleidoscope.h"
 
+#include <Kaleidoscope-Leader.h>
+
 // Support for keys that move the mouse
 #include "Kaleidoscope-MouseKeys.h"
 
@@ -59,7 +61,8 @@
 
 // Support for an LED mode that prints the keys you press in letters 4px high
 #include "Kaleidoscope-LED-AlphaSquare.h"
-
+// Support for an LED mode that prints the keys you press in letters 4px high
+#include "Kaleidoscope-LED-AlphaSquare.h"
 // Support for Keyboardio's internal keyboard testing mode
 #include "Kaleidoscope-Model01-TestMode.h"
 
@@ -72,7 +75,7 @@
 #include "Kaleidoscope-TopsyTurvy.h"
 
 // Support for host power management (suspend & wakeup)
-//#include "Kaleidoscope-HostPowerManagement.h"
+#include "Kaleidoscope-HostPowerManagement.h"
 
 // use Syster conjunction with Unicode
 // https://github.com/keyboardio/Kaleidoscope-Syster
@@ -80,8 +83,8 @@
 
 
 //#define KALEIDOSCOPE_HOSTOS_GUESSER 0
-#include <Kaleidoscope-HostOS.h>
-#include <Kaleidoscope/HostOS-select.h>
+//#include <Kaleidoscope-HostOS.h>
+//#include <Kaleidoscope/HostOS-select.h>
 
 #include "Kaleidoscope-Unicode.h"
 
@@ -112,7 +115,7 @@ enum { MACRO_VERSION_INFO,
        MACRO_UMLAUT_CU,
        MACRO_UMLAUT_S,
 
-       MACRO_VIELE_GRUESSE,
+       MACRO_VIELE_GR,
        MACRO_LENNY,
        MACRO_SHRUG,
        MACRO_DISAPPROVAL,
@@ -202,7 +205,6 @@ enum { MACRO_VERSION_INFO,
   * macros switch to key layers based on this list.
   *
   *
-
   * A key defined as 'ShiftToLayer(FUNCTION)' will switch to FUNCTION while held.
   * Similarly, a key defined as 'LockLayer(NUMPAD)' will switch to NUMPAD when tapped.
   */
@@ -249,7 +251,7 @@ enum TapDanceKey {
 // enum { QWERTY, FUNCTION, NUMPAD }; // layers
 enum {
   DVORAK,
-  SHIFT,
+  //SHIFT,
 
   // Left FN
   LFN,
@@ -263,38 +265,18 @@ enum {
   // For app control (foobar2k etc)
   FN3,
   
-  FACTORY_QWERTY,
-  FACTORY_FN
+  //  FACTORY_QWERTY,
+  //  FACTORY_FN
 };
 
-/* This comment temporarily turns off astyle's indent enforcement
- *   so we can make the keymaps actually resemble the physical key layout better
- */
-// *INDENT-OFF*
-
-const Key keymaps[][ROWS][COLS] PROGMEM = {
-
-//  // orgiginal dovark layout
-//  [DVORAK] = KEYMAP_STACKED
-//  (___,          Key_1,         Key_2,     Key_3,      Key_4, Key_5, Key_LEDEffectNext,
-//   Key_Backtick, Key_Quote,     Key_Comma, Key_Period, Key_P, Key_Y, Key_Tab,
-//   Key_PageUp,   Key_A,         Key_O,     Key_E,      Key_U, Key_I,
-//   Key_PageDown, Key_Semicolon, Key_Q,     Key_J,      Key_K, Key_X, Key_Escape,
-//   Key_LeftControl, Key_Backspace, Key_LeftGui, Key_LeftShift,
-//   ShiftToLayer(FUNCTION),
-//
-//   M(MACRO_ANY),   Key_6, Key_7, Key_8, Key_9, Key_0, Key_KeypadNumLock,
-//   Key_Enter,      Key_F, Key_G, Key_C, Key_R, Key_L, Key_Slash,
-//                   Key_D, Key_H, Key_T, Key_N, Key_S, Key_Minus,
-//   Key_RightAlt,   Key_B, Key_M, Key_W, Key_V, Key_Z, Key_Equals,
-//   Key_RightShift, Key_LeftAlt, Key_Spacebar, Key_RightControl, 
-//  ShiftToLayer(FUNCTION)),
-
+KEYMAPS(
+        
   [DVORAK] = KEYMAP_STACKED
   (___,          Key_1,         Key_2,     Key_3,      Key_4, Key_5, Key_LEDEffectNext,
    Key_Backtick, Key_Quote,     Key_Comma, Key_Period, Key_P, Key_Y, TD(TapDanceKey::LeftBrackets),//LSHIFT(Key_9),
    //M(MACRO_PASTE), TD(TapDanceKey::AUml2), TD(TapDanceKey::OUml2), Key_E, TD(TapDanceKey::UUml2), TD(TapDanceKey::SUml2),
-      M(MACRO_PASTE), TD(TapDanceKey::AUml), TD(TapDanceKey::OUml), Key_E, TD(TapDanceKey::UUml), Key_I,
+   //M(MACRO_PASTE), TD(TapDanceKey::AUml), TD(TapDanceKey::OUml), Key_E, TD(TapDanceKey::UUml), Key_I,
+   M(MACRO_PASTE),   Key_A,         Key_O,     Key_E,      Key_U, Key_I,
    TD(TapDanceKey::CopyCut), Key_Semicolon, Key_Q,     Key_J,      Key_K, Key_X, Key_Escape,
    OSM(LeftShift), Key_Space, Key_LeftAlt, ShiftToLayer(FN2),
    ShiftToLayer(LFN),
@@ -306,50 +288,49 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    ShiftToLayer(FN3), Key_Enter, Key_Backspace, Key_RightControl,
    ShiftToLayer(RFN)),
 
-  [SHIFT] = KEYMAP_STACKED // This one is not used...
-  (___,          Key_1,         Key_2,     Key_3,      Key_4, Key_5, Key_LEDEffectNext,
-   Key_Backtick, Key_Quote,     Key_Comma, Key_Period, Key_P, Key_Y, TOPSY(9),
-   Key_Tab,   Key_A,         Key_O,     Key_E,      Key_U, Key_I,
-   Key_PageDown, Key_Semicolon, Key_Q,     Key_J,      Key_K, Key_X, Key_Escape,
-   OSM(LeftControl), Key_Space, OSM(LeftAlt), ___,
-   ShiftToLayer(LFN),
-
-   M(MACRO_ANY),   Key_6, Key_7, Key_8, Key_9, Key_0, XXX,
-   TOPSY(0),/*TD(RightBrackets),*/      Key_F, Key_G, Key_C, Key_R, Key_L, Key_Slash,
-                   Key_D, Key_H, Key_T, Key_N, Key_S, Key_Minus,
-   Key_RightAlt,   Key_B, Key_M, Key_W, Key_V, Key_Z, Key_Equals,
-   Key_RightGui, Key_Enter, Key_Backspace, OSM(RightShift),
-   ShiftToLayer(RFN)),
+  //  [SHIFT] = KEYMAP_STACKED // This one is not used...
+  //  (___,          Key_1,         Key_2,     Key_3,      Key_4, Key_5, Key_LEDEffectNext,
+    //   Key_Backtick, Key_Quote,     Key_Comma, Key_Period, Key_P, Key_Y, TOPSY(9),
+    //   Key_Tab,   Key_A,         Key_O,     Key_E,      Key_U, Key_I,
+    //   Key_PageDown, Key_Semicolon, Key_Q,     Key_J,      Key_K, Key_X, Key_Escape,
+    //   OSM(LeftControl), Key_Space, OSM(LeftAlt), ___,
+    //   ShiftToLayer(LFN),
+    //
+    //   M(MACRO_ANY),   Key_6, Key_7, Key_8, Key_9, Key_0, XXX,
+    //   TOPSY(0),/*TD(RightBrackets),*/      Key_F, Key_G, Key_C, Key_R, Key_L, Key_Slash,
+    //                   Key_D, Key_H, Key_T, Key_N, Key_S, Key_Minus,
+    //   Key_RightAlt,   Key_B, Key_M, Key_W, Key_V, Key_Z, Key_Equals,
+    //   Key_RightGui, Key_Enter, Key_Backspace, OSM(RightShift),
+    //   ShiftToLayer(RFN)),
 
   [LFN] =  KEYMAP_STACKED
-  (LGUI(Key_L),      Key_F1,           Key_F2,      Key_F3,     Key_F4,        Key_F5,           M(MACRO_LED_DEACTIVATION),
-   Key_Tab,  ___,      ___, ___,    ___, M(MACRO_PASTE), Key_LeftCurlyBracket,
-   Key_PageUp, Key_Home, M(MACRO_ACE_JUMP), Key_End, Key_Tab, XXX,
-   Key_PageDown,  Key_PrintScreen,  Key_Insert,  ___,  LCTRL(Key_K), LCTRL(Key_X),  Key_mouseWarpSE,
-   ___,  ___, ___, ___,
+  (LGUI(Key_L),  ___,      ___,               ___,     ___,          ___,            M(MACRO_LED_DEACTIVATION),
+   ___,          ___,      ___,               ___,     ___,          M(MACRO_PASTE), ___,
+   Key_PageUp,   Key_Home, M(MACRO_ACE_JUMP), Key_End, Key_Tab,      ___,
+   Key_PageDown, ___,      ___,               ___,     LCTRL(Key_K), LCTRL(Key_X),   ___,
+   ___,          ___,      ___,               ___,
    ___,
 
-   M(MACRO_ANY), Key_F6,                 Key_F7,                   Key_F8,                   Key_F9,                 Key_F10,            Key_F11,
-   TD(TapDanceKey::RightBrackets),      XXX,      LCTRL(Key_Space),            Key_UpArrow,              XXX,          LCTRL(Key_L)/*for emacs*/,     Key_F12,
-                               LCTRL(Key_D)/*for emacs*/,      Key_LeftArrow,            Key_DownArrow,            Key_RightArrow,         M(MACRO_SAVE_FILE), ___,
-   Key_PcApplication,          TD(TapDanceKey::Bookmarks),               Consumer_VolumeDecrement, M(MACRO_CUT), M(MACRO_VIELE_GRUESSE), Key_Backslash,      Key_Pipe,
-   ___, LCTRL(Key_Enter), Key_Delete, ___,
+   M(MACRO_ANY),                   ___,                        ___,              ___,           ___,            ___,                ___,
+   TD(TapDanceKey::RightBrackets), ___,                        LCTRL(Key_Space), Key_UpArrow,   ___,            LCTRL(Key_L),       ___,
+                                   LCTRL(Key_D),               Key_LeftArrow,    Key_DownArrow, Key_RightArrow, M(MACRO_SAVE_FILE), ___,
+   ___,                            TD(TapDanceKey::Bookmarks), ___,              M(MACRO_CUT),  ___,            Key_Backslash,      Key_Pipe,
+   ___,                            LCTRL(Key_Enter),           Key_Delete,       ___,
    ___),
 
   [RFN] =  KEYMAP_STACKED
   (LGUI(Key_L), Key_F1,           Key_F2,      Key_F3,     Key_F4,        Key_F5,           ___,
-   Key_Backtick, ___, ___, M(MACRO_FOCUS_EMACS), ___, ___, TD(TapDanceKey::RightBrackets),
-//   M(MACRO_RFN_PGUP), TD(TapDanceKey::AUml), TD(TapDanceKey::OUml), ___, TD(TapDanceKey::UUml), M(MACRO_UMLAUT_S),
-   M(MACRO_RFN_PGUP), XXX, XXX, ___, XXX, XXX,   
+   ___, ___, ___, M(MACRO_FOCUS_EMACS), ___, ___, TD(TapDanceKey::RightBrackets),
+   M(MACRO_RFN_PGUP), TD(TapDanceKey::AUml), TD(TapDanceKey::OUml), ___, TD(TapDanceKey::UUml), M(MACRO_UMLAUT_S),
    M(MACRO_RFN_PGDN), ___, M(MACRO_KILL_BUFFER), M(MACRO_GOTO_PREV_BUFFER), M(MACRO_GOTO_NEXT_BUFFER), ___, ___,
    Key_mouseBtnR, Key_mouseBtnL, Key_mouseBtnR,  ___,
    ___,
  
-   ___, Key_F6,                 Key_F7,                   Key_F8,                   Key_F9,                 Key_F10,            Key_F11,
-   Key_RightCurlyBracket, XXX, XXX,   Key_mouseUp, LCTRL(Key_R), ___,          Key_F12,
-   ___,           Key_mouseL,    Key_mouseDn, Key_mouseR,   M(MACRO_EMACS_AGENDA_SEARCH), ___,
-   ___, ___, ___, ___, ___, ___, ___,
-   ___, ___, ___, ___,
+   ___, Key_F6,     Key_F7,      Key_F8,      Key_F9,                       Key_F10, Key_F11,
+   ___, ___,        ___,         Key_mouseUp, LCTRL(Key_R),                 ___/*LEAD(0)*/,     Key_F12,
+        ___, Key_mouseL, Key_mouseDn, Key_mouseR,  M(MACRO_EMACS_AGENDA_SEARCH), ___,
+   ___, ___,        ___,         ___,         ___,                          ___,     ___,
+   ___, ___,        ___,         ___,
    ___),  
 
   [FN2] =  KEYMAP_STACKED
@@ -367,54 +348,56 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    Key_Space, Key_Enter, ___, Key_Space,
    ___),
 
- [FN3] =  KEYMAP_STACKED
- (___, ___, ___, ___, ___, ___, ___,
-  ___, ___, ___, ___, ___, ___, ___,
-  ___, M(MACRO_APP_BROWSER_OPEN_SEARCH), M(MACRO_APP_FOOBAR2K_UnFOCUS), M(MACRO_APP_FOOBAR2K_PAUSE), M(MACRO_APP_FOOBAR2K_SEEK_FW1MIN), M(MACRO_APP_FOOBAR2K_RATE1),
-  ___, ___, ___, ___, ___, ___, ___,
-  ___, ___, ___, ___,
-  ___,
-
-  ___, ___, ___, ___, ___, ___, ___,
-  ___, ___, ___, ___, ___, ___, ___,
-       ___, ___, ___, ___, ___, ___,
-  ___, ___, ___, ___, ___, ___, ___,
-  ___, ___, ___, ___,
-  ___),  
-  
-  [FACTORY_QWERTY] = KEYMAP_STACKED
-  (LGUI(Key_L),          Key_1, Key_2, Key_3, Key_4, Key_5, Key_LEDEffectNext,
-   Key_Backtick, Key_Q, Key_W, Key_E, Key_R, Key_T, Key_Tab,
-   Key_PageUp,   Key_A, Key_S, Key_D, Key_F, Key_G,
-   Key_PageDown, Key_Z, Key_X, Key_C, Key_V, Key_B, Key_Escape,
-   Key_LeftControl, Key_Backspace, Key_LeftGui, Key_LeftShift,
-   ShiftToLayer(FACTORY_FN),
-
-   M(MACRO_ANY),  Key_6, Key_7, Key_8,     Key_9,         Key_0,         XXX,
-   Key_Enter,     Key_Y, Key_U, Key_I,     Key_O,         Key_P,         Key_Equals,
-                  Key_H, Key_J, Key_K,     Key_L,         Key_Semicolon, Key_Quote,
-   Key_RightAlt,  Key_N, Key_M, Key_Comma, Key_Period,    Key_Slash,     Key_Minus,
-   Key_RightShift, Key_LeftAlt, Key_Spacebar, Key_RightControl,
-   ShiftToLayer(FACTORY_FN)),
-
-  [FACTORY_FN] =  KEYMAP_STACKED
-  (___,      Key_F1,           Key_F2,      Key_F3,     Key_F4,        Key_F5,           XXX,
-   Key_Tab,  ___,              Key_mouseUp, ___,        Key_mouseBtnR, Key_mouseWarpEnd, Key_mouseWarpNE,
-   Key_Home, Key_mouseL,       Key_mouseDn, Key_mouseR, Key_mouseBtnL, Key_mouseWarpNW,
-   Key_End,  Key_PrintScreen,  Key_Insert,  ___,        Key_mouseBtnM, Key_mouseWarpSW,  Key_mouseWarpSE,
-   ___, Key_Delete, ___, ___,
+  [FN3] =  KEYMAP_STACKED
+  (___, ___, ___, ___, ___, ___, ___,
+   ___, ___, ___, ___, ___, ___, ___,
+   ___, M(MACRO_APP_BROWSER_OPEN_SEARCH), M(MACRO_APP_FOOBAR2K_UnFOCUS), M(MACRO_APP_FOOBAR2K_PAUSE), M(MACRO_APP_FOOBAR2K_SEEK_FW1MIN), M(MACRO_APP_FOOBAR2K_RATE1),
+   ___, ___, ___, ___, ___, ___, ___,
+   ___, ___, ___, ___,
    ___,
+ 
+   ___, ___, ___, ___, ___, ___, ___,
+   ___, ___, ___, ___, ___, ___, ___,
+        ___, ___, ___, ___, ___, ___,
+   ___, ___, ___, ___, ___, ___, ___,
+   ___, ___, ___, ___,
+   ___),  
+  
+  //  [FACTORY_QWERTY] = KEYMAP_STACKED
+  //  (LGUI(Key_L),          Key_1, Key_2, Key_3, Key_4, Key_5, Key_LEDEffectNext,
+    //   Key_Backtick, Key_Q, Key_W, Key_E, Key_R, Key_T, Key_Tab,
+    //   Key_PageUp,   Key_A, Key_S, Key_D, Key_F, Key_G,
+    //   Key_PageDown, Key_Z, Key_X, Key_C, Key_V, Key_B, Key_Escape,
+    //   Key_LeftControl, Key_Backspace, Key_LeftGui, Key_LeftShift,
+    //   ShiftToLayer(FACTORY_FN),
+    //
+    //   M(MACRO_ANY),  Key_6, Key_7, Key_8,     Key_9,         Key_0,         XXX,
+    //   Key_Enter,     Key_Y, Key_U, Key_I,     Key_O,         Key_P,         Key_Equals,
+    //                  Key_H, Key_J, Key_K,     Key_L,         Key_Semicolon, Key_Quote,
+    //   Key_RightAlt,  Key_N, Key_M, Key_Comma, Key_Period,    Key_Slash,     Key_Minus,
+    //   Key_RightShift, Key_LeftAlt, Key_Spacebar, Key_RightControl,
+    //   ShiftToLayer(FACTORY_FN)),
+  //
+  //  [FACTORY_FN] =  KEYMAP_STACKED
+  //  (___,      Key_F1,           Key_F2,      Key_F3,     Key_F4,        Key_F5,           XXX,
+    //   Key_Tab,  ___,              Key_mouseUp, ___,        Key_mouseBtnR, Key_mouseWarpEnd, Key_mouseWarpNE,
+    //   Key_Home, Key_mouseL,       Key_mouseDn, Key_mouseR, Key_mouseBtnL, Key_mouseWarpNW,
+    //   Key_End,  Key_PrintScreen,  Key_Insert,  ___,        Key_mouseBtnM, Key_mouseWarpSW,  Key_mouseWarpSE,
+    //   ___, Key_Delete, ___, ___,
+    //   ___,
+    //
+    //   Consumer_ScanPreviousTrack, Key_F6,                 Key_F7,                   Key_F8,                   Key_F9,          Key_F10,          Key_F11,
+    //   Consumer_PlaySlashPause,    Consumer_ScanNextTrack, Key_LeftCurlyBracket,     Key_RightCurlyBracket,    Key_LeftBracket, Key_RightBracket, Key_F12,
+    //                               Key_LeftArrow,          Key_DownArrow,            Key_UpArrow,              Key_RightArrow,  ___,              ___,
+    //   Key_PcApplication,          Key_Mute,               Consumer_VolumeDecrement, Consumer_VolumeIncrement, ___,             Key_Backslash,    Key_Pipe,
+    //   ___, ___, Key_Enter, ___,
+    //   ___)
 
-   Consumer_ScanPreviousTrack, Key_F6,                 Key_F7,                   Key_F8,                   Key_F9,          Key_F10,          Key_F11,
-   Consumer_PlaySlashPause,    Consumer_ScanNextTrack, Key_LeftCurlyBracket,     Key_RightCurlyBracket,    Key_LeftBracket, Key_RightBracket, Key_F12,
-                               Key_LeftArrow,          Key_DownArrow,            Key_UpArrow,              Key_RightArrow,  ___,              ___,
-   Key_PcApplication,          Key_Mute,               Consumer_VolumeDecrement, Consumer_VolumeIncrement, ___,             Key_Backslash,    Key_Pipe,
-   ___, ___, Key_Enter, ___,
-   ___)
-};
+ 	) // KEYMAPS(
+ 
 
 /* Re-enable astyle's indent enforcement */
- // *INDENT-ON*
+// *INDENT-ON*
 
 /** versionInfoMacro handles the 'firmware version info' macro
  *  When a key bound to the macro is pressed, this macro
@@ -438,16 +421,16 @@ static void versionInfoMacro(uint8_t keyState) {
  *  https://community.keyboard.io/t/borrow-your-laptop/423/3
  */
 
-static void toggleFactoryLayout(uint8_t keyState) {
-  if (!keyToggledOn(keyState))
-    return;
-
-  if (Layer.isOn(DVORAK)) {
-    Layer.move(FACTORY_QWERTY);
-  } else {
-    Layer.move(DVORAK);
-  }
-}
+//static void toggleFactoryLayout(uint8_t keyState) {
+  //  if (!keyToggledOn(keyState))
+     //    return;
+  //
+     //  if (Layer.isOn(DVORAK)) {
+    //    Layer.move(FACTORY_QWERTY);
+    //  } else {
+    //    Layer.move(DVORAK);
+    //  }
+  //}
 
 static void deactivateLeds(uint8_t keyState) {
   if (!keyToggledOn(keyState))
@@ -517,9 +500,9 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
     anyKeyMacro(keyState, Key_O);
     break;
 
-  case MACRO_TOGGLE_FACTORY_LAYOUT:
-    toggleFactoryLayout(keyState);
-    break;
+    //  case MACRO_TOGGLE_FACTORY_LAYOUT:
+    //    toggleFactoryLayout(keyState);
+    //    break;
 
   case MACRO_LED_DEACTIVATION:
     deactivateLeds(keyState);
@@ -542,7 +525,7 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
 
   case MACRO_UMLAUT_A:
     //return FNtoAHK(0,0,2);
-    return MACRODOWN(D(RightAlt), T(A), U(RightAlt));    
+    return MACRODOWN(D(RightAlt), T(A), U(RightAlt));
     break;
 
   case MACRO_UMLAUT_CA:
@@ -570,7 +553,7 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
     return MACRODOWN(D(RightAlt), D(LeftShift), T(U), U(LeftShift), U(RightAlt));
     break;
 
-//  case MACRO_VIELE_GRUESSE:
+//  case MACRO_VIELE_GR:
 //    return FNtoAHK(0,0,8);
 //    break;
 //
@@ -708,7 +691,6 @@ static kaleidoscope::LEDSolidColor solidBlue(0, 70, 130);
 static kaleidoscope::LEDSolidColor solidIndigo(0, 0, 170);
 static kaleidoscope::LEDSolidColor solidViolet(130, 0, 120);
 
-
 //void systerAction(kaleidoscope::Syster::action_t action, const char *symbol) {
 //  switch (action) {
 //  case kaleidoscope::Syster::StartAction:
@@ -778,36 +760,51 @@ void tapDanceAction(uint8_t tap_dance_index, byte row, byte col, uint8_t tap_cou
   }
 }
 
-// this makes flux dim up/down.. ALT is still being pressed down with PageUp/Down
-// it's the releaseKey that doesn't seem to work
-Key customControls(Key mapped_key, byte row, byte col, uint8_t key_state) {
-    // If none of the controls are pressed, fall through.useEventHandlerHook
-    if (kaleidoscope::hid::wasModifierKeyActive(Key_LeftAlt) ||
-        kaleidoscope::hid::wasModifierKeyActive(Key_RightAlt)) {
-  
-    // If we are idle, fall through
-    if (!keyWasPressed(key_state) && !keyIsPressed(key_state))
-      return mapped_key;
-  
-    if (mapped_key == Key_C) {
-      // So we are not idle, one of the controls are held
-      // Time to release the Kraken, and replace the keys with other ones.
-      kaleidoscope::hid::releaseKey(Key_LeftAlt);
-      kaleidoscope::hid::releaseKey(Key_RightAlt);
-      return Key_PageUp;  
-    }
-  
-    if (mapped_key == Key_T) {
-      // So we are not idle, one of the controls are held
-      // Time to release the Kraken, and replace the keys with other ones.
-      kaleidoscope::hid::releaseKey(Key_LeftAlt);
-      kaleidoscope::hid::releaseKey(Key_RightAlt);
-      return Key_PageDown;  
-    }
+/** toggleLedsOnSuspendResume toggles the LEDs off when the host goes to sleep,
+ * and turns them back on when it wakes up.
+ */
+void toggleLedsOnSuspendResume(kaleidoscope::HostPowerManagement::Event event) {
+  switch (event) {
+  case kaleidoscope::HostPowerManagement::Suspend:
+    LEDControl.paused = true;
+    LEDControl.set_all_leds_to({0, 0, 0});
+    LEDControl.syncLeds();
+    break;
+  case kaleidoscope::HostPowerManagement::Resume:
+    LEDControl.paused = false;
+    LEDControl.refreshAll();
+    break;
+  case kaleidoscope::HostPowerManagement::Sleep:
+    break;
   }
-  
-  return mapped_key; 
 }
+
+/** hostPowerManagementEventHandler dispatches power management events (suspend,
+ * resume, and sleep) to other functions that perform action based on these
+ * events.
+ */
+void hostPowerManagementEventHandler(kaleidoscope::HostPowerManagement::Event event) {
+  toggleLedsOnSuspendResume(event);
+}
+
+
+
+
+static void leaderA(uint8_t seq_index) {
+  Serial.println("leaderA");
+}
+
+static void leaderTX(uint8_t seq_index) {
+  Serial.println("leaderTX");
+}
+
+static const kaleidoscope::Leader::dictionary_t leader_dictionary[] PROGMEM =
+  LEADER_DICT({LEADER_SEQ(LEAD(0), Key_A), leaderA},
+              {LEADER_SEQ(LEAD(0), Key_T, Key_X), leaderTX});
+
+
+
+
 
 /** The 'setup' function is one of the two standard Arduino sketch functions.
   * It's called when your keyboard first powers up. This is where you set up
@@ -815,23 +812,18 @@ Key customControls(Key mapped_key, byte row, byte col, uint8_t key_state) {
   */
 
 void setup() {
-  HostOS.os(kaleidoscope::hostos::WINDOWS);
-
+  //Serial.begin(9600);
   
   // First, call Kaleidoscope's internal setup function
   Kaleidoscope.setup();
 
-  //Kaleidoscope.useEventHandlerHook(customControls);  
-
-  // Next, tell Kaleidoscope which plugins you want to use.
-  // The order can be important. For example, LED effects are
-  // added in the order they're listed here.
+  
   Kaleidoscope.use(
     // The hardware test mode, which can be invoked by tapping Prog, LED and the left Fn button at the same time.
     &TestMode,
 
-    &HostOS,
-
+    &Leader,
+    
     // LEDControl provides support for other LED modes
     &LEDControl,
 
@@ -877,20 +869,19 @@ void setup() {
 
     &TapDance,
 
-    &Unicode,
+    //&Unicode,
 
-    //&HostPowerManagement,
+    &HostPowerManagement,
 
     &ActiveModColorEffect // needs to go last     
     //    &Syster
   );
 
-  // While we hope to improve this in the future, the NumLock plugin
-  // needs to be explicitly told which keymap layer is your numpad layer
-  //NumLock.numPadLayer = FACTORY_NUMPAD;
+
+  Leader.dictionary = leader_dictionary;
 
   // We configure the AlphaSquare effect to use RED letters
-  AlphaSquare.color = { 255, 0, 0 };
+  AlphaSquare.color = CRGB(255, 0, 0);
 
   // We set the brightness of the rainbow effects to 150 (on a scale of 0-255)
   // This draws more than 500mA, but looks much nicer than a dimmer effect
@@ -902,18 +893,8 @@ void setup() {
   // see https://github.com/keyboardio/Kaleidoscope-LED-Stalker
   StalkerEffect.variant = STALKER(BlazingTrail);
 
-  // We want to make sure that the firmware starts with LED effects off
-  // This avoids over-taxing devices that don't have a lot of power to share
-  // with USB devices
-  LEDOff.activate();
-
-  MouseKeys.speedDelay = 5;
-  MouseKeys.accelDelay = 20;
-
-  OneShot.time_out = 1200;
-
   // We want the keyboard to be able to wake the host up from suspend.
-  //HostPowerManagement.enableWakeup();
+  HostPowerManagement.enableWakeup();
 
   // We want to make sure that the firmware starts with LED effects off
   // This avoids over-taxing devices that don't have a lot of power to share
@@ -930,10 +911,4 @@ void setup() {
 
 void loop() {
   Kaleidoscope.loop();
-}
-
-static void unicode(uint32_t character, uint8_t keyState) {
-  if (keyToggledOn(keyState)) {
-    Unicode.type(character);
-  }
 }
