@@ -14,7 +14,7 @@
 */
 
 #ifndef BUILD_INFORMATION
-#define BUILD_INFORMATION "version 1"
+#define BUILD_INFORMATION "version 2"
 #endif
 
 /**
@@ -88,18 +88,6 @@
 
 #include "Kaleidoscope-Unicode.h"
 
-/** This 'enum' is a list of all the macros used by the Model 01's firmware
-  * The names aren't particularly important. What is important is that each
-  * is unique.
-  *
-  * These are the names of your macros. They'll be used in two places.
-  * The first is in your keymap definitions. There, you'll use the syntax
-  * `M(MACRO_NAME)` to mark a specific keymap position as triggering `MACRO_NAME`
-  *
-  * The second usage is in the 'switch' statement in the `macroAction` function.
-  * That switch statement actually runs the code associated with a macro when
-  * a macro key is pressed.
-  */
 
 enum { MACRO_VERSION_INFO,
        MACRO_ANY,
@@ -273,10 +261,10 @@ enum {
   RFN,
 
   // For numpad, etc
-  FN2,
+  LFN2,
 
   // For app control (foobar2k etc)
-  FN3,
+  RFN2,
   
   //  FACTORY_QWERTY,
   //  FACTORY_FN
@@ -286,19 +274,17 @@ KEYMAPS(
         
   [DVORAK] = KEYMAP_STACKED
   (___,          Key_1,         Key_2,     Key_3,      Key_4, Key_5, M(MACRO_LED_KEY),
-   Key_Backtick, Key_Quote,     Key_Comma, Key_Period, Key_P, Key_Y, M(MACRO_PAREN_PAIR),//TD(TapDanceKey::LeftBrackets),//LSHIFT(Key_9),
-   //M(MACRO_PASTE), TD(TapDanceKey::AUml2), TD(TapDanceKey::OUml2), Key_E, TD(TapDanceKey::UUml2), TD(TapDanceKey::SUml2),
-   //M(MACRO_PASTE), TD(TapDanceKey::AUml), TD(TapDanceKey::OUml), Key_E, TD(TapDanceKey::UUml), Key_I,
+   Key_Backtick, Key_Quote,     Key_Comma, Key_Period, Key_P, Key_Y, M(MACRO_PAREN_PAIR),
    M(MACRO_PASTE),   Key_A,         Key_O,     Key_E,      Key_U, Key_I,
    TD(TapDanceKey::CopyCut), Key_Semicolon, Key_Q,     Key_J,      Key_K, Key_X, Key_Escape,
-   OSM(LeftShift), Key_Space, Key_LeftAlt, ShiftToLayer(FN2),
+   OSM(LeftShift), Key_Space, Key_LeftAlt, ShiftToLayer(LFN2),
    ShiftToLayer(LFN),
 
    Key_RightGui,   Key_6, Key_7, Key_8, Key_9, Key_0, XXX,
    M(MACRO_ENTER_KEY),      Key_F, Key_G, Key_C, Key_R, Key_L, Key_Slash,
                    Key_D, Key_H, Key_T, Key_N, Key_S, Key_Minus,
    M(MACRO_BUTTERFLY),   Key_B, Key_M, Key_W, Key_V, Key_Z, Key_Equals,
-   ShiftToLayer(FN3), Key_Enter, Key_Backspace, Key_RightControl,
+   ShiftToLayer(RFN2), Key_Enter, Key_Backspace, Key_RightControl,
    ShiftToLayer(RFN)),
 
   //  [SHIFT] = KEYMAP_STACKED // This one is not used...
@@ -346,8 +332,8 @@ KEYMAPS(
    ___, ___,        ___,         ___,
    ___),  
 
-  [FN2] =  KEYMAP_STACKED
-  (___, ___, ___, ___, ___, ___, M(MACRO_LED_DEACTIVATION),
+  [LFN2] =  KEYMAP_STACKED 
+  (___, ___, ___, ___, ___, ___, Key_LEDEffectNext,
    Key_Backtick, ___, ___, ___, ___, ___, Key_LeftBracket,
    ___, M(MACRO_APP_BROWSER_OPEN_SEARCH), M(MACRO_APP_FOOBAR2K_UnFOCUS), M(MACRO_APP_FOOBAR2K_PAUSE), M(MACRO_APP_FOOBAR2K_SEEK_FW1MIN), M(MACRO_APP_FOOBAR2K_RATE1),
    ___, LSHIFT(Key_Semicolon), ___, ___, ___, ___, ___,
@@ -361,8 +347,8 @@ KEYMAPS(
    Key_Space, Key_Enter, ___, Key_Space,
    ___),
 
-  [FN3] =  KEYMAP_STACKED
-  (___, ___, ___, ___, ___, ___, Key_LEDEffectNext,
+  [RFN2] =  KEYMAP_STACKED
+  (___, ___, ___, ___, ___, ___, M(MACRO_LED_DEACTIVATION),
    ___, ___, ___, ___, ___, ___, ___,
    ___, M(MACRO_APP_BROWSER_OPEN_SEARCH), M(MACRO_APP_FOOBAR2K_UnFOCUS), M(MACRO_APP_FOOBAR2K_PAUSE), M(MACRO_APP_FOOBAR2K_SEEK_FW1MIN), M(MACRO_APP_FOOBAR2K_RATE1),
    ___, ___, ___, ___, ___, ___, ___,
@@ -472,20 +458,6 @@ static void anyKeyMacro(uint8_t keyState, Key key) {
   //Serial.print(::HostOS::os());
 }
 
-
-static void simulateUmlautUsingWinCompose(uint8_t keyState, Key key) {
-  /*static Key lastKey;
-  if (keyToggledOn(keyState))
-  lastKey.keyCode = Key_A.keyCode + (uint8_t)(millis() % 36);*/
-  if (keyIsPressed(keyState)) {
-    kaleidoscope::hid::pressKey(Key_RightGui);
-    kaleidoscope::hid::pressKey(key);
-    kaleidoscope::hid::pressKey(key);
-  }
-}
-
-
-
 /** macroAction dispatches keymap events that are tied to a macro
     to that macro. It takes two uint8_t parameters.
 
@@ -500,7 +472,8 @@ static void simulateUmlautUsingWinCompose(uint8_t keyState, Key key) {
 
 
 //#define FNTOAHK(KEY) MACRODOWN(D(RightGui), D(RightControl), T(KEY), U(RightControl), U(RightGui))
-#define FNtoAHK(N1, N2, N3) MACRODOWN(T(F12), T(N1), T(N2), T(N3))
+//#define FNtoAHK(N1, N2, N3) MACRODOWN(T(F12), T(N1), T(N2), T(N3))
+#define FNtoAHK(N1, N2) MACRODOWN(T(F13), T(N1), T(N2))
 
 const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
   switch (macroIndex) {
@@ -531,45 +504,45 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
     return MACRODOWN(T(LeftCurlyBracket), T(RightCurlyBracket), T(LeftArrow));
 
   case MACRO_SAVE_FILE:
-    return FNtoAHK(0,0,0);
+    return FNtoAHK(0,0);
 
     // Note: Umlaute are not realized through AHK anymore.
     // I installed a special Dvorak-based European keyboard layout
     // on Windows, via which umlaute are activated holding the
     // AltGr (RightAlt) key
   case MACRO_UMLAUT_S:
-    //return FNtoAHK(0,0,1);
+    //return FNtoAHK(0,1);
     return MACRODOWN(D(RightAlt), T(S), U(RightAlt));
   case MACRO_UMLAUT_A:
-    //return FNtoAHK(0,0,2);
+    //return FNtoAHK(0,2);
     return MACRODOWN(D(RightAlt), T(A), U(RightAlt));
 
   case MACRO_UMLAUT_CA:
-    //return FNtoAHK(0,0,3);
+    //return FNtoAHK(0,3);
     return MACRODOWN(D(RightAlt), D(LeftShift), T(A), U(LeftShift), U(RightAlt));
 
   case MACRO_UMLAUT_O:
-    //return FNtoAHK(0,0,4);
+    //return FNtoAHK(0,4);
     return MACRODOWN(D(RightAlt), T(O), U(RightAlt));
     //unicode(0x00d6, keyState);
 
   case MACRO_UMLAUT_CO:
-    //return FNtoAHK(0,0,5);
+    //return FNtoAHK(0,5);
     return MACRODOWN(D(RightAlt), D(LeftShift), T(O), U(LeftShift), U(RightAlt));
 
   case MACRO_UMLAUT_U:
-    //return FNtoAHK(0,0,6);
+    //return FNtoAHK(0,6);
     return MACRODOWN(D(RightAlt), T(U), U(RightAlt));
 
   case MACRO_UMLAUT_CU:
-    //return FNtoAHK(0,0,7);
+    //return FNtoAHK(0,7);
     return MACRODOWN(D(RightAlt), D(LeftShift), T(U), U(LeftShift), U(RightAlt));
 
 //  case MACRO_VIELE_GR:
-//    return FNtoAHK(0,0,8);
+//    return FNtoAHK(0,8);
 //
 //  case MACRO_LENNY:
-//    return FNtoAHK(0,0,9);
+//    return FNtoAHK(0,9);
 //
 //  case MACRO_SHRUG:
 //    //return FNTOAHK(TODO);
@@ -578,82 +551,82 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
 //    return FNTOAHK(F);
 
   case MACRO_ACE_JUMP:
-    return FNtoAHK(0,0,8);
+    return FNtoAHK(0,8);
 
   case MACRO_GOTO_PREV_BUFFER:
-    return FNtoAHK(0,0,9);
+    return FNtoAHK(0,9);
 
   case MACRO_GOTO_NEXT_BUFFER:
-    return FNtoAHK(0,1,0);
+    return FNtoAHK(1,0);
 
   case MACRO_SHOW_BOOKMARKS:
-    return FNtoAHK(0,1,1);
+    return FNtoAHK(1,1);
 
   case MACRO_SET_BOOKMARK:
-    return FNtoAHK(0,1,2);
+    return FNtoAHK(1,2);
 
   case MACRO_APP_FOOBAR2K_SEEK_FW1MIN:
-    return FNtoAHK(0,1,3);
+    return FNtoAHK(1,3);
 
   case MACRO_APP_FOOBAR2K_RATE1:
-    return FNtoAHK(0,1,4);
+    return FNtoAHK(1,4);
 
     case MACRO_APP_FOOBAR2K_PAUSE:
-    return FNtoAHK(0,1,5);
+    return FNtoAHK(1,5);
 
   case MACRO_APP_BROWSER_OPEN_SEARCH:
-    return FNtoAHK(0,1,6);
+    return FNtoAHK(1,6);
 
   case MACRO_SHOW_BUFFERS:
-    return FNtoAHK(0,1,7);
+    return FNtoAHK(1,7);
 
   case MACRO_FOCUS_EMACS:
-    return FNtoAHK(0,1,8);
+    return FNtoAHK(1,8);
 
   case MACRO_KILL_BUFFER:
-    return FNtoAHK(0,1,9);
+    return FNtoAHK(1,9);
 
   case MACRO_ENTER_KEY:
-    return FNtoAHK(0,2,0);
+    return FNtoAHK(2,0);
 
   case MACRO_ORG_CAPTURE:
-    return FNtoAHK(0,2,1);
+    return FNtoAHK(2,1);
 
   case MACRO_ORG_CLOCK_GOTO:
-    return FNtoAHK(0,2,2);
+    return FNtoAHK(2,2);
 
   case MACRO_ORG_CLOCK_IN:
-    return FNtoAHK(0,2,3);
+    return FNtoAHK(2,3);
 
   case MACRO_ORG_CLOCK_OUT:
-    return FNtoAHK(0,2,4);
+    return FNtoAHK(2,4);
 
   case MACRO_APP_FOOBAR2K_UnFOCUS:
-    return FNtoAHK(0,2,5);
+    return FNtoAHK(2,5);
 
   case MACRO_COPY:
-    return FNtoAHK(0,2,6);
+    return FNtoAHK(2,6);
 
   case MACRO_CUT:
-    return FNtoAHK(0,2,7);
+    return FNtoAHK(2,7);
 
   case MACRO_PASTE:
-    return FNtoAHK(0,2,8);
+    return FNtoAHK(2,8);
 
   case MACRO_RFN_PGDN:
-    return FNtoAHK(0,2,9);
+    return FNtoAHK(2,9);
 
   case MACRO_RFN_PGUP:
-    return FNtoAHK(0,3,0);
+    return FNtoAHK(3,0);
 
   case MACRO_BUTTERFLY:
-    return FNtoAHK(0,3,1);
+    return FNtoAHK(3,1);
 
   case MACRO_EMACS_AGENDA_SEARCH:
-    return FNtoAHK(0,3,2);
+    return FNtoAHK(3,2);
 
   case MACRO_LED_KEY:
-    return FNtoAHK(0,3,3);    
+    return FNtoAHK(3,3);    
     
   }
   
