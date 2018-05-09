@@ -14,7 +14,7 @@
 */
 
 #ifndef BUILD_INFORMATION
-#define BUILD_INFORMATION "locally built"
+#define BUILD_INFORMATION "version 1"
 #endif
 
 /**
@@ -154,6 +154,18 @@ enum { MACRO_VERSION_INFO,
        MACRO_EMACS_AGENDA_SEARCH,
 
        ////////////////////////////////////////////////////
+       // Workaround macros
+       ////////////////////////////////////////////////////
+
+       // sends '()' and shifts cursor one to the right
+       // directoly from the keyboard, since AHK does such
+       // a buggy job of it for some reason (and only for
+       // the normal parens)
+       MACRO_PAREN_PAIR,
+       MACRO_BRACKET_PAIR,
+       MACRO_CURLYBRACKET_PAIR,
+       
+       ////////////////////////////////////////////////////
        // App Macros
        ////////////////////////////////////////////////////
 
@@ -172,6 +184,7 @@ enum { MACRO_VERSION_INFO,
        MACRO_RFN_PGDN, // RFN+PGDN
        MACRO_RFN_PGUP,  // RFN+PGUP
        MACRO_BUTTERFLY, // butterfly key
+       MACRO_LED_KEY,
      };
 
 
@@ -272,8 +285,8 @@ enum {
 KEYMAPS(
         
   [DVORAK] = KEYMAP_STACKED
-  (___,          Key_1,         Key_2,     Key_3,      Key_4, Key_5, Key_LEDEffectNext,
-   Key_Backtick, Key_Quote,     Key_Comma, Key_Period, Key_P, Key_Y, TD(TapDanceKey::LeftBrackets),//LSHIFT(Key_9),
+  (___,          Key_1,         Key_2,     Key_3,      Key_4, Key_5, M(MACRO_LED_KEY),
+   Key_Backtick, Key_Quote,     Key_Comma, Key_Period, Key_P, Key_Y, M(MACRO_PAREN_PAIR),//TD(TapDanceKey::LeftBrackets),//LSHIFT(Key_9),
    //M(MACRO_PASTE), TD(TapDanceKey::AUml2), TD(TapDanceKey::OUml2), Key_E, TD(TapDanceKey::UUml2), TD(TapDanceKey::SUml2),
    //M(MACRO_PASTE), TD(TapDanceKey::AUml), TD(TapDanceKey::OUml), Key_E, TD(TapDanceKey::UUml), Key_I,
    M(MACRO_PASTE),   Key_A,         Key_O,     Key_E,      Key_U, Key_I,
@@ -304,14 +317,14 @@ KEYMAPS(
     //   ShiftToLayer(RFN)),
 
   [LFN] =  KEYMAP_STACKED
-  (LGUI(Key_L),  ___,      ___,               ___,     ___,          ___,            M(MACRO_LED_DEACTIVATION),
-   ___,          ___,      ___,               ___,     ___,          M(MACRO_PASTE), ___,
-   Key_PageUp,   Key_Home, M(MACRO_ACE_JUMP), Key_End, Key_Tab,      ___,
-   Key_PageDown, ___,      ___,               ___,     LCTRL(Key_K), LCTRL(Key_X),   ___,
-   ___,          ___,      ___,               ___,
+  (LGUI(Key_L),  ___,                                     ___,               ___,     ___,          ___,            ___,
+   ___,          ___,                                     ___,               ___,     ___,          M(MACRO_PASTE), ___,
+   Key_PageUp,   Key_Home,                                M(MACRO_ACE_JUMP), Key_End, Key_Tab,      ___,
+   Key_PageDown, ___,                                     ___,               ___,     LCTRL(Key_K), LCTRL(Key_X),   ___,
+   ___,          LALT(Key_Space)/*emacs:just-one-space*/, ___,               ___,
    ___,
 
-   M(MACRO_ANY),                   ___,                        ___,              ___,           ___,            ___,                ___,
+   ___,                   ___,                        ___,              ___,           ___,            ___,                ___,
    TD(TapDanceKey::RightBrackets), ___,                        LCTRL(Key_Space), Key_UpArrow,   ___,            LCTRL(Key_L),       ___,
                                    LCTRL(Key_D),               Key_LeftArrow,    Key_DownArrow, Key_RightArrow, M(MACRO_SAVE_FILE), ___,
    ___,                            TD(TapDanceKey::Bookmarks), ___,              M(MACRO_CUT),  ___,            Key_Backslash,      Key_Pipe,
@@ -319,11 +332,11 @@ KEYMAPS(
    ___),
 
   [RFN] =  KEYMAP_STACKED
-  (LGUI(Key_L), Key_F1,           Key_F2,      Key_F3,     Key_F4,        Key_F5,           ___,
-   ___, ___, ___, M(MACRO_FOCUS_EMACS), ___, ___, TD(TapDanceKey::RightBrackets),
-   M(MACRO_RFN_PGUP), TD(TapDanceKey::AUml), TD(TapDanceKey::OUml), ___, TD(TapDanceKey::UUml), M(MACRO_UMLAUT_S),
-   M(MACRO_RFN_PGDN), ___, M(MACRO_KILL_BUFFER), M(MACRO_GOTO_PREV_BUFFER), M(MACRO_GOTO_NEXT_BUFFER), ___, ___,
-   Key_mouseBtnR, Key_mouseBtnL, Key_mouseBtnR,  ___,
+  (LGUI(Key_L),       Key_F1,                Key_F2,                Key_F3,                    Key_F4,                    Key_F5, M(MACRO_CURLYBRACKET_PAIR),
+   ___,               ___,                   ___,                   M(MACRO_FOCUS_EMACS),      ___,                       ___,    ___, //TD(TapDanceKey::RightBrackets),
+   M(MACRO_RFN_PGUP), TD(TapDanceKey::AUml), TD(TapDanceKey::OUml), ___,                       TD(TapDanceKey::UUml),     M(MACRO_UMLAUT_S),
+   M(MACRO_RFN_PGDN), ___,                   M(MACRO_KILL_BUFFER),  M(MACRO_GOTO_PREV_BUFFER), M(MACRO_GOTO_NEXT_BUFFER), ___,    M(MACRO_BRACKET_PAIR),
+   Key_mouseBtnR,     Key_mouseBtnL,         Key_mouseBtnR,         ___,
    ___,
  
    ___, Key_F6,     Key_F7,      Key_F8,      Key_F9,                       Key_F10, Key_F11,
@@ -334,7 +347,7 @@ KEYMAPS(
    ___),  
 
   [FN2] =  KEYMAP_STACKED
-  (___, ___, ___, ___, ___, ___, ___,
+  (___, ___, ___, ___, ___, ___, M(MACRO_LED_DEACTIVATION),
    Key_Backtick, ___, ___, ___, ___, ___, Key_LeftBracket,
    ___, M(MACRO_APP_BROWSER_OPEN_SEARCH), M(MACRO_APP_FOOBAR2K_UnFOCUS), M(MACRO_APP_FOOBAR2K_PAUSE), M(MACRO_APP_FOOBAR2K_SEEK_FW1MIN), M(MACRO_APP_FOOBAR2K_RATE1),
    ___, LSHIFT(Key_Semicolon), ___, ___, ___, ___, ___,
@@ -349,7 +362,7 @@ KEYMAPS(
    ___),
 
   [FN3] =  KEYMAP_STACKED
-  (___, ___, ___, ___, ___, ___, ___,
+  (___, ___, ___, ___, ___, ___, Key_LEDEffectNext,
    ___, ___, ___, ___, ___, ___, ___,
    ___, M(MACRO_APP_BROWSER_OPEN_SEARCH), M(MACRO_APP_FOOBAR2K_UnFOCUS), M(MACRO_APP_FOOBAR2K_PAUSE), M(MACRO_APP_FOOBAR2K_SEEK_FW1MIN), M(MACRO_APP_FOOBAR2K_RATE1),
    ___, ___, ___, ___, ___, ___, ___,
@@ -406,7 +419,7 @@ KEYMAPS(
 
 static void versionInfoMacro(uint8_t keyState) {
   if (keyToggledOn(keyState)) {
-    Macros.type(PSTR("Keyboardio Model 01 - Kaleidoscope "));
+    //Macros.type(PSTR("Keyboardio Model 01 - Kaleidoscope "));
     Macros.type(PSTR(BUILD_INFORMATION));
     //Macros.type(PSTR(" (OS: "));
     //Macros.type(HostOS.os());
@@ -508,11 +521,17 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
     deactivateLeds(keyState);
     break;
 
+  case MACRO_PAREN_PAIR:
+    return MACRODOWN(T(LeftParen), T(RightParen), T(LeftArrow));
+
+  case MACRO_BRACKET_PAIR:
+    return MACRODOWN(T(LeftBracket), T(RightBracket), T(LeftArrow));
+
+  case MACRO_CURLYBRACKET_PAIR:
+    return MACRODOWN(T(LeftCurlyBracket), T(RightCurlyBracket), T(LeftArrow));
 
   case MACRO_SAVE_FILE:
     return FNtoAHK(0,0,0);
-    break;
-
 
     // Note: Umlaute are not realized through AHK anymore.
     // I installed a special Dvorak-based European keyboard layout
@@ -521,157 +540,122 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
   case MACRO_UMLAUT_S:
     //return FNtoAHK(0,0,1);
     return MACRODOWN(D(RightAlt), T(S), U(RightAlt));
-    break;
-
   case MACRO_UMLAUT_A:
     //return FNtoAHK(0,0,2);
     return MACRODOWN(D(RightAlt), T(A), U(RightAlt));
-    break;
 
   case MACRO_UMLAUT_CA:
     //return FNtoAHK(0,0,3);
     return MACRODOWN(D(RightAlt), D(LeftShift), T(A), U(LeftShift), U(RightAlt));
-    break;
 
   case MACRO_UMLAUT_O:
     //return FNtoAHK(0,0,4);
     return MACRODOWN(D(RightAlt), T(O), U(RightAlt));
     //unicode(0x00d6, keyState);
-    break;
+
   case MACRO_UMLAUT_CO:
     //return FNtoAHK(0,0,5);
     return MACRODOWN(D(RightAlt), D(LeftShift), T(O), U(LeftShift), U(RightAlt));
-    break;
 
   case MACRO_UMLAUT_U:
     //return FNtoAHK(0,0,6);
     return MACRODOWN(D(RightAlt), T(U), U(RightAlt));
-    break;
 
   case MACRO_UMLAUT_CU:
     //return FNtoAHK(0,0,7);
     return MACRODOWN(D(RightAlt), D(LeftShift), T(U), U(LeftShift), U(RightAlt));
-    break;
 
 //  case MACRO_VIELE_GR:
 //    return FNtoAHK(0,0,8);
-//    break;
 //
 //  case MACRO_LENNY:
 //    return FNtoAHK(0,0,9);
-//    break;
 //
 //  case MACRO_SHRUG:
 //    //return FNTOAHK(TODO);
-//    break;
 //
 //  case MACRO_DISAPPROVAL:
 //    return FNTOAHK(F);
-//    break;
 
   case MACRO_ACE_JUMP:
     return FNtoAHK(0,0,8);
-    break;
 
   case MACRO_GOTO_PREV_BUFFER:
     return FNtoAHK(0,0,9);
-    break;
 
   case MACRO_GOTO_NEXT_BUFFER:
     return FNtoAHK(0,1,0);
-    break;
 
   case MACRO_SHOW_BOOKMARKS:
     return FNtoAHK(0,1,1);
-    break;
 
   case MACRO_SET_BOOKMARK:
     return FNtoAHK(0,1,2);
-    break;
 
   case MACRO_APP_FOOBAR2K_SEEK_FW1MIN:
     return FNtoAHK(0,1,3);
-    break;
 
   case MACRO_APP_FOOBAR2K_RATE1:
     return FNtoAHK(0,1,4);
-    break;
 
     case MACRO_APP_FOOBAR2K_PAUSE:
     return FNtoAHK(0,1,5);
-    break;
 
   case MACRO_APP_BROWSER_OPEN_SEARCH:
     return FNtoAHK(0,1,6);
-    break;
 
   case MACRO_SHOW_BUFFERS:
     return FNtoAHK(0,1,7);
-    break;
 
   case MACRO_FOCUS_EMACS:
     return FNtoAHK(0,1,8);
-    break;
 
   case MACRO_KILL_BUFFER:
     return FNtoAHK(0,1,9);
-    break;
 
   case MACRO_ENTER_KEY:
     return FNtoAHK(0,2,0);
-    break;
 
   case MACRO_ORG_CAPTURE:
     return FNtoAHK(0,2,1);
-    break;
 
   case MACRO_ORG_CLOCK_GOTO:
     return FNtoAHK(0,2,2);
-    break;
 
   case MACRO_ORG_CLOCK_IN:
     return FNtoAHK(0,2,3);
-    break;
 
   case MACRO_ORG_CLOCK_OUT:
     return FNtoAHK(0,2,4);
-    break;
 
   case MACRO_APP_FOOBAR2K_UnFOCUS:
     return FNtoAHK(0,2,5);
-    break;
 
   case MACRO_COPY:
     return FNtoAHK(0,2,6);
-    break;
 
   case MACRO_CUT:
     return FNtoAHK(0,2,7);
-    break;
 
   case MACRO_PASTE:
     return FNtoAHK(0,2,8);
-    break;    
 
   case MACRO_RFN_PGDN:
     return FNtoAHK(0,2,9);
-    break;
 
   case MACRO_RFN_PGUP:
     return FNtoAHK(0,3,0);
-    break;
 
   case MACRO_BUTTERFLY:
     return FNtoAHK(0,3,1);
-    break;
 
   case MACRO_EMACS_AGENDA_SEARCH:
     return FNtoAHK(0,3,2);
-    break;    
+
+  case MACRO_LED_KEY:
+    return FNtoAHK(0,3,3);    
     
   }
-
-  // When nums are out, take Numpad_1, ...
   
   return MACRO_NONE;
 }
@@ -716,7 +700,7 @@ void tapDanceAction(uint8_t tap_dance_index, byte row, byte col, uint8_t tap_cou
                     kaleidoscope::TapDance::ActionType tap_dance_action) {
   switch (tap_dance_index) {
     case TapDanceKey::LeftBrackets: {
-      return tapDanceActionKeys(tap_count, tap_dance_action, Key_LeftParen, Key_LeftBracket, Key_LeftCurlyBracket);
+      return tapDanceActionKeys(tap_count, tap_dance_action, M(MACRO_PAREN_PAIR), M(MACRO_BRACKET_PAIR), M(MACRO_CURLYBRACKET_PAIR));
     }
     case TapDanceKey::RightBrackets: {
       return tapDanceActionKeys(tap_count, tap_dance_action, Key_RightParen, Key_RightBracket, Key_RightCurlyBracket);
@@ -789,21 +773,17 @@ void hostPowerManagementEventHandler(kaleidoscope::HostPowerManagement::Event ev
 
 
 
-
 static void leaderA(uint8_t seq_index) {
-  Serial.println("leaderA");
+  Macros.type(PSTR("a "));
 }
 
 static void leaderTX(uint8_t seq_index) {
-  Serial.println("leaderTX");
+  Macros.type(PSTR("tx "));
 }
 
 static const kaleidoscope::Leader::dictionary_t leader_dictionary[] PROGMEM =
   LEADER_DICT({LEADER_SEQ(LEAD(0), Key_A), leaderA},
               {LEADER_SEQ(LEAD(0), Key_T, Key_X), leaderTX});
-
-
-
 
 
 /** The 'setup' function is one of the two standard Arduino sketch functions.
@@ -812,12 +792,6 @@ static const kaleidoscope::Leader::dictionary_t leader_dictionary[] PROGMEM =
   */
 
 void setup() {
-  //Serial.begin(9600);
-  
-  // First, call Kaleidoscope's internal setup function
-  Kaleidoscope.setup();
-
-  
   Kaleidoscope.use(
     // The hardware test mode, which can be invoked by tapping Prog, LED and the left Fn button at the same time.
     &TestMode,
@@ -876,6 +850,8 @@ void setup() {
     &ActiveModColorEffect // needs to go last     
     //    &Syster
   );
+
+  Kaleidoscope.setup();
 
 
   Leader.dictionary = leader_dictionary;
