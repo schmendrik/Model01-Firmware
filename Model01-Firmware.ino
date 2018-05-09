@@ -14,7 +14,7 @@
 */
 
 #ifndef BUILD_INFORMATION
-#define BUILD_INFORMATION "version 2"
+#define BUILD_INFORMATION "M01 version " __DATE__ " " __TIME__
 #endif
 
 /**
@@ -114,6 +114,8 @@ enum { MACRO_VERSION_INFO,
        MACRO_CUT,
        MACRO_PASTE,
 
+       MACRO_AUTOCOMPLETE,
+
        ////////////////////////////////////////////////////
        // Emacs Macros
        ////////////////////////////////////////////////////
@@ -140,6 +142,7 @@ enum { MACRO_VERSION_INFO,
        MACRO_ORG_CLOCK_IN,
        MACRO_ORG_CLOCK_OUT,
        MACRO_EMACS_AGENDA_SEARCH,
+       MACRO_EMACS_MOVE_TO_PREV_MARKED_POS,
 
        ////////////////////////////////////////////////////
        // Workaround macros
@@ -270,22 +273,6 @@ enum {
   //  FACTORY_FN
 };
 
-KEYMAPS(
-        
-  [DVORAK] = KEYMAP_STACKED
-  (___,          Key_1,         Key_2,     Key_3,      Key_4, Key_5, M(MACRO_LED_KEY),
-   Key_Backtick, Key_Quote,     Key_Comma, Key_Period, Key_P, Key_Y, M(MACRO_PAREN_PAIR),
-   M(MACRO_PASTE),   Key_A,         Key_O,     Key_E,      Key_U, Key_I,
-   TD(TapDanceKey::CopyCut), Key_Semicolon, Key_Q,     Key_J,      Key_K, Key_X, Key_Escape,
-   OSM(LeftShift), Key_Space, Key_LeftAlt, ShiftToLayer(LFN2),
-   ShiftToLayer(LFN),
-
-   Key_RightGui,   Key_6, Key_7, Key_8, Key_9, Key_0, XXX,
-   M(MACRO_ENTER_KEY),      Key_F, Key_G, Key_C, Key_R, Key_L, Key_Slash,
-                   Key_D, Key_H, Key_T, Key_N, Key_S, Key_Minus,
-   M(MACRO_BUTTERFLY),   Key_B, Key_M, Key_W, Key_V, Key_Z, Key_Equals,
-   ShiftToLayer(RFN2), Key_Enter, Key_Backspace, Key_RightControl,
-   ShiftToLayer(RFN)),
 
   //  [SHIFT] = KEYMAP_STACKED // This one is not used...
   //  (___,          Key_1,         Key_2,     Key_3,      Key_4, Key_5, Key_LEDEffectNext,
@@ -302,42 +289,77 @@ KEYMAPS(
     //   Key_RightGui, Key_Enter, Key_Backspace, OSM(RightShift),
     //   ShiftToLayer(RFN)),
 
+
+#ifndef NAMED_HOTKEYS
+#define EMACS_JustOneSpace LALT(Key_Space)
+#define EMACS_KillLine LCTRL(Key_K)
+#define EMACS_ExecCmd LALT(Key_X) /* is: M-x */
+#define EMACS_SetMark LCTRL(Key_Space)
+#define EMACS_CenterScreen LCTRL(Key_L)
+#define EMACS_SearchBackward LCTRL(Key_R)
+#define EMACS_EditLines LCTRL(Key_F14)
+#define EMACS_MarkAllLikeThis LCTRL(Key_F15)
+#define EMACS_MoveToPrevMarkedPos M(MACRO_EMACS_MOVE_TO_PREV_MARKED_POS)
+#define WINDOWS_Lockscreen LGUI(Key_L)
+#endif
+
+KEYMAPS
+(
+        
+  [DVORAK] = KEYMAP_STACKED
+  (___,          Key_1,         Key_2,     Key_3,      Key_4, Key_5, M(MACRO_LED_KEY),
+   Key_Backtick,             Key_Quote,     Key_Comma,   Key_Period, Key_P, Key_Y, M(MACRO_PAREN_PAIR),
+   M(MACRO_PASTE),           Key_A,         Key_O,       Key_E,      Key_U, Key_I,
+   TD(TapDanceKey::CopyCut), Key_Semicolon, Key_Q,       Key_J,      Key_K, Key_X, Key_Escape,
+   OSM(LeftShift),           Key_Space,     Key_LeftAlt, ShiftToLayer(LFN2),
+   ShiftToLayer(LFN),
+
+   Key_RightGui,          Key_6,     Key_7,         Key_8, Key_9, Key_0, ___,
+   M(MACRO_ENTER_KEY),    Key_F,     Key_G,         Key_C, Key_R, Key_L, Key_Slash,
+                          Key_D, Key_H,     Key_T,         Key_N, Key_S, Key_Minus,
+   M(MACRO_BUTTERFLY),    Key_B,     Key_M,         Key_W, Key_V, Key_Z, Key_Equals,
+   ShiftToLayer(RFN2),    Key_Enter, Key_Backspace, Key_RightControl,
+   ShiftToLayer(RFN)),
+
+  
   [LFN] =  KEYMAP_STACKED
-  (LGUI(Key_L),  ___,                                     ___,               ___,     ___,          ___,            ___,
-   ___,          ___,                                     ___,               ___,     ___,          M(MACRO_PASTE), ___,
-   Key_PageUp,   Key_Home,                                M(MACRO_ACE_JUMP), Key_End, Key_Tab,      ___,
-   Key_PageDown, ___,                                     ___,               ___,     LCTRL(Key_K), LCTRL(Key_X),   ___,
-   ___,          LALT(Key_Space)/*emacs:just-one-space*/, ___,               ___,
+  (LGUI(Key_L),     ___,                ___,               ___,     ___,            ___,            ___,
+   ___,             ___,                ___,               ___,     ___,            M(MACRO_PASTE), ___,
+   EMACS_EditLines, Key_Home,           M(MACRO_ACE_JUMP), Key_End, Key_Tab,        ___,
+   EMACS_MarkAllLikeThis, ___,                ___,               ___,     EMACS_KillLine, EMACS_ExecCmd,  ___,
+   ___,             EMACS_JustOneSpace, ___,               ___,
    ___,
 
-   ___,                   ___,                        ___,              ___,           ___,            ___,                ___,
-   TD(TapDanceKey::RightBrackets), ___,                        LCTRL(Key_Space), Key_UpArrow,   ___,            LCTRL(Key_L),       ___,
-                                   LCTRL(Key_D),               Key_LeftArrow,    Key_DownArrow, Key_RightArrow, M(MACRO_SAVE_FILE), ___,
-   ___,                            TD(TapDanceKey::Bookmarks), ___,              M(MACRO_CUT),  ___,            Key_Backslash,      Key_Pipe,
-   ___,                            LCTRL(Key_Enter),           Key_Delete,       ___,
+   ___,                            ___,                        ___,           ___,           ___,            ___,                   ___,
+   TD(TapDanceKey::RightBrackets), ___,                        EMACS_SetMark, Key_UpArrow,   ___,            EMACS_CenterScreen,    Key_Backslash,
+                                   ___,                        Key_LeftArrow, Key_DownArrow, Key_RightArrow, M(MACRO_SAVE_FILE),    ___,
+   ___,                            TD(TapDanceKey::Bookmarks), ___,           M(MACRO_CUT),  ___,            M(MACRO_AUTOCOMPLETE), Key_Pipe,
+   ___,                            LCTRL(Key_Enter),           Key_Delete,    ___,
    ___),
 
-  [RFN] =  KEYMAP_STACKED
-  (LGUI(Key_L),       Key_F1,                Key_F2,                Key_F3,                    Key_F4,                    Key_F5, M(MACRO_CURLYBRACKET_PAIR),
-   ___,               ___,                   ___,                   M(MACRO_FOCUS_EMACS),      ___,                       ___,    ___, //TD(TapDanceKey::RightBrackets),
-   M(MACRO_RFN_PGUP), TD(TapDanceKey::AUml), TD(TapDanceKey::OUml), ___,                       TD(TapDanceKey::UUml),     M(MACRO_UMLAUT_S),
-   M(MACRO_RFN_PGDN), ___,                   M(MACRO_KILL_BUFFER),  M(MACRO_GOTO_PREV_BUFFER), M(MACRO_GOTO_NEXT_BUFFER), ___,    M(MACRO_BRACKET_PAIR),
-   Key_mouseBtnR,     Key_mouseBtnL,         Key_mouseBtnR,         ___,
+  
+  [RFN] = KEYMAP_STACKED
+  (WINDOWS_Lockscreen,       Key_F1,                Key_F2,                Key_F3,                    Key_F4,                    Key_F5, M(MACRO_CURLYBRACKET_PAIR),
+   ___, ___,                   ___,                   M(MACRO_FOCUS_EMACS),      ___,                       ___, TD(TapDanceKey::RightBrackets),
+   M(MACRO_RFN_PGUP),         TD(TapDanceKey::AUml), TD(TapDanceKey::OUml), ___,                       TD(TapDanceKey::UUml),     M(MACRO_UMLAUT_S),
+   M(MACRO_RFN_PGDN),         ___,                   M(MACRO_KILL_BUFFER),  M(MACRO_GOTO_PREV_BUFFER), M(MACRO_GOTO_NEXT_BUFFER), ___, M(MACRO_BRACKET_PAIR),
+   Key_mouseBtnR,             Key_mouseBtnL,         Key_mouseBtnR,         ___,
    ___,
  
    ___, Key_F6,     Key_F7,      Key_F8,      Key_F9,                       Key_F10, Key_F11,
-   ___, ___,        ___,         Key_mouseUp, LCTRL(Key_R),                 ___/*LEAD(0)*/,     Key_F12,
+   ___, ___,        ___,         Key_mouseUp, EMACS_SearchBackward,                 ___,     Key_F12,
         ___, Key_mouseL, Key_mouseDn, Key_mouseR,  M(MACRO_EMACS_AGENDA_SEARCH), ___,
-   ___, ___,        ___,         ___,         ___,                          ___,     ___,
+   ___, ___,        ___,         ___,         EMACS_MoveToPrevMarkedPos,                          ___,     ___,
    ___, ___,        ___,         ___,
    ___),  
 
+  
   [LFN2] =  KEYMAP_STACKED 
-  (___, ___, ___, ___, ___, ___, Key_LEDEffectNext,
-   Key_Backtick, ___, ___, ___, ___, ___, Key_LeftBracket,
-   ___, M(MACRO_APP_BROWSER_OPEN_SEARCH), M(MACRO_APP_FOOBAR2K_UnFOCUS), M(MACRO_APP_FOOBAR2K_PAUSE), M(MACRO_APP_FOOBAR2K_SEEK_FW1MIN), M(MACRO_APP_FOOBAR2K_RATE1),
-   ___, LSHIFT(Key_Semicolon), ___, ___, ___, ___, ___,
-   ___, ___, ___, ___,
+  (___,          ___,                              ___,                           ___,                         ___,                               ___, Key_LEDEffectNext,
+   Key_Backtick, ___,                              ___,                           ___,                         ___,                               ___, Key_LeftBracket,
+   Key_PageUp,          M(MACRO_APP_BROWSER_OPEN_SEARCH), M(MACRO_APP_FOOBAR2K_UnFOCUS), M(MACRO_APP_FOOBAR2K_PAUSE), M(MACRO_APP_FOOBAR2K_SEEK_FW1MIN), M(MACRO_APP_FOOBAR2K_RATE1),
+   Key_PageDown,          LSHIFT(Key_Semicolon),            ___,                           ___,                         ___,                               ___, ___,
+   ___,          ___,                              ___,                           ___,
    ___,
 
    M(MACRO_VERSION_INFO),  ___,                ___,   ___,   ___,   ___,                ___,
@@ -347,6 +369,7 @@ KEYMAPS(
    Key_Space, Key_Enter, ___, Key_Space,
    ___),
 
+  
   [RFN2] =  KEYMAP_STACKED
   (___, ___, ___, ___, ___, ___, M(MACRO_LED_DEACTIVATION),
    ___, ___, ___, ___, ___, ___, ___,
@@ -355,44 +378,14 @@ KEYMAPS(
    ___, ___, ___, ___,
    ___,
  
-   ___, ___, ___, ___, ___, ___, ___,
-   ___, ___, ___, ___, ___, ___, ___,
+   Key_Cut, ___, ___, ___, ___, ___, ___,
+   Key_Copy, ___, ___, ___, ___, ___, ___,
         ___, ___, ___, ___, ___, ___,
-   ___, ___, ___, ___, ___, ___, ___,
+   Key_Paste, ___, ___, ___, ___, ___, ___,
    ___, ___, ___, ___,
    ___),  
-  
-  //  [FACTORY_QWERTY] = KEYMAP_STACKED
-  //  (LGUI(Key_L),          Key_1, Key_2, Key_3, Key_4, Key_5, Key_LEDEffectNext,
-    //   Key_Backtick, Key_Q, Key_W, Key_E, Key_R, Key_T, Key_Tab,
-    //   Key_PageUp,   Key_A, Key_S, Key_D, Key_F, Key_G,
-    //   Key_PageDown, Key_Z, Key_X, Key_C, Key_V, Key_B, Key_Escape,
-    //   Key_LeftControl, Key_Backspace, Key_LeftGui, Key_LeftShift,
-    //   ShiftToLayer(FACTORY_FN),
-    //
-    //   M(MACRO_ANY),  Key_6, Key_7, Key_8,     Key_9,         Key_0,         XXX,
-    //   Key_Enter,     Key_Y, Key_U, Key_I,     Key_O,         Key_P,         Key_Equals,
-    //                  Key_H, Key_J, Key_K,     Key_L,         Key_Semicolon, Key_Quote,
-    //   Key_RightAlt,  Key_N, Key_M, Key_Comma, Key_Period,    Key_Slash,     Key_Minus,
-    //   Key_RightShift, Key_LeftAlt, Key_Spacebar, Key_RightControl,
-    //   ShiftToLayer(FACTORY_FN)),
-  //
-  //  [FACTORY_FN] =  KEYMAP_STACKED
-  //  (___,      Key_F1,           Key_F2,      Key_F3,     Key_F4,        Key_F5,           XXX,
-    //   Key_Tab,  ___,              Key_mouseUp, ___,        Key_mouseBtnR, Key_mouseWarpEnd, Key_mouseWarpNE,
-    //   Key_Home, Key_mouseL,       Key_mouseDn, Key_mouseR, Key_mouseBtnL, Key_mouseWarpNW,
-    //   Key_End,  Key_PrintScreen,  Key_Insert,  ___,        Key_mouseBtnM, Key_mouseWarpSW,  Key_mouseWarpSE,
-    //   ___, Key_Delete, ___, ___,
-    //   ___,
-    //
-    //   Consumer_ScanPreviousTrack, Key_F6,                 Key_F7,                   Key_F8,                   Key_F9,          Key_F10,          Key_F11,
-    //   Consumer_PlaySlashPause,    Consumer_ScanNextTrack, Key_LeftCurlyBracket,     Key_RightCurlyBracket,    Key_LeftBracket, Key_RightBracket, Key_F12,
-    //                               Key_LeftArrow,          Key_DownArrow,            Key_UpArrow,              Key_RightArrow,  ___,              ___,
-    //   Key_PcApplication,          Key_Mute,               Consumer_VolumeDecrement, Consumer_VolumeIncrement, ___,             Key_Backslash,    Key_Pipe,
-    //   ___, ___, Key_Enter, ___,
-    //   ___)
 
- 	) // KEYMAPS(
+) // KEYMAPS(
  
 
 /* Re-enable astyle's indent enforcement */
@@ -406,7 +399,10 @@ KEYMAPS(
 static void versionInfoMacro(uint8_t keyState) {
   if (keyToggledOn(keyState)) {
     //Macros.type(PSTR("Keyboardio Model 01 - Kaleidoscope "));
+    //Macros.type(PSTR(BUILD_INFORMATION));
+
     Macros.type(PSTR(BUILD_INFORMATION));
+    
     //Macros.type(PSTR(" (OS: "));
     //Macros.type(HostOS.os());
     //Macros.type(PSTR(")"));
@@ -494,6 +490,9 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
     deactivateLeds(keyState);
     break;
 
+  case MACRO_EMACS_MOVE_TO_PREV_MARKED_POS:
+    return MACRODOWN(D(RightControl), T(U), U(RightControl), D(RightControl), T(Space), U(RightControl));    
+   
   case MACRO_PAREN_PAIR:
     return MACRODOWN(T(LeftParen), T(RightParen), T(LeftArrow));
 
@@ -626,7 +625,10 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
     return FNtoAHK(3,2);
 
   case MACRO_LED_KEY:
-    return FNtoAHK(3,3);    
+    return FNtoAHK(3,3);
+
+  case MACRO_AUTOCOMPLETE:
+    return FNtoAHK(3,4);    
     
   }
   
