@@ -3,7 +3,7 @@
 // See "LICENSE" for 
 
 // keycode definitions: https://github.com/keyboardio/Kaleidoscope/wiki/Keycode-meanings
-// Empty template for keymap: https://community.keyboard.io/t/boilerplate-for-empty-layer/760/2?u=rumpel
+// Empty template for keymap: https://community.keyboard.io/t/boilerplate-for-empty-layer/760/2
 
 /* Modifiers (in file key_defs.h):
 #define LCTRL(k)  ((Key) { k.keyCode, k.flags | CTRL_HELD })
@@ -77,6 +77,8 @@
 // Support for host power management (suspend & wakeup)
 #include "Kaleidoscope-HostPowerManagement.h"
 
+//#include "Kaleidoscope-Heatmap.h"
+
 // use Syster conjunction with Unicode
 // https://github.com/keyboardio/Kaleidoscope-Syster
 //#include "Kaleidoscope-Syster.h"
@@ -115,6 +117,8 @@ enum { MACRO_VERSION_INFO,
        MACRO_PASTE,
 
        MACRO_AUTOCOMPLETE,
+
+       MACRO_HEATMAP,
 
        ////////////////////////////////////////////////////
        // Emacs Macros
@@ -263,6 +267,8 @@ enum {
   // Right FN
   RFN,
 
+  LFNandRFN,
+
   // For numpad, etc
   LFN2,
 
@@ -300,6 +306,10 @@ enum {
 #define EMACS_EditLines LCTRL(Key_F14)
 #define EMACS_MarkAllLikeThis LCTRL(Key_F15)
 #define EMACS_MoveToPrevMarkedPos M(MACRO_EMACS_MOVE_TO_PREV_MARKED_POS)
+#define EMACS_MoveLineUp LCTRL(Key_F16) 
+#define EMACS_MoveLineDown LCTRL(Key_F17)
+#define EMACS_CopyLine LCTRL(Key_F18)
+
 #define WINDOWS_Lockscreen LGUI(Key_L)
 #endif
 
@@ -323,11 +333,11 @@ KEYMAPS
 
   
   [LFN] =  KEYMAP_STACKED
-  (LGUI(Key_L),     ___,                ___,               ___,     ___,            ___,            ___,
-   ___,             ___,                ___,               ___,     ___,            M(MACRO_PASTE), ___,
-   EMACS_EditLines, Key_Home,           M(MACRO_ACE_JUMP), Key_End, Key_Tab,        ___,
-   EMACS_MarkAllLikeThis, ___,                ___,               ___,     EMACS_KillLine, EMACS_ExecCmd,  ___,
-   ___,             EMACS_JustOneSpace, ___,               ___,
+  (LGUI(Key_L),           ___,                ___,               ___,     ___,            ___,            ___,
+   ___,                   ___,                ___,               ___,     ___,            M(MACRO_PASTE), ___,
+   EMACS_EditLines,       Key_Home,           M(MACRO_ACE_JUMP), Key_End, Key_Tab,        ___,
+   EMACS_MarkAllLikeThis, ___,                ___,               ___,     EMACS_KillLine, ___,            ___,
+   ___,                   EMACS_JustOneSpace, ___,               ___,
    ___,
 
    ___,                            ___,                        ___,           ___,           ___,            ___,                   ___,
@@ -335,16 +345,16 @@ KEYMAPS
                                    ___,                        Key_LeftArrow, Key_DownArrow, Key_RightArrow, M(MACRO_SAVE_FILE),    ___,
    ___,                            TD(TapDanceKey::Bookmarks), ___,           M(MACRO_CUT),  ___,            M(MACRO_AUTOCOMPLETE), Key_Pipe,
    ___,                            LCTRL(Key_Enter),           Key_Delete,    ___,
-   ___),
+   ShiftToLayer(LFNandRFN)),
 
   
   [RFN] = KEYMAP_STACKED
   (WINDOWS_Lockscreen,       Key_F1,                Key_F2,                Key_F3,                    Key_F4,                    Key_F5, M(MACRO_CURLYBRACKET_PAIR),
-   ___, ___,                   ___,                   M(MACRO_FOCUS_EMACS),      ___,                       ___, TD(TapDanceKey::RightBrackets),
-   M(MACRO_RFN_PGUP),         TD(TapDanceKey::AUml), TD(TapDanceKey::OUml), ___,                       TD(TapDanceKey::UUml),     M(MACRO_UMLAUT_S),
-   M(MACRO_RFN_PGDN),         ___,                   M(MACRO_KILL_BUFFER),  M(MACRO_GOTO_PREV_BUFFER), M(MACRO_GOTO_NEXT_BUFFER), ___, M(MACRO_BRACKET_PAIR),
-   Key_mouseBtnR,             Key_mouseBtnL,         Key_mouseBtnR,         ___,
-   ___,
+   ___,               ___,                   ___,                   M(MACRO_FOCUS_EMACS),      ___,                       ___,           TD(TapDanceKey::RightBrackets),
+   M(MACRO_RFN_PGUP), TD(TapDanceKey::AUml), TD(TapDanceKey::OUml), ___,                       TD(TapDanceKey::UUml),     M(MACRO_UMLAUT_S),
+   M(MACRO_RFN_PGDN), ___,                   M(MACRO_KILL_BUFFER),  M(MACRO_GOTO_PREV_BUFFER), M(MACRO_GOTO_NEXT_BUFFER), EMACS_ExecCmd, M(MACRO_BRACKET_PAIR),
+   Key_mouseBtnR,     Key_mouseBtnL,         Key_mouseBtnR,         ___,
+   ShiftToLayer(LFNandRFN),
  
    ___, Key_F6,     Key_F7,      Key_F8,      Key_F9,                       Key_F10, Key_F11,
    ___, ___,        ___,         Key_mouseUp, EMACS_SearchBackward,                 ___,     Key_F12,
@@ -353,6 +363,23 @@ KEYMAPS
    ___, ___,        ___,         ___,
    ___),  
 
+  
+  [LFNandRFN] = KEYMAP_STACKED
+  (___, ___, ___, ___,                ___, ___, ___,
+   ___, ___, ___, EMACS_MoveLineUp,   ___, ___, ___,
+   ___, ___, ___, EMACS_MoveLineDown, ___, ___,
+   ___, ___, ___, ___,                ___, ___, ___,
+   ___, ___, ___, ___,
+   ___,
+   
+   ___,      ___, ___, ___, ___, ___,            ___,
+   ___,      ___, ___, ___, ___, EMACS_CopyLine, ___,
+             ___, ___, ___, ___, ___,            ___,
+   ___,      ___, ___, ___, ___, ___,            ___,
+   ___,      ___, ___, ___,
+
+   ___),
+  
   
   [LFN2] =  KEYMAP_STACKED 
   (___,          ___,                              ___,                           ___,                         ___,                               ___, Key_LEDEffectNext,
@@ -501,6 +528,10 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
 
   case MACRO_CURLYBRACKET_PAIR:
     return MACRODOWN(T(LeftCurlyBracket), T(RightCurlyBracket), T(LeftArrow));
+
+  case MACRO_HEATMAP:
+    //HeatmapEffect.activate();
+    break; 
 
   case MACRO_SAVE_FILE:
     return FNtoAHK(0,0);
@@ -746,8 +777,6 @@ void hostPowerManagementEventHandler(kaleidoscope::HostPowerManagement::Event ev
   toggleLedsOnSuspendResume(event);
 }
 
-
-
 static void leaderA(uint8_t seq_index) {
   Macros.type(PSTR("a "));
 }
@@ -761,10 +790,12 @@ static const kaleidoscope::Leader::dictionary_t leader_dictionary[] PROGMEM =
               {LEADER_SEQ(LEAD(0), Key_T, Key_X), leaderTX});
 
 
-/** The 'setup' function is one of the two standard Arduino sketch functions.
-  * It's called when your keyboard first powers up. This is where you set up
-  * Kaleidoscope and any plugins.
-  */
+static const cRGB heat_colors[] PROGMEM = {
+  {  0,   0,   0}, // black
+  {255,  25,  25}, // blue
+  { 25, 255,  25}, // green
+  { 25,  25, 255}  // red
+};
 
 void setup() {
   Kaleidoscope.use(
@@ -824,10 +855,14 @@ void setup() {
 
     &ActiveModColorEffect // needs to go last     
     //    &Syster
+
+    //&HeatmapEffect
   );
 
   Kaleidoscope.setup();
 
+  //  HeatmapEffect.heat_colors = heat_colors;
+  //  HeatmapEffect.heat_colors_length = 4;  
 
   Leader.dictionary = leader_dictionary;
 
