@@ -115,6 +115,7 @@ enum { MACRO_VERSION_INFO,
        MACRO_COPY,
        MACRO_CUT,
        MACRO_PASTE,
+       MACRO_UNDO,
 
        MACRO_AUTOCOMPLETE,
 
@@ -141,12 +142,14 @@ enum { MACRO_VERSION_INFO,
        MACRO_SHOW_BUFFERS,
 
        MACRO_ENTER_KEY,
-       MACRO_ORG_CAPTURE,
+       MACRO_ORG_EMACS_CAPTURE,
+       MACRO_EMACS_ORG_REFILE,
        MACRO_ORG_CLOCK_GOTO,
        MACRO_ORG_CLOCK_IN,
-       MACRO_ORG_CLOCK_OUT,
+       MACRO_ORG_CLOCK_OUT,      
        MACRO_EMACS_AGENDA_SEARCH,
        MACRO_EMACS_MOVE_TO_PREV_MARKED_POS,
+       MACRO_EMACS_CcCc,       
 
        ////////////////////////////////////////////////////
        // Workaround macros
@@ -299,7 +302,7 @@ enum {
 #ifndef NAMED_HOTKEYS
 #define EMACS_JustOneSpace LALT(Key_Space)
 #define EMACS_KillLine LCTRL(Key_K)
-#define EMACS_ExecCmd LALT(Key_X) /* is: M-x */
+#define EMACS_Command LALT(Key_X) /* is: M-x */
 #define EMACS_SetMark LCTRL(Key_Space)
 #define EMACS_CenterScreen LCTRL(Key_L)
 #define EMACS_SearchBackward LCTRL(Key_R)
@@ -309,15 +312,24 @@ enum {
 #define EMACS_MoveLineUp LCTRL(Key_F16) 
 #define EMACS_MoveLineDown LCTRL(Key_F17)
 #define EMACS_CopyLine LCTRL(Key_F18)
-
+#define EMACS_CutLine LCTRL(Key_F19)
+#define EMACS_Refile M(MACRO_EMACS_ORG_REFILE)// LCTRL(Key_F20) // use C-c C-w since it's view-dependant (agenda, normal)
+#define EMACS_InsertLink LCTRL(Key_F21)
+#define EMACS_AceJump M(MACRO_ACE_JUMP)
+#define EMACS_SwitchWindow LCTRL(Key_F23) // uses ace-window
+#define EMACS_CcCc M(MACRO_EMACS_CcCc) // C-c C-c
+#define EMACS_MarkNextLikeThis LCTRL(Key_F24)
+#define EMACS_KeyboardQuit LCTRL(Key_G) // C-g
 #define WINDOWS_Lockscreen LGUI(Key_L)
+#define WINDOWS_FocusEmacs LGUI(Key_3) //M(MACRO_FOCUS_EMACS)
+#define WINDOWS_FocusChrome LGUI(Key_1)  
 #endif
 
 KEYMAPS
 (
         
   [DVORAK] = KEYMAP_STACKED
-  (___,          Key_1,         Key_2,     Key_3,      Key_4, Key_5, M(MACRO_LED_KEY),
+  (___,                      Key_1,         Key_2,       Key_3,      Key_4, Key_5, M(MACRO_LED_KEY),
    Key_Backtick,             Key_Quote,     Key_Comma,   Key_Period, Key_P, Key_Y, M(MACRO_PAREN_PAIR),
    M(MACRO_PASTE),           Key_A,         Key_O,       Key_E,      Key_U, Key_I,
    TD(TapDanceKey::CopyCut), Key_Semicolon, Key_Q,       Key_J,      Key_K, Key_X, Key_Escape,
@@ -331,33 +343,32 @@ KEYMAPS
    ShiftToLayer(RFN2),    Key_Enter, Key_Backspace, Key_RightControl,
    ShiftToLayer(RFN)),
 
-  
   [LFN] =  KEYMAP_STACKED
-  (LGUI(Key_L),           ___,                ___,               ___,     ___,            ___,            ___,
-   ___,                   ___,                ___,               ___,     ___,            M(MACRO_PASTE), ___,
-   EMACS_EditLines,       Key_Home,           M(MACRO_ACE_JUMP), Key_End, Key_Tab,        ___,
-   EMACS_MarkAllLikeThis, ___,                ___,               ___,     EMACS_KillLine, ___,            ___,
-   ___,                   EMACS_JustOneSpace, ___,               ___,
+  (WINDOWS_Lockscreen, ___,                ___,           ___,     ___,            ___,            ___,
+   ___,                ___,                ___,           ___,     ___,            M(MACRO_PASTE), ___,
+   ___,                Key_Home,           EMACS_SetMark, Key_End, Key_Tab,        EMACS_AceJump,
+   ___,                ___,                ___,           ___,     EMACS_KillLine, ___,            ___,
+   ___,                EMACS_JustOneSpace, ___,           ___,
    ___,
 
    ___,                            ___,                        ___,           ___,           ___,            ___,                   ___,
-   TD(TapDanceKey::RightBrackets), ___,                        EMACS_SetMark, Key_UpArrow,   ___,            EMACS_CenterScreen,    Key_Backslash,
+   TD(TapDanceKey::RightBrackets), ___,                        EMACS_KeyboardQuit,    Key_UpArrow,   ___,            EMACS_CenterScreen,    Key_Backslash,
                                    ___,                        Key_LeftArrow, Key_DownArrow, Key_RightArrow, M(MACRO_SAVE_FILE),    ___,
    ___,                            TD(TapDanceKey::Bookmarks), ___,           M(MACRO_CUT),  ___,            M(MACRO_AUTOCOMPLETE), Key_Pipe,
-   ___,                            LCTRL(Key_Enter),           Key_Delete,    ___,
+   ___,                            EMACS_CcCc,           Key_Delete,    ___,
    ShiftToLayer(LFNandRFN)),
 
   
   [RFN] = KEYMAP_STACKED
   (WINDOWS_Lockscreen,       Key_F1,                Key_F2,                Key_F3,                    Key_F4,                    Key_F5, M(MACRO_CURLYBRACKET_PAIR),
-   ___,               ___,                   ___,                   M(MACRO_FOCUS_EMACS),      ___,                       ___,           TD(TapDanceKey::RightBrackets),
+   ___,               ___,                   WINDOWS_FocusChrome,     WINDOWS_FocusEmacs,          ___,                       ___,           TD(TapDanceKey::RightBrackets),
    M(MACRO_RFN_PGUP), TD(TapDanceKey::AUml), TD(TapDanceKey::OUml), ___,                       TD(TapDanceKey::UUml),     M(MACRO_UMLAUT_S),
-   M(MACRO_RFN_PGDN), ___,                   M(MACRO_KILL_BUFFER),  M(MACRO_GOTO_PREV_BUFFER), M(MACRO_GOTO_NEXT_BUFFER), EMACS_ExecCmd, M(MACRO_BRACKET_PAIR),
+   M(MACRO_RFN_PGDN), EMACS_SwitchWindow,                   M(MACRO_KILL_BUFFER),  M(MACRO_GOTO_PREV_BUFFER), M(MACRO_GOTO_NEXT_BUFFER), EMACS_Command, M(MACRO_BRACKET_PAIR),
    Key_mouseBtnR,     Key_mouseBtnL,         Key_mouseBtnR,         ___,
    ShiftToLayer(LFNandRFN),
  
    ___, Key_F6,     Key_F7,      Key_F8,      Key_F9,                       Key_F10, Key_F11,
-   ___, ___,        ___,         Key_mouseUp, EMACS_SearchBackward,                 ___,     Key_F12,
+   ___, ___,        M(MACRO_UNDO),         Key_mouseUp, EMACS_SearchBackward,                 ___,     Key_F12,
         ___, Key_mouseL, Key_mouseDn, Key_mouseR,  M(MACRO_EMACS_AGENDA_SEARCH), ___,
    ___, ___,        ___,         ___,         EMACS_MoveToPrevMarkedPos,                          ___,     ___,
    ___, ___,        ___,         ___,
@@ -365,27 +376,27 @@ KEYMAPS
 
   
   [LFNandRFN] = KEYMAP_STACKED
-  (___, ___, ___, ___,                ___, ___, ___,
-   ___, ___, ___, EMACS_MoveLineUp,   ___, ___, ___,
-   ___, ___, ___, EMACS_MoveLineDown, ___, ___,
-   ___, ___, ___, ___,                ___, ___, ___,
-   ___, ___, ___, ___,
+  (___, ___,              ___, ___,                ___, ___, ___,
+   ___, ___,              ___, EMACS_MoveLineUp,   ___, ___, ___,
+   ___, EMACS_InsertLink, ___, EMACS_MoveLineDown, ___, ___,
+   ___, ___,              ___, ___,                ___, ___, ___,
+   ___, ___,              ___, ___,
    ___,
    
-   ___,      ___, ___, ___, ___, ___,            ___,
-   ___,      ___, ___, ___, ___, EMACS_CopyLine, ___,
-             ___, ___, ___, ___, ___,            ___,
-   ___,      ___, ___, ___, ___, ___,            ___,
-   ___,      ___, ___, ___,
+   ___, ___,                    ___,           ___,            ___,          ___, ___,
+   ___, EMACS_EditLines,        EMACS_CutLine, EMACS_CopyLine, EMACS_Refile, ___, ___,
+        EMACS_MarkAllLikeThis,  ___,           ___,            ___,          ___, ___,
+   ___, EMACS_MarkNextLikeThis, ___,           ___,            ___,          ___, ___,
+   ___, ___,                    ___,           ___,
 
    ___),
   
   
   [LFN2] =  KEYMAP_STACKED 
   (___,          ___,                              ___,                           ___,                         ___,                               ___, Key_LEDEffectNext,
-   Key_Backtick, ___,                              ___,                           ___,                         ___,                               ___, Key_LeftBracket,
-   Key_PageUp,          M(MACRO_APP_BROWSER_OPEN_SEARCH), M(MACRO_APP_FOOBAR2K_UnFOCUS), M(MACRO_APP_FOOBAR2K_PAUSE), M(MACRO_APP_FOOBAR2K_SEEK_FW1MIN), M(MACRO_APP_FOOBAR2K_RATE1),
-   Key_PageDown,          LSHIFT(Key_Semicolon),            ___,                           ___,                         ___,                               ___, ___,
+   ___,          ___,                              ___,                           ___,                         ___,                               ___, Key_LeftBracket,
+   Key_PageUp,   M(MACRO_APP_BROWSER_OPEN_SEARCH), M(MACRO_APP_FOOBAR2K_UnFOCUS), M(MACRO_APP_FOOBAR2K_PAUSE), M(MACRO_APP_FOOBAR2K_SEEK_FW1MIN), M(MACRO_APP_FOOBAR2K_RATE1),
+   Key_PageDown, LSHIFT(Key_Semicolon),            ___,                           ___,                         ___,                               ___, ___,
    ___,          ___,                              ___,                           ___,
    ___,
 
@@ -405,10 +416,10 @@ KEYMAPS
    ___, ___, ___, ___,
    ___,
  
-   Key_Cut, ___, ___, ___, ___, ___, ___,
-   Key_Copy, ___, ___, ___, ___, ___, ___,
+   ___, ___, ___, ___, ___, ___, ___,
+   ___, ___, ___, ___, ___, ___, ___,
         ___, ___, ___, ___, ___, ___,
-   Key_Paste, ___, ___, ___, ___, ___, ___,
+   ___, ___, ___, ___, ___, ___, ___,
    ___, ___, ___, ___,
    ___),  
 
@@ -517,8 +528,14 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
     deactivateLeds(keyState);
     break;
 
+  case MACRO_EMACS_CcCc:
+    return MACRODOWN(D(RightControl), T(C), T(C), U(RightControl));
+    
+  case MACRO_EMACS_ORG_REFILE:
+    return MACRODOWN(D(RightControl), T(C), T(W), U(RightControl));
+    
   case MACRO_EMACS_MOVE_TO_PREV_MARKED_POS:
-    return MACRODOWN(D(RightControl), T(U), U(RightControl), D(RightControl), T(Space), U(RightControl));    
+    return MACRODOWN(D(RightControl), T(U), T(Space), U(RightControl));    
    
   case MACRO_PAREN_PAIR:
     return MACRODOWN(T(LeftParen), T(RightParen), T(LeftArrow));
@@ -619,7 +636,7 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
   case MACRO_ENTER_KEY:
     return FNtoAHK(2,0);
 
-  case MACRO_ORG_CAPTURE:
+  case MACRO_ORG_EMACS_CAPTURE:
     return FNtoAHK(2,1);
 
   case MACRO_ORG_CLOCK_GOTO:
@@ -660,6 +677,9 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
 
   case MACRO_AUTOCOMPLETE:
     return FNtoAHK(3,4);    
+
+  case MACRO_UNDO:
+    return FNtoAHK(3,5);
     
   }
   
@@ -739,7 +759,7 @@ void tapDanceAction(uint8_t tap_dance_index, byte row, byte col, uint8_t tap_cou
       return tapDanceActionKeys(tap_count, tap_dance_action, M(MACRO_SHOW_BOOKMARKS), M(MACRO_SHOW_BUFFERS), M(MACRO_SET_BOOKMARK));
     }
       //    case TapDanceKey::OrgAgendaAndCapture: {
-       //      return tapDanceActionKeys(tap_count, tap_dance_action, M(MACRO_ENTER_KEY), M(MACRO_ORG_CAPTURE));
+       //      return tapDanceActionKeys(tap_count, tap_dance_action, M(MACRO_ENTER_KEY), M(MACRO_ORG_EMACS_CAPTURE));
       //    }
     case TapDanceKey::OrgClocking: {
       return tapDanceActionKeys(tap_count, tap_dance_action, M(MACRO_ORG_CLOCK_GOTO), M(MACRO_ORG_CLOCK_IN), M(MACRO_ORG_CLOCK_OUT));
@@ -897,4 +917,4 @@ void setup() {
 
 void loop() {
   Kaleidoscope.loop();
-}
+}
