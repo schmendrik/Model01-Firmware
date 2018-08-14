@@ -14,7 +14,7 @@
 */
 
 #ifndef BUILD_INFORMATION
-#define BUILD_INFORMATION "M01 version " __DATE__ " " __TIME__
+#define BUILD_INFORMATION "M01 firmware version: " __DATE__ " "__TIME__
 #endif
 
 /**
@@ -74,6 +74,8 @@
 
 #include "Kaleidoscope-TopsyTurvy.h"
 
+#include "Kaleidoscope-MagicCombo.h"
+
 // Support for host power management (suspend & wakeup)
 #include "Kaleidoscope-HostPowerManagement.h"
 
@@ -121,6 +123,9 @@ enum { MACRO_VERSION_INFO,
 
        MACRO_HEATMAP,
 
+       MACRO_MOVE_LINE_UP,
+       MACRO_MOVE_LINE_DOWN,
+
        ////////////////////////////////////////////////////
        // Emacs Macros
        ////////////////////////////////////////////////////
@@ -136,6 +141,7 @@ enum { MACRO_VERSION_INFO,
        MACRO_GOTO_PREV_BUFFER,
        MACRO_GOTO_NEXT_BUFFER,
        MACRO_KILL_BUFFER,
+       MACRO_DELETE_WINDOW,
 
        MACRO_SHOW_BOOKMARKS,
        MACRO_SET_BOOKMARK,
@@ -149,7 +155,11 @@ enum { MACRO_VERSION_INFO,
        MACRO_ORG_CLOCK_OUT,      
        MACRO_EMACS_AGENDA_SEARCH,
        MACRO_EMACS_MOVE_TO_PREV_MARKED_POS,
-       MACRO_EMACS_CcCc,       
+       MACRO_EMACS_CcCc,
+
+       MACRO_EMACS_CAPTURE_TODO,
+       MACRO_EMACS_CAPTURE_NOTE,
+       MACRO_EMACS_CAPTURE_JOURNAL,       
 
        ////////////////////////////////////////////////////
        // Workaround macros
@@ -173,6 +183,8 @@ enum { MACRO_VERSION_INFO,
        MACRO_APP_FOOBAR2K_RATE1,
        MACRO_APP_FOOBAR2K_PAUSE,
 
+       MACRO_FOCUS_IDE,
+
        ////////////////////////////////////////////////////
        // "Abstract" AHK Command Keys
        // (as opposed to named ones)
@@ -183,6 +195,19 @@ enum { MACRO_VERSION_INFO,
        MACRO_RFN_PGUP,  // RFN+PGUP
        MACRO_BUTTERFLY, // butterfly key
        MACRO_LED_KEY,
+
+
+       MACRO_SHUTDOWN,
+
+       MACRO_SMART_ENTER,
+
+       
+       ////////////////////////////////////////////////////
+       // Development Keys
+       ////////////////////////////////////////////////////
+       MACRO_DEV_RENAME,
+       MACRO_DEV_GENERATE,
+       MACRO_DEV_NEW_CLASS
      };
 
 
@@ -272,6 +297,8 @@ enum {
 
   LFNandRFN,
 
+  //  AltLayer,
+  
   // For numpad, etc
   LFN2,
 
@@ -309,20 +336,27 @@ enum {
 #define EMACS_EditLines LCTRL(Key_F14)
 #define EMACS_MarkAllLikeThis LCTRL(Key_F15)
 #define EMACS_MoveToPrevMarkedPos M(MACRO_EMACS_MOVE_TO_PREV_MARKED_POS)
-#define EMACS_MoveLineUp LCTRL(Key_F16) 
-#define EMACS_MoveLineDown LCTRL(Key_F17)
+#define EMACS_MoveLineUp M(MACRO_MOVE_LINE_UP) //LCTRL(Key_F16) 
+#define EMACS_MoveLineDown M(MACRO_MOVE_LINE_DOWN) //LCTRL(Key_F17)
 #define EMACS_CopyLine LCTRL(Key_F18)
 #define EMACS_CutLine LCTRL(Key_F19)
 #define EMACS_Refile M(MACRO_EMACS_ORG_REFILE)// LCTRL(Key_F20) // use C-c C-w since it's view-dependant (agenda, normal)
 #define EMACS_InsertLink LCTRL(Key_F21)
 #define EMACS_AceJump M(MACRO_ACE_JUMP)
 #define EMACS_SwitchWindow LCTRL(Key_F23) // uses ace-window
-#define EMACS_CcCc M(MACRO_EMACS_CcCc) // C-c C-c
+#define EMACS_CcCc M(MACRO_EMACS_CcCc) // C-c C-c  
 #define EMACS_MarkNextLikeThis LCTRL(Key_F24)
 #define EMACS_KeyboardQuit LCTRL(Key_G) // C-g
+#define EMACS_CaptureTodo M(MACRO_EMACS_CAPTURE_TODO)
+#define EMACS_CaptureNote M(MACRO_EMACS_CAPTURE_NOTE)
+#define EMACS_CaptureJournal M(MACRO_EMACS_CAPTURE_JOURNAL)
+#define EMACS_DeleteWindow M(MACRO_DELETE_WINDOW)
+#define EMACS_KillBuffer M(MACRO_KILL_BUFFER)
 #define WINDOWS_Lockscreen LGUI(Key_L)
 #define WINDOWS_FocusEmacs LGUI(Key_3) //M(MACRO_FOCUS_EMACS)
-#define WINDOWS_FocusChrome LGUI(Key_1)  
+#define WINDOWS_FocusChrome LGUI(Key_1)
+#define WINDOWS_FocusIDE M(MACRO_FOCUS_IDE)
+#define WINDOWS_Shutdown M(MACRO_SHUTDOWN)
 #endif
 
 KEYMAPS
@@ -355,17 +389,17 @@ KEYMAPS
    TD(TapDanceKey::RightBrackets), ___,                        EMACS_KeyboardQuit,    Key_UpArrow,   ___,            EMACS_CenterScreen,    Key_Backslash,
                                    ___,                        Key_LeftArrow, Key_DownArrow, Key_RightArrow, M(MACRO_SAVE_FILE),    ___,
    ___,                            TD(TapDanceKey::Bookmarks), ___,           M(MACRO_CUT),  ___,            M(MACRO_AUTOCOMPLETE), Key_Pipe,
-   ___,                            EMACS_CcCc,           Key_Delete,    ___,
-   ShiftToLayer(LFNandRFN)),
+   ___,                            M(MACRO_SMART_ENTER),           Key_Delete,    ___,
+   ___),
 
   
   [RFN] = KEYMAP_STACKED
   (WINDOWS_Lockscreen,       Key_F1,                Key_F2,                Key_F3,                    Key_F4,                    Key_F5, M(MACRO_CURLYBRACKET_PAIR),
-   ___,               ___,                   WINDOWS_FocusChrome,     WINDOWS_FocusEmacs,          ___,                       ___,           TD(TapDanceKey::RightBrackets),
+   ___,               WINDOWS_FocusIDE,                   WINDOWS_FocusChrome,     WINDOWS_FocusEmacs,          WINDOWS_FocusIDE,                       ___,           TD(TapDanceKey::RightBrackets),
    M(MACRO_RFN_PGUP), TD(TapDanceKey::AUml), TD(TapDanceKey::OUml), ___,                       TD(TapDanceKey::UUml),     M(MACRO_UMLAUT_S),
-   M(MACRO_RFN_PGDN), EMACS_SwitchWindow,                   M(MACRO_KILL_BUFFER),  M(MACRO_GOTO_PREV_BUFFER), M(MACRO_GOTO_NEXT_BUFFER), EMACS_Command, M(MACRO_BRACKET_PAIR),
+   M(MACRO_RFN_PGDN), EMACS_SwitchWindow,                   EMACS_KillBuffer,  M(MACRO_GOTO_PREV_BUFFER), M(MACRO_GOTO_NEXT_BUFFER), EMACS_Command, M(MACRO_BRACKET_PAIR),
    Key_mouseBtnR,     Key_mouseBtnL,         Key_mouseBtnR,         ___,
-   ShiftToLayer(LFNandRFN),
+   ___,
  
    ___, Key_F6,     Key_F7,      Key_F8,      Key_F9,                       Key_F10, Key_F11,
    ___, ___,        M(MACRO_UNDO),         Key_mouseUp, EMACS_SearchBackward,                 ___,     Key_F12,
@@ -379,18 +413,42 @@ KEYMAPS
   (___, ___,              ___, ___,                ___, ___, ___,
    ___, ___,              ___, EMACS_MoveLineUp,   ___, ___, ___,
    ___, EMACS_InsertLink, ___, EMACS_MoveLineDown, ___, ___,
-   ___, ___,              ___, ___,                ___, ___, ___,
+   ___, ___,              ___, EMACS_CaptureJournal,                ___, ___, ___,
    ___, ___,              ___, ___,
    ___,
    
    ___, ___,                    ___,           ___,            ___,          ___, ___,
    ___, EMACS_EditLines,        EMACS_CutLine, EMACS_CopyLine, EMACS_Refile, ___, ___,
-        EMACS_MarkAllLikeThis,  ___,           ___,            ___,          ___, ___,
+        EMACS_MarkAllLikeThis,  ___,           EMACS_CaptureTodo,            EMACS_CaptureNote,          ___, ___,
    ___, EMACS_MarkNextLikeThis, ___,           ___,            ___,          ___, ___,
    ___, ___,                    ___,           ___,
 
    ___),
   
+
+  //  [AltLayer] = KEYMAP_STACKED // look at how many ALT keys are i am replicating. the only keys that changed are pageUp/Down. Why bother
+  //  (___, ___, ___,         ___, ___, ___, ___,
+    //   ___, ___, ___,         ___, ___, ___, ___,
+    //   ___, ___, ___,         ___, ___, ___,
+    //   ___, ___, LALT(Key_Q), ___, ___, ___, ___,
+    //   ___, ___, ___,         ___,
+    //   ___, 
+    //
+    //   ___, ___,             ___,                 ___,          ___,         ___,         ___,
+    //   ___, ___,             ___,                 Key_PageUp,   ___,         ___,         ___,
+    //        LALT(Key_D),     LALT(Key_H),         Key_PageDown, LALT(Key_N), LALT(Key_S), ___,
+    //   ___, ___,             ___,                 LALT(Key_W),  ___,         ___,         ___,
+    //   ___, LALT(Key_Enter), LALT(Key_Backspace), ___,
+    //   ___),
+
+   
+   //   ___, ___,             ___,                 ___,            ___,                  ___,         ___,
+   //   ___, ___,             ___,                 LALT(Key_PageUp), ___,                  ___,         ___,
+   //        LALT(Key_D),     LALT(Key_LeftArrow), LALT(Key_PageDown), LALT(Key_RightArrow), LALT(Key_S), ___,
+   //   ___, ___,             ___,                 LALT(Key_W),    ___,                  ___,         ___,
+   //   ___, LALT(Key_Enter), ___,                 ___,
+   //   ___),
+
   
   [LFN2] =  KEYMAP_STACKED 
   (___,          ___,                              ___,                           ___,                         ___,                               ___, Key_LEDEffectNext,
@@ -407,17 +465,19 @@ KEYMAPS
    Key_Space, Key_Enter, ___, Key_Space,
    ___),
 
-  
+
+  // RFN2 is for development stuff
   [RFN2] =  KEYMAP_STACKED
   (___, ___, ___, ___, ___, ___, M(MACRO_LED_DEACTIVATION),
    ___, ___, ___, ___, ___, ___, ___,
-   ___, M(MACRO_APP_BROWSER_OPEN_SEARCH), M(MACRO_APP_FOOBAR2K_UnFOCUS), M(MACRO_APP_FOOBAR2K_PAUSE), M(MACRO_APP_FOOBAR2K_SEEK_FW1MIN), M(MACRO_APP_FOOBAR2K_RATE1),
-   ___, ___, ___, ___, ___, ___, ___,
+   ___, ___, ___, ___, ___, ___, 
+   ___, ___, EMACS_DeleteWindow, ___, ___, ___, ___,
    ___, ___, ___, ___,
    ___,
- 
+
+   
    ___, ___, ___, ___, ___, ___, ___,
-   ___, ___, ___, ___, ___, ___, ___,
+   ___, ___, M(MACRO_DEV_GENERATE), M(MACRO_DEV_NEW_CLASS), M(MACRO_DEV_RENAME), ___, ___,
         ___, ___, ___, ___, ___, ___,
    ___, ___, ___, ___, ___, ___, ___,
    ___, ___, ___, ___,
@@ -630,7 +690,7 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
   case MACRO_FOCUS_EMACS:
     return FNtoAHK(1,8);
 
-  case MACRO_KILL_BUFFER:
+  case MACRO_DELETE_WINDOW:
     return FNtoAHK(1,9);
 
   case MACRO_ENTER_KEY:
@@ -680,6 +740,42 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
 
   case MACRO_UNDO:
     return FNtoAHK(3,5);
+
+    //  case MACRO_SHUTDOWN:
+    //    return FNtoAHK(3,6);
+    //
+     //  case MACRO_EMACS_CAPTURE_TODO:
+    //    return FNtoAHK(3,7);
+    //
+     //  case MACRO_EMACS_CAPTURE_NOTE:
+    //    return FNtoAHK(3,8);
+    //
+     //  case MACRO_EMACS_CAPTURE_JOURNAL:
+    //    return FNtoAHK(3,9);
+    //
+     //  case MACRO_MOVE_LINE_UP:
+    //    return FNtoAHK(4,0);
+    //
+     //  case MACRO_MOVE_LINE_DOWN:
+    //    return FNtoAHK(4,1);            
+    //
+     //  case MACRO_DEV_RENAME:
+    //    return FNtoAHK(4,2);            
+    //
+     //  case MACRO_SMART_ENTER:
+    //    return FNtoAHK(4,3);
+    //
+     //  case MACRO_DEV_GENERATE:
+    //    return FNtoAHK(4,4);
+    //
+     //  case MACRO_DEV_NEW_CLASS:
+    //    return FNtoAHK(4,5);                
+    //
+     //  case MACRO_FOCUS_IDE:
+    //    return FNtoAHK(4,6);
+    //
+     //  case MACRO_KILL_BUFFER:
+    //    return FNtoAHK(4,7);    
     
   }
   
@@ -797,17 +893,40 @@ void hostPowerManagementEventHandler(kaleidoscope::HostPowerManagement::Event ev
   toggleLedsOnSuspendResume(event);
 }
 
-static void leaderA(uint8_t seq_index) {
-  Macros.type(PSTR("a "));
+
+//enum MC {
+          //         SwitchToLayerLFNandRFN
+//};
+
+static void switchToLayerLFNandRFN(uint8_t combo_index) {
+  //Macros.type(PSTR("It's a kind of magic!"));
+  ShiftToLayer(LFNandRFN);
 }
 
-static void leaderTX(uint8_t seq_index) {
-  Macros.type(PSTR("tx "));
-}
 
-static const kaleidoscope::Leader::dictionary_t leader_dictionary[] PROGMEM =
-  LEADER_DICT({LEADER_SEQ(LEAD(0), Key_A), leaderA},
-              {LEADER_SEQ(LEAD(0), Key_T, Key_X), leaderTX});
+//USE_MAGIC_COMBOS(
+                  //[MC::SwitchToLayerLFNandRFN] = {
+                    //  .action = switchToLayerLFNandRFN,
+//  .keys = {R3C6, R3C9} // Left Fn + Right Fn
+//});
+
+USE_MAGIC_COMBOS(
+{
+  .action = switchToLayerLFNandRFN,
+  .keys = {R3C6, R3C9} // Left Fn + Right Fn
+});
+
+//static void leaderA(uint8_t seq_index) {
+  //  Macros.type(PSTR("a "));
+  //}
+//
+ //static void leaderTX(uint8_t seq_index) {
+  //  Macros.type(PSTR("tx "));
+  //}
+//
+ //static const kaleidoscope::Leader::dictionary_t leader_dictionary[] PROGMEM =
+  //  LEADER_DICT({LEADER_SEQ(LEAD(0), Key_A), leaderA},
+               //              {LEADER_SEQ(LEAD(0), Key_T, Key_X), leaderTX});
 
 
 static const cRGB heat_colors[] PROGMEM = {
@@ -817,8 +936,58 @@ static const cRGB heat_colors[] PROGMEM = {
   { 25,  25, 255}  // red
 };
 
+
+
+//// it semi-works... it seems to send multiple PageDowns at one time
+//// because it scrolls a hell lot more than a single PageDown.
+//// I remapped them on the AHK level instead
+//Key altPageUpDn(Key mapped_key, byte row, byte col, uint8_t key_state) {
+  //  // If none of the controls are pressed, fall through.
+  //  if (!kaleidoscope::hid::wasModifierKeyActive(Key_LeftAlt))
+     //    return mapped_key;
+  //
+     //  // Either left or right control is active!
+     //
+     //  // If the key isn't C, fall through
+     //  if (mapped_key != Key_T)
+     //    return mapped_key;
+  //
+     //  // If we are idle, fall through
+     //  if (!keyWasPressed(key_state) && !keyIsPressed(key_state))
+     //    return mapped_key;
+  //
+     //  // So we are not idle, one of the controls are held, and C is our key.
+     //  // Time to release the Kraken^WControls, and replace C with UpArrow.
+     //  kaleidoscope::hid::releaseKey(Key_LeftAlt);
+  //  return Key_PageDown;
+  //}
+
+KALEIDOSCOPE_INIT_PLUGINS(
+    TestMode,
+    Leader,
+    LEDControl,
+    LEDOff,
+    LEDRainbowEffect,
+    LEDRainbowWaveEffect,
+    LEDChaseEffect,
+    solidRed, solidOrange, solidYellow, solidGreen, solidBlue, solidIndigo, solidViolet,
+    LEDBreatheEffect,
+    AlphaSquareEffect,
+    StalkerEffect,
+    Macros,
+    MouseKeys,
+    OneShot,
+    TapDance,
+    //Unicode,
+    HostPowerManagement,
+    MagicCombo,
+    //Syster,
+    //HeatmapEffect,
+    ActiveModColorEffect // needs to go last     
+  );
+
 void setup() {
-  Kaleidoscope.use(
+  /*  Kaleidoscope.use(
     // The hardware test mode, which can be invoked by tapping Prog, LED and the left Fn button at the same time.
     &TestMode,
 
@@ -877,14 +1046,18 @@ void setup() {
     //    &Syster
 
     //&HeatmapEffect
-  );
+  );*/
 
   Kaleidoscope.setup();
 
+  // Kaleidoscope.useEventHandlerHook(altPageUpDn);
+
+  OneShot.time_out = 1500;
+  
   //  HeatmapEffect.heat_colors = heat_colors;
   //  HeatmapEffect.heat_colors_length = 4;  
 
-  Leader.dictionary = leader_dictionary;
+  //Leader.dictionary = leader_dictionary;
 
   // We configure the AlphaSquare effect to use RED letters
   AlphaSquare.color = CRGB(255, 0, 0);
@@ -917,4 +1090,4 @@ void setup() {
 
 void loop() {
   Kaleidoscope.loop();
-}
+}
