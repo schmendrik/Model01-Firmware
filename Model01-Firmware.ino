@@ -382,7 +382,7 @@ KEYMAPS
    ___,                ___,                ___,           ___,     ___,            M(MACRO_PASTE), ___,
    ___,                Key_Home,           EMACS_SetMark, Key_End, Key_Tab,        EMACS_AceJump,
    ___,                ___,                ___,           ___,     EMACS_KillLine, ___,            ___,
-   ___,                EMACS_JustOneSpace, ___,           ___,
+   ___,                EMACS_JustOneSpace, Key_LeftAlt,           ___,
    ___,
 
    ___,                            ___,                        ___,           ___,           ___,            ___,                   ___,
@@ -390,7 +390,7 @@ KEYMAPS
                                    ___,                        Key_LeftArrow, Key_DownArrow, Key_RightArrow, M(MACRO_SAVE_FILE),    ___,
    ___,                            TD(TapDanceKey::Bookmarks), ___,           M(MACRO_CUT),  ___,            M(MACRO_AUTOCOMPLETE), Key_Pipe,
    ___,                            M(MACRO_SMART_ENTER),           Key_Delete,    ___,
-   ___),
+   XXX),
 
   
   [RFN] = KEYMAP_STACKED
@@ -399,7 +399,7 @@ KEYMAPS
    M(MACRO_RFN_PGUP), TD(TapDanceKey::AUml), TD(TapDanceKey::OUml), ___,                       TD(TapDanceKey::UUml),     M(MACRO_UMLAUT_S),
    M(MACRO_RFN_PGDN), EMACS_SwitchWindow,                   EMACS_KillBuffer,  M(MACRO_GOTO_PREV_BUFFER), M(MACRO_GOTO_NEXT_BUFFER), EMACS_Command, M(MACRO_BRACKET_PAIR),
    Key_mouseBtnR,     Key_mouseBtnL,         Key_mouseBtnR,         ___,
-   ___,
+   XXX,
  
    ___, Key_F6,     Key_F7,      Key_F8,      Key_F9,                       Key_F10, Key_F11,
    ___, ___,        M(MACRO_UNDO),         Key_mouseUp, EMACS_SearchBackward,                 ___,     Key_F12,
@@ -741,41 +741,41 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
   case MACRO_UNDO:
     return FNtoAHK(3,5);
 
-    //  case MACRO_SHUTDOWN:
-    //    return FNtoAHK(3,6);
-    //
-     //  case MACRO_EMACS_CAPTURE_TODO:
-    //    return FNtoAHK(3,7);
-    //
-     //  case MACRO_EMACS_CAPTURE_NOTE:
-    //    return FNtoAHK(3,8);
-    //
-     //  case MACRO_EMACS_CAPTURE_JOURNAL:
-    //    return FNtoAHK(3,9);
-    //
-     //  case MACRO_MOVE_LINE_UP:
-    //    return FNtoAHK(4,0);
-    //
-     //  case MACRO_MOVE_LINE_DOWN:
-    //    return FNtoAHK(4,1);            
-    //
-     //  case MACRO_DEV_RENAME:
-    //    return FNtoAHK(4,2);            
-    //
-     //  case MACRO_SMART_ENTER:
-    //    return FNtoAHK(4,3);
-    //
-     //  case MACRO_DEV_GENERATE:
-    //    return FNtoAHK(4,4);
-    //
-     //  case MACRO_DEV_NEW_CLASS:
-    //    return FNtoAHK(4,5);                
-    //
-     //  case MACRO_FOCUS_IDE:
-    //    return FNtoAHK(4,6);
-    //
-     //  case MACRO_KILL_BUFFER:
-    //    return FNtoAHK(4,7);    
+  case MACRO_SHUTDOWN:
+    return FNtoAHK(3,6);
+
+  case MACRO_EMACS_CAPTURE_TODO:
+    return FNtoAHK(3,7);
+
+  case MACRO_EMACS_CAPTURE_NOTE:
+    return FNtoAHK(3,8);
+
+  case MACRO_EMACS_CAPTURE_JOURNAL:
+    return FNtoAHK(3,9);
+
+  case MACRO_MOVE_LINE_UP:
+    return FNtoAHK(4,0);
+
+  case MACRO_MOVE_LINE_DOWN:
+    return FNtoAHK(4,1);            
+
+  case MACRO_DEV_RENAME:
+    return FNtoAHK(4,2);            
+
+  case MACRO_SMART_ENTER:
+    return FNtoAHK(4,3);
+
+  case MACRO_DEV_GENERATE:
+    return FNtoAHK(4,4);
+
+  case MACRO_DEV_NEW_CLASS:
+    return FNtoAHK(4,5);                
+
+  case MACRO_FOCUS_IDE:
+    return FNtoAHK(4,6);
+
+  case MACRO_KILL_BUFFER:
+    return FNtoAHK(4,7);    
     
   }
   
@@ -894,39 +894,39 @@ void hostPowerManagementEventHandler(kaleidoscope::HostPowerManagement::Event ev
 }
 
 
-//enum MC {
-          //         SwitchToLayerLFNandRFN
-//};
+enum MC {
+         SwitchToLayerLFNandRFN
+};
 
-static void switchToLayerLFNandRFN(uint8_t combo_index) {
+void switchToLayerLFNandRFN(uint8_t combo_index) {
   //Macros.type(PSTR("It's a kind of magic!"));
+  //Somehow switch to layer LFNandRFN
   ShiftToLayer(LFNandRFN);
 }
 
 
-//USE_MAGIC_COMBOS(
-                  //[MC::SwitchToLayerLFNandRFN] = {
-                    //  .action = switchToLayerLFNandRFN,
-//  .keys = {R3C6, R3C9} // Left Fn + Right Fn
-//});
-
 USE_MAGIC_COMBOS(
-{
+[MC::SwitchToLayerLFNandRFN] = {
   .action = switchToLayerLFNandRFN,
   .keys = {R3C6, R3C9} // Left Fn + Right Fn
 });
 
-//static void leaderA(uint8_t seq_index) {
-  //  Macros.type(PSTR("a "));
-  //}
-//
- //static void leaderTX(uint8_t seq_index) {
-  //  Macros.type(PSTR("tx "));
-  //}
-//
- //static const kaleidoscope::Leader::dictionary_t leader_dictionary[] PROGMEM =
-  //  LEADER_DICT({LEADER_SEQ(LEAD(0), Key_A), leaderA},
-               //              {LEADER_SEQ(LEAD(0), Key_T, Key_X), leaderTX});
+//TODO: when you update to the new MagicCombo interface, try to use this
+
+
+
+
+static void leaderA(uint8_t seq_index) {
+  Macros.type(PSTR("a "));
+}
+
+static void leaderTX(uint8_t seq_index) {
+  Macros.type(PSTR("tx "));
+}
+
+static const kaleidoscope::Leader::dictionary_t leader_dictionary[] PROGMEM =
+  LEADER_DICT({LEADER_SEQ(LEAD(0), Key_A), leaderA},
+              {LEADER_SEQ(LEAD(0), Key_T, Key_X), leaderTX});
 
 
 static const cRGB heat_colors[] PROGMEM = {
@@ -938,29 +938,29 @@ static const cRGB heat_colors[] PROGMEM = {
 
 
 
-//// it semi-works... it seems to send multiple PageDowns at one time
-//// because it scrolls a hell lot more than a single PageDown.
-//// I remapped them on the AHK level instead
-//Key altPageUpDn(Key mapped_key, byte row, byte col, uint8_t key_state) {
-  //  // If none of the controls are pressed, fall through.
-  //  if (!kaleidoscope::hid::wasModifierKeyActive(Key_LeftAlt))
-     //    return mapped_key;
-  //
-     //  // Either left or right control is active!
-     //
-     //  // If the key isn't C, fall through
-     //  if (mapped_key != Key_T)
-     //    return mapped_key;
-  //
-     //  // If we are idle, fall through
-     //  if (!keyWasPressed(key_state) && !keyIsPressed(key_state))
-     //    return mapped_key;
-  //
-     //  // So we are not idle, one of the controls are held, and C is our key.
-     //  // Time to release the Kraken^WControls, and replace C with UpArrow.
-     //  kaleidoscope::hid::releaseKey(Key_LeftAlt);
-  //  return Key_PageDown;
-  //}
+// it semi-works... it seems to send multiple PageDowns at one time
+// because it scrolls a hell lot more than a single PageDown.
+// I remapped them on the AHK level instead
+Key altPageUpDn(Key mapped_key, byte row, byte col, uint8_t key_state) {
+  // If none of the controls are pressed, fall through.
+  if (!kaleidoscope::hid::wasModifierKeyActive(Key_LeftAlt))
+    return mapped_key;
+
+  // Either left or right control is active!
+
+  // If the key isn't C, fall through
+  if (mapped_key != Key_T)
+    return mapped_key;
+
+  // If we are idle, fall through
+  if (!keyWasPressed(key_state) && !keyIsPressed(key_state))
+    return mapped_key;
+
+  // So we are not idle, one of the controls are held, and C is our key.
+  // Time to release the Kraken^WControls, and replace C with UpArrow.
+  kaleidoscope::hid::releaseKey(Key_LeftAlt);
+  return Key_PageDown;
+}
 
 KALEIDOSCOPE_INIT_PLUGINS(
     TestMode,
@@ -978,6 +978,7 @@ KALEIDOSCOPE_INIT_PLUGINS(
     MouseKeys,
     OneShot,
     TapDance,
+    TopsyTurvy,
     //Unicode,
     HostPowerManagement,
     MagicCombo,
@@ -1037,6 +1038,7 @@ void setup() {
     &OneShot,
 
     &TapDance,
+    &TopsyTurvy,
 
     //&Unicode,
 
@@ -1057,7 +1059,7 @@ void setup() {
   //  HeatmapEffect.heat_colors = heat_colors;
   //  HeatmapEffect.heat_colors_length = 4;  
 
-  //Leader.dictionary = leader_dictionary;
+  Leader.dictionary = leader_dictionary;
 
   // We configure the AlphaSquare effect to use RED letters
   AlphaSquare.color = CRGB(255, 0, 0);
