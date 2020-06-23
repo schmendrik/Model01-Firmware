@@ -346,6 +346,10 @@ enum {
 #define WINDOWS_FocusChrome LGUI(Key_1)
 #define WINDOWS_FocusIDE M(MACRO_FOCUS_IDE)
 #define WINDOWS_Shutdown M(MACRO_SHUTDOWN)
+#define All_SaveFile M(MACRO_SAVE_FILE) //LCTRL(Key_S) 
+#define All_Copy M(MACRO_COPY) //LCTRL(Key_C) // Do these LCTRL ones in macro definitions
+#define All_Cut M(MACRO_CUT) //LCTRL(Key_X)
+#define All_Paste M(MACRO_PASTE) //LCTRL(Key_V) //M(MACRO_PASTE)
 #endif
 
 
@@ -379,7 +383,7 @@ KEYMAPS
 
    ___,                            ___,                        ___,           ___,           ___,            ___,                   ___,
    TD(TapDanceKey::RightBrackets), ___,                        EMACS_KeyboardQuit,    Key_UpArrow,   ___,            EMACS_CenterScreen,    Key_Backslash,
-                                   ___,                        Key_LeftArrow, Key_DownArrow, Key_RightArrow, M(MACRO_SAVE_FILE),    ___,
+   ___,                        Key_LeftArrow, Key_DownArrow, Key_RightArrow, M(MACRO_SAVE_FILE),    ___,
    ___,                            TD(TapDanceKey::Bookmarks), ___,           M(MACRO_CUT),  ___,            M(MACRO_AUTOCOMPLETE), Key_Pipe,
    ___,                            M(MACRO_SMART_ENTER),           Key_Delete,    ___,
    XXX),
@@ -671,13 +675,13 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
   case MACRO_APP_FOOBAR2K_UnFOCUS:
     return FNtoAHK(2,5);
 
-  case MACRO_COPY:
+  case MACRO_COPY: //not in use
     return FNtoAHK(2,6);
 
-  case MACRO_CUT:
+  case MACRO_CUT: //not in use
     return FNtoAHK(2,7);
 
-  case MACRO_PASTE:
+  case MACRO_PASTE: //not in use
     return FNtoAHK(2,8);
 
   case MACRO_RFN_PGDN:
@@ -757,6 +761,59 @@ static kaleidoscope::plugin::LEDSolidColor solidBlue(0, 70, 130);
 static kaleidoscope::plugin::LEDSolidColor solidIndigo(0, 0, 170);
 static kaleidoscope::plugin::LEDSolidColor solidViolet(130, 0, 120);
 
+
+
+void tapDanceAction(uint8_t tap_dance_index, byte row, byte col, uint8_t tap_count,
+                    kaleidoscope::plugin::TapDance::ActionType tap_dance_action) {
+  switch (tap_dance_index) {
+    case TapDanceKey::LeftBrackets: {
+      return tapDanceActionKeys(tap_count, tap_dance_action, M(MACRO_PAREN_PAIR), M(MACRO_BRACKET_PAIR), M(MACRO_CURLYBRACKET_PAIR));
+    }
+    case TapDanceKey::RightBrackets: {
+      return tapDanceActionKeys(tap_count, tap_dance_action, Key_RightParen, Key_RightBracket, Key_RightCurlyBracket);
+    }      
+
+    case TapDanceKey::AUml: {
+      return tapDanceActionKeys(tap_count, tap_dance_action, M(MACRO_UMLAUT_A), M(MACRO_UMLAUT_CA));
+    }
+    case TapDanceKey::OUml: {
+      return tapDanceActionKeys(tap_count, tap_dance_action, M(MACRO_UMLAUT_O), M(MACRO_UMLAUT_CO));
+    }
+    case TapDanceKey::UUml: {
+      return tapDanceActionKeys(tap_count, tap_dance_action, M(MACRO_UMLAUT_U), M(MACRO_UMLAUT_CU));
+    }
+
+    case TapDanceKey::AUml2: {
+       return tapDanceActionKeys(tap_count, tap_dance_action, Key_A, M(MACRO_UMLAUT_A), M(MACRO_UMLAUT_CA));
+    }
+    case TapDanceKey::OUml2: {
+       return tapDanceActionKeys(tap_count, tap_dance_action, Key_O, M(MACRO_UMLAUT_O), M(MACRO_UMLAUT_CO));
+    }
+    case TapDanceKey::UUml2: {
+       return tapDanceActionKeys(tap_count, tap_dance_action, Key_U, M(MACRO_UMLAUT_U), M(MACRO_UMLAUT_CU));
+    }
+    case TapDanceKey::SUml2: {
+       return tapDanceActionKeys(tap_count, tap_dance_action, Key_I, M(MACRO_UMLAUT_S));
+    }      
+      
+    case TapDanceKey::Bookmarks: { // show also buffers
+      return tapDanceActionKeys(tap_count, tap_dance_action, M(MACRO_SHOW_BOOKMARKS), M(MACRO_SHOW_BUFFERS), M(MACRO_SET_BOOKMARK));
+    }
+      //    case TapDanceKey::OrgAgendaAndCapture: {
+       //      return tapDanceActionKeys(tap_count, tap_dance_action, M(MACRO_ENTER_KEY), M(MACRO_ORG_EMACS_CAPTURE));
+      //    }
+    case TapDanceKey::OrgClocking: {
+      return tapDanceActionKeys(tap_count, tap_dance_action, M(MACRO_ORG_CLOCK_GOTO), M(MACRO_ORG_CLOCK_IN), M(MACRO_ORG_CLOCK_OUT));
+    }      
+    case TapDanceKey::CopyCut: {
+      //return tapDanceActionKeys(tap_count, tap_dance_action, M(MACRO_COPY), M(MACRO_CUT));
+      return tapDanceActionKeys(tap_count, tap_dance_action, All_Copy, All_Cut);
+    }      
+  }
+}
+
+
+
 /** toggleLedsOnSuspendResume toggles the LEDs off when the host goes to sleep,
  * and turns them back on when it wakes up.
  */
@@ -816,6 +873,16 @@ static void enterHardwareTestMode(uint8_t combo_index) {
   HardwareTestMode.runTests();
 }
 
+
+enum MC {
+         SwitchToLayerLFNandRFN
+};
+
+void switchToLayerLFNandRFN(uint8_t combo_index) {
+  //Macros.type(PSTR("It's a kind of magic!"));
+  //Somehow switch to layer LFNandRFN
+  ShiftToLayer(LFNandRFN);
+}
 
 /** Magic combo list, a list of key combo and action pairs the firmware should
  * recognise.
