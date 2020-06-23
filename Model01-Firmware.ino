@@ -386,7 +386,7 @@ KEYMAPS
    ___,                        Key_LeftArrow, Key_DownArrow, Key_RightArrow, M(MACRO_SAVE_FILE),    ___,
    ___,                            TD(TapDanceKey::Bookmarks), ___,           M(MACRO_CUT),  ___,            M(MACRO_AUTOCOMPLETE), Key_Pipe,
    ___,                            M(MACRO_SMART_ENTER),           Key_Delete,    ___,
-   XXX),
+   ShiftToLayer(LFNandRFN)),
 
   
   [RFN] = KEYMAP_STACKED
@@ -395,7 +395,7 @@ KEYMAPS
    M(MACRO_RFN_PGUP), TD(TapDanceKey::AUml), TD(TapDanceKey::OUml), ___,                       TD(TapDanceKey::UUml),     M(MACRO_UMLAUT_S),
    M(MACRO_RFN_PGDN), EMACS_SwitchWindow,                   EMACS_KillBuffer,  M(MACRO_GOTO_PREV_BUFFER), M(MACRO_GOTO_NEXT_BUFFER), EMACS_Command, M(MACRO_BRACKET_PAIR),
    Key_mouseBtnR,     Key_mouseBtnL,         Key_mouseBtnR,         ___,
-   XXX,
+   ShiftToLayer(LFNandRFN),
  
    ___, Key_F6,     Key_F7,      Key_F8,      Key_F9,                       Key_F10, Key_F11,
    ___, ___,        M(MACRO_UNDO),         Key_mouseUp, EMACS_SearchBackward,                 ___,     Key_F12,
@@ -878,23 +878,36 @@ enum MC {
          SwitchToLayerLFNandRFN
 };
 
-void switchToLayerLFNandRFN(uint8_t combo_index) {
+void shiftToLayerLFNandRFN(uint8_t combo_index) {
   //Macros.type(PSTR("It's a kind of magic!"));
   //Somehow switch to layer LFNandRFN
-  ShiftToLayer(LFNandRFN);
+
+  // ShiftToLayer(LFNandRFN); // This worked with a really old firmware version only
+
+  /* This doesn't work, LFNandRFN layer stays after depressing
+  if (Layer.isActive(LFNandRFN)) {
+    Layer.deactivate(LFNandRFN);
+  } else {
+    Layer.activate(LFNandRFN);
+  }
+  */
 }
 
 /** Magic combo list, a list of key combo and action pairs the firmware should
  * recognise.
  */
-USE_MAGIC_COMBOS({.action = toggleKeyboardProtocol,
-                  // Left Fn + Esc + Shift
-                  .keys = { R3C6, R2C6, R3C7 }
-}, {
-  .action = enterHardwareTestMode,
-  // Left Fn + Prog + LED
-  .keys = { R3C6, R0C0, R0C6 }
-});
+USE_MAGIC_COMBOS(
+    {.action = toggleKeyboardProtocol,
+     .keys = { R3C6, R2C6, R3C7 } // Left Fn + Esc + Shift
+    },
+    {.action = enterHardwareTestMode,
+     .keys = { R3C6, R0C0, R0C6 } // Left Fn + Prog + LED
+    },
+    /*{.action = shiftToLayerLFNandRFN,
+     // Left Fn + Prog + LED
+     .keys = {R3C6, R3C9} // Left Fn + Right Fn
+     }*/
+);
 
 // First, tell Kaleidoscope which plugins you want to use.
 // The order can be important. For example, LED effects are
@@ -968,6 +981,8 @@ KALEIDOSCOPE_INIT_PLUGINS(
   // with a custom LED effect
   //NumPad,
 
+  MagicCombo,
+  
   // The macros plugin adds support for macros
   Macros,
 
@@ -978,11 +993,6 @@ KALEIDOSCOPE_INIT_PLUGINS(
   // goes to sleep, and resume them when it wakes up.
   HostPowerManagement,
 
-  // The MagicCombo plugin lets you use key combinations to trigger custom
-  // actions - a bit like Macros, but triggered by pressing multiple keys at the
-  // same time.
-  MagicCombo,
-
   // The USBQuirks plugin lets you do some things with USB that we aren't
   // comfortable - or able - to do automatically, but can be useful
   // nevertheless. Such as toggling the key report protocol between Boot (used
@@ -991,6 +1001,7 @@ KALEIDOSCOPE_INIT_PLUGINS(
   
   TapDance,
   TopsyTurvy
+
 );
 
 /** The 'setup' function is one of the two standard Arduino sketch functions.
