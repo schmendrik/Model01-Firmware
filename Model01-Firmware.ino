@@ -141,6 +141,7 @@ enum { MACRO_VERSION_INFO,
        MACRO_GOTO_NEXT_BUFFER,
        MACRO_KILL_BUFFER,
        MACRO_DELETE_WINDOW,
+       MACRO_FORWARD_DELETE_WORD,
 
        MACRO_SHOW_BOOKMARKS,
        MACRO_SET_BOOKMARK,
@@ -315,6 +316,17 @@ enum {
   //  FACTORY_FN
 };  
 
+
+/* Key modifiers
+LCTRL(k)
+LALT(k)
+RALT(k)
+LSHIFT(k)
+LGUI(k)
+*/
+
+
+
 #ifndef NAMED_HOTKEYS
 #define EMACS_JustOneSpace LALT(Key_Space)
 #define EMACS_KillLine LCTRL(Key_K)
@@ -341,6 +353,7 @@ enum {
 #define EMACS_CaptureJournal M(MACRO_EMACS_CAPTURE_JOURNAL)
 #define EMACS_DeleteWindow M(MACRO_DELETE_WINDOW)
 #define EMACS_KillBuffer M(MACRO_KILL_BUFFER)
+#define EMACS_ForwardDeleteWord LCTRL(LSHIFT(Key_F7)) // M(MACRO_FORWARD_DELETE_WORD)
 #define WINDOWS_Lockscreen LGUI(Key_L)
 #define WINDOWS_FocusEmacs LGUI(Key_3) //M(MACRO_FOCUS_EMACS)
 #define WINDOWS_FocusChrome LGUI(Key_1)
@@ -350,6 +363,7 @@ enum {
 #define All_Copy M(MACRO_COPY) //LCTRL(Key_C) // Do these LCTRL ones in macro definitions
 #define All_Cut M(MACRO_CUT) //LCTRL(Key_X)
 #define All_Paste M(MACRO_PASTE) //LCTRL(Key_V) //M(MACRO_PASTE)
+#define All_Undo M(MACRO_UNDO) //LCTRL(Key_Z) 
 #endif
 
 
@@ -383,9 +397,9 @@ KEYMAPS
 
    ___,                            ___,                        ___,           ___,           ___,            ___,                   ___,
    TD(TapDanceKey::RightBrackets), ___,                        EMACS_KeyboardQuit,    Key_UpArrow,   ___,            EMACS_CenterScreen,    Key_Backslash,
-   ___,                        Key_LeftArrow, Key_DownArrow, Key_RightArrow, M(MACRO_SAVE_FILE),    ___,
+   EMACS_ForwardDeleteWord, Key_LeftArrow, Key_DownArrow, Key_RightArrow, M(MACRO_SAVE_FILE),    ___,
    ___,                            TD(TapDanceKey::Bookmarks), ___,           M(MACRO_CUT),  ___,            M(MACRO_AUTOCOMPLETE), Key_Pipe,
-   ___,                            M(MACRO_SMART_ENTER),           Key_Delete,    ___,
+   ___,                           M(MACRO_SMART_ENTER),           Key_Delete,    ___,
    ShiftToLayer(LFNandRFN)),
 
   
@@ -534,6 +548,7 @@ static void anyKeyMacro(uint8_t keyState) {
 //#define FNtoAHK(N1, N2, N3) MACRODOWN(T(F12), T(N1), T(N2), T(N3))
 #define FNtoAHK(N1, N2) MACRODOWN(T(F13), T(N1), T(N2))
 
+
 const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
   switch (macroIndex) {
 
@@ -552,6 +567,11 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
   case MACRO_LED_DEACTIVATION:
     //deactivateLeds(keyState);
     break;
+
+
+    //  case MACRO_FORWARD_DELETE_WORD:
+    //return MACRODOWN(T(F7), T(N1), T(N2))
+    
 
   case MACRO_EMACS_CcCc:
     return MACRODOWN(D(RightControl), T(C), T(C), U(RightControl));
@@ -775,7 +795,8 @@ void tapDanceAction(uint8_t tap_dance_index, byte row, byte col, uint8_t tap_cou
     }      
 
     case TapDanceKey::AUml: {
-      return tapDanceActionKeys(tap_count, tap_dance_action, M(MACRO_UMLAUT_A), M(MACRO_UMLAUT_CA));
+      //      return tapDanceActionKeys(tap_count, tap_dance_action, M(MACRO_UMLAUT_A), M(MACRO_UMLAUT_CA));
+      return tapDanceActionKeys(tap_count, tap_dance_action, M(MACRO_UMLAUT_A), M(MACRO_UMLAUT_CA));      
     }
     case TapDanceKey::OUml: {
       return tapDanceActionKeys(tap_count, tap_dance_action, M(MACRO_UMLAUT_O), M(MACRO_UMLAUT_CO));
