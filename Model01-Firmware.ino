@@ -392,7 +392,8 @@ KEYMAPS
   [RFN] = KEYMAP_STACKED
   (WINDOWS_Lockscreen,       Key_F1,                Key_F2,                Key_F3,                    Key_F4,                    Key_F5, M(MACRO_CURLYBRACKET_PAIR),
    ___,               WINDOWS_FocusIDE,                   WINDOWS_FocusChrome,     WINDOWS_FocusEmacs,          WINDOWS_FocusIDE,                       ___,           TD(TapDanceKey::RightBrackets),
-   M(MACRO_RFN_PGUP), TD(TapDanceKey::AUml), TD(TapDanceKey::OUml), ___,                       TD(TapDanceKey::UUml),     M(MACRO_UMLAUT_S),
+   //   M(MACRO_RFN_PGUP), TD(TapDanceKey::AUml), TD(TapDanceKey::OUml), ___,                       TD(TapDanceKey::UUml),     M(MACRO_UMLAUT_S),
+   M(MACRO_RFN_PGUP), M(MACRO_UMLAUT_A), M(MACRO_UMLAUT_O), ___, M(MACRO_UMLAUT_U),     M(MACRO_UMLAUT_S),
    M(MACRO_RFN_PGDN), EMACS_SwitchWindow,                   EMACS_KillBuffer,  M(MACRO_GOTO_PREV_BUFFER), M(MACRO_GOTO_NEXT_BUFFER), EMACS_Command, M(MACRO_BRACKET_PAIR),
    Key_mouseBtnR,     Key_mouseBtnL,         Key_mouseBtnR,         ___,
    ShiftToLayer(LFNandRFN),
@@ -466,7 +467,7 @@ KEYMAPS
   [RFN2] =  KEYMAP_STACKED
   (___, ___, ___, ___, ___, ___, M(MACRO_LED_DEACTIVATION),
    ___, ___, ___, ___, ___, ___, ___,
-   ___, ___, ___, ___, ___, ___, 
+   ___, M(MACRO_UMLAUT_CA), M(MACRO_UMLAUT_CO), ___, M(MACRO_UMLAUT_CU), ___, 
    ___, ___, EMACS_DeleteWindow, ___, ___, ___, ___,
    ___, ___, ___, ___,
    ___,
