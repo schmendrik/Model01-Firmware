@@ -12,6 +12,7 @@
  * as well as the Kaleidoscope plugins we use in the Model 01's firmware
  */
 
+#include "secrets_file.h"
 
 // The Kaleidoscope core
 #include "Kaleidoscope.h"
@@ -208,7 +209,14 @@ enum { MACRO_VERSION_INFO,
        ////////////////////////////////////////////////////
        MACRO_DEV_RENAME,
        MACRO_DEV_GENERATE,
-       MACRO_DEV_NEW_CLASS
+       MACRO_DEV_NEW_CLASS,
+
+
+
+       ////////////////////////////////////////////////////
+       // OTHER
+       ////////////////////////////////////////////////////
+       MACRO_PRINT_MY_MAIL
      };
 
 enum TapDanceKey {
@@ -440,6 +448,39 @@ KEYMAPS
 
    ___),
   
+  
+  [LFN2] =  KEYMAP_STACKED 
+  (___,          ___,                              ___,                           ___,                         ___,                               ___, Key_LEDEffectNext,
+   ___,          ___,                              ___,                           ___,                         ___,                               ___, Key_LeftBracket,
+   Key_PageUp,   M(MACRO_APP_BROWSER_OPEN_SEARCH), M(MACRO_APP_FOOBAR2K_UnFOCUS), M(MACRO_APP_FOOBAR2K_PAUSE), M(MACRO_APP_FOOBAR2K_SEEK_FW1MIN), M(MACRO_APP_FOOBAR2K_RATE1),
+   Key_PageDown, LSHIFT(Key_Semicolon),            ___,                           ___,                         ___,                               ___, ___,
+   ___,          ___,                              ___,                           ___,
+   ___,
+
+   M(MACRO_VERSION_INFO),  M(MACRO_PRINT_MY_MAIL),                ___,   ___,   ___,   ___,                ___,
+   Key_RightBracket,       Key_KeypadAdd,      Key_4, Key_5, Key_6, Key_Equals,         ___,
+                           Key_0,              Key_1, Key_2, Key_3, Key_KeypadMultiply, ___,
+   ___,                    Key_KeypadSubtract, Key_7, Key_8, Key_9, Key_KeypadDivide,   ___,
+   Key_Space, Key_Enter, ___, Key_Space,
+   ___),
+
+
+  // RFN2 is for development stuff
+  [RFN2] =  KEYMAP_STACKED
+  (___, ___, ___, ___, ___, ___, M(MACRO_LED_DEACTIVATION),
+   ___, ___, ___, ___, ___, ___, ___,
+   ___, M(MACRO_UMLAUT_CA), M(MACRO_UMLAUT_CO), ___, M(MACRO_UMLAUT_CU), ___, 
+   ___, ___, EMACS_DeleteWindow, ___, ___, ___, ___,
+   ___, ___, ___, ___,
+   ___,
+
+   
+   ___, ___, ___, ___, ___, ___, ___,
+   ___, ___, M(MACRO_DEV_GENERATE), M(MACRO_DEV_NEW_CLASS), M(MACRO_DEV_RENAME), ___, ___,
+        ___, ___, ___, ___, ___, ___,
+   ___, ___, ___, ___, ___, ___, ___,
+   ___, ___, ___, ___,
+   ___),  
 
   //  [AltLayer] = KEYMAP_STACKED // look at how many ALT keys are i am replicating. the only keys that changed are pageUp/Down. Why bother
   //  (___, ___, ___,         ___, ___, ___, ___,
@@ -465,39 +506,6 @@ KEYMAPS
    //   ___),
 
   
-  [LFN2] =  KEYMAP_STACKED 
-  (___,          ___,                              ___,                           ___,                         ___,                               ___, Key_LEDEffectNext,
-   ___,          ___,                              ___,                           ___,                         ___,                               ___, Key_LeftBracket,
-   Key_PageUp,   M(MACRO_APP_BROWSER_OPEN_SEARCH), M(MACRO_APP_FOOBAR2K_UnFOCUS), M(MACRO_APP_FOOBAR2K_PAUSE), M(MACRO_APP_FOOBAR2K_SEEK_FW1MIN), M(MACRO_APP_FOOBAR2K_RATE1),
-   Key_PageDown, LSHIFT(Key_Semicolon),            ___,                           ___,                         ___,                               ___, ___,
-   ___,          ___,                              ___,                           ___,
-   ___,
-
-   M(MACRO_VERSION_INFO),  ___,                ___,   ___,   ___,   ___,                ___,
-   Key_RightBracket,       Key_KeypadAdd,      Key_4, Key_5, Key_6, Key_Equals,         ___,
-                           Key_0,              Key_1, Key_2, Key_3, Key_KeypadMultiply, ___,
-   ___,                    Key_KeypadSubtract, Key_7, Key_8, Key_9, Key_KeypadDivide,   ___,
-   Key_Space, Key_Enter, ___, Key_Space,
-   ___),
-
-
-  // RFN2 is for development stuff
-  [RFN2] =  KEYMAP_STACKED
-  (___, ___, ___, ___, ___, ___, M(MACRO_LED_DEACTIVATION),
-   ___, ___, ___, ___, ___, ___, ___,
-   ___, M(MACRO_UMLAUT_CA), M(MACRO_UMLAUT_CO), ___, M(MACRO_UMLAUT_CU), ___, 
-   ___, ___, EMACS_DeleteWindow, ___, ___, ___, ___,
-   ___, ___, ___, ___,
-   ___,
-
-   
-   ___, ___, ___, ___, ___, ___, ___,
-   ___, ___, M(MACRO_DEV_GENERATE), M(MACRO_DEV_NEW_CLASS), M(MACRO_DEV_RENAME), ___, ___,
-        ___, ___, ___, ___, ___, ___,
-   ___, ___, ___, ___, ___, ___, ___,
-   ___, ___, ___, ___,
-   ___),  
-
 ) // KEYMAPS(
 
 /* Re-enable astyle's indent enforcement */
@@ -511,6 +519,12 @@ KEYMAPS
 static void versionInfoMacro(uint8_t keyState) {
   if (keyToggledOn(keyState)) {
     Macros.type(PSTR(BUILD_INFORMATION));
+  }
+}
+
+static void printMyMail(uint8_t keyState) {
+  if (keyToggledOn(keyState)) {
+    Macros.type(PSTR(MY_MAIL));
   }
 }
 
@@ -558,6 +572,10 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
 
   case MACRO_VERSION_INFO:
     versionInfoMacro(keyState);
+    break;
+
+  case MACRO_PRINT_MY_MAIL:
+    printMyMail(keyState);
     break;
 
   //case MACRO_ANY:
