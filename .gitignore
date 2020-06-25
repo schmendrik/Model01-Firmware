@@ -3,3 +3,5 @@
 /output/
 *.hex
 /*.bat
+Old/
+secrets_file.h
