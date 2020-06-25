@@ -142,7 +142,8 @@ enum { MACRO_VERSION_INFO,
        MACRO_KILL_BUFFER,
        MACRO_DELETE_WINDOW,
        MACRO_FORWARD_DELETE_WORD,
-
+       MACRO_FIND,
+       
        MACRO_SHOW_BOOKMARKS,
        MACRO_SET_BOOKMARK,
        MACRO_SHOW_BUFFERS,
@@ -159,7 +160,7 @@ enum { MACRO_VERSION_INFO,
 
        MACRO_EMACS_CAPTURE_TODO,
        MACRO_EMACS_CAPTURE_NOTE,
-       MACRO_EMACS_CAPTURE_JOURNAL,       
+       MACRO_EMACS_CAPTURE_JOURNAL,
 
        ////////////////////////////////////////////////////
        // Workaround macros
@@ -333,7 +334,6 @@ LGUI(k)
 #define EMACS_Command LALT(Key_X) /* is: M-x */
 #define EMACS_SetMark LCTRL(Key_Space)
 #define EMACS_CenterScreen LCTRL(Key_L)
-#define EMACS_SearchBackward LCTRL(Key_R)
 #define EMACS_EditLines LCTRL(Key_F14)
 #define EMACS_MarkAllLikeThis LCTRL(Key_F15)
 #define EMACS_MoveToPrevMarkedPos M(MACRO_EMACS_MOVE_TO_PREV_MARKED_POS)
@@ -347,23 +347,27 @@ LGUI(k)
 #define EMACS_SwitchWindow LCTRL(Key_F23) // uses ace-window
 #define EMACS_CcCc M(MACRO_EMACS_CcCc) // C-c C-c  
 #define EMACS_MarkNextLikeThis LCTRL(Key_F24)
-#define EMACS_KeyboardQuit LCTRL(Key_G) // C-g
 #define EMACS_CaptureTodo M(MACRO_EMACS_CAPTURE_TODO)
 #define EMACS_CaptureNote M(MACRO_EMACS_CAPTURE_NOTE)
 #define EMACS_CaptureJournal M(MACRO_EMACS_CAPTURE_JOURNAL)
 #define EMACS_DeleteWindow M(MACRO_DELETE_WINDOW)
 #define EMACS_KillBuffer M(MACRO_KILL_BUFFER)
 #define EMACS_ForwardDeleteWord LCTRL(LSHIFT(Key_F7)) // M(MACRO_FORWARD_DELETE_WORD)
+#define EMACS_AgendaSearch M(MACRO_EMACS_AGENDA_SEARCH)
 #define WINDOWS_Lockscreen LGUI(Key_L)
 #define WINDOWS_FocusEmacs LGUI(Key_3) //M(MACRO_FOCUS_EMACS)
 #define WINDOWS_FocusChrome LGUI(Key_1)
 #define WINDOWS_FocusIDE M(MACRO_FOCUS_IDE)
 #define WINDOWS_Shutdown M(MACRO_SHUTDOWN)
-#define All_SaveFile M(MACRO_SAVE_FILE) //LCTRL(Key_S) 
-#define All_Copy M(MACRO_COPY) //LCTRL(Key_C) // Do these LCTRL ones in macro definitions
-#define All_Cut M(MACRO_CUT) //LCTRL(Key_X)
-#define All_Paste M(MACRO_PASTE) //LCTRL(Key_V) //M(MACRO_PASTE)
-#define All_Undo M(MACRO_UNDO) //LCTRL(Key_Z) 
+#define All_SaveFile LCTRL(Key_S) //M(MACRO_SAVE_FILE) //LCTRL(Key_S) 
+#define All_Copy LCTRL(Key_C) //M(MACRO_COPY)
+#define All_Cut LCTRL(Key_X) //M(MACRO_CUT)
+#define All_Paste LCTRL(Key_V) //M(MACRO_PASTE)
+#define EMACS_KeyboardQuit LCTRL(Key_G) // C-g // lets try C-z for undo (and implicit keyboard-quit)
+#define All_Undo LCTRL(Key_Z) // M(MACRO_UNDO)
+#define All_SearchForward LCTRL(Key_F) // M(MACRO_FIND)
+#define EMACS_SearchBackward LCTRL(Key_R) // Emacs only functionality??
+
 #endif
 
 
@@ -375,7 +379,7 @@ KEYMAPS
   [DVORAK] = KEYMAP_STACKED
   (___,                      Key_1,         Key_2,       Key_3,      Key_4, Key_5, M(MACRO_LED_KEY),
    Key_Backtick,             Key_Quote,     Key_Comma,   Key_Period, Key_P, Key_Y, M(MACRO_PAREN_PAIR),
-   M(MACRO_PASTE),           Key_A,         Key_O,       Key_E,      Key_U, Key_I,
+   All_Paste,           Key_A,         Key_O,       Key_E,      Key_U, Key_I,
    TD(TapDanceKey::CopyCut), Key_Semicolon, Key_Q,       Key_J,      Key_K, Key_X, Key_Escape,
    Key_LeftShift,           Key_Space,     Key_LeftAlt, ShiftToLayer(LFN2),
    ShiftToLayer(LFN),
@@ -389,7 +393,7 @@ KEYMAPS
 
   [LFN] =  KEYMAP_STACKED
   (WINDOWS_Lockscreen, ___,                ___,           ___,     ___,            ___,            ___,
-   ___,                ___,                ___,           ___,     ___,            M(MACRO_PASTE), ___,
+   ___,                ___,                ___,           ___,     ___,            All_Paste, ___,
    ___,                Key_Home,           EMACS_SetMark, Key_End, Key_Tab,        EMACS_AceJump,
    ___,                ___,                ___,           ___,     EMACS_KillLine, ___,            ___,
    ___,                EMACS_JustOneSpace, Key_LeftAlt,           ___,
@@ -397,11 +401,11 @@ KEYMAPS
 
    ___,                            ___,                        ___,           ___,           ___,            ___,                   ___,
    TD(TapDanceKey::RightBrackets), ___,                        EMACS_KeyboardQuit,    Key_UpArrow,   ___,            EMACS_CenterScreen,    Key_Backslash,
-   EMACS_ForwardDeleteWord, Key_LeftArrow, Key_DownArrow, Key_RightArrow, M(MACRO_SAVE_FILE),    ___,
-   ___,                            TD(TapDanceKey::Bookmarks), ___,           M(MACRO_CUT),  ___,            M(MACRO_AUTOCOMPLETE), Key_Pipe,
+   EMACS_ForwardDeleteWord, Key_LeftArrow, Key_DownArrow, Key_RightArrow, All_SaveFile,    ___,
+   ___,                            TD(TapDanceKey::Bookmarks), ___,           All_Cut,  ___,            M(MACRO_AUTOCOMPLETE), Key_Pipe,
    ___,                           M(MACRO_SMART_ENTER),           Key_Delete,    ___,
    ShiftToLayer(LFNandRFN)),
-
+  
   
   [RFN] = KEYMAP_STACKED
   (WINDOWS_Lockscreen,       Key_F1,                Key_F2,                Key_F3,                    Key_F4,                    Key_F5, M(MACRO_CURLYBRACKET_PAIR),
@@ -413,8 +417,8 @@ KEYMAPS
    ShiftToLayer(LFNandRFN),
  
    ___, Key_F6,     Key_F7,      Key_F8,      Key_F9,                       Key_F10, Key_F11,
-   ___, ___,        M(MACRO_UNDO),         Key_mouseUp, EMACS_SearchBackward,                 ___,     Key_F12,
-        ___, Key_mouseL, Key_mouseDn, Key_mouseR,  M(MACRO_EMACS_AGENDA_SEARCH), ___,
+   ___, ___,        All_Undo,         Key_mouseUp, EMACS_SearchBackward,                 ___,     Key_F12,
+        ___, Key_mouseL, Key_mouseDn, Key_mouseR,  All_SearchForward, ___,
    ___, ___,        ___,         ___,         EMACS_MoveToPrevMarkedPos,                          ___,     ___,
    ___, ___,        ___,         ___,
    ___),  
@@ -430,7 +434,7 @@ KEYMAPS
    
    ___, ___,                    ___,           ___,            ___,          ___, ___,
    ___, EMACS_EditLines,        EMACS_CutLine, EMACS_CopyLine, EMACS_Refile, ___, ___,
-        EMACS_MarkAllLikeThis,  ___,           EMACS_CaptureTodo,            EMACS_CaptureNote,          ___, ___,
+        EMACS_MarkAllLikeThis,  ___,           EMACS_CaptureTodo,            EMACS_CaptureNote, EMACS_AgendaSearch, ___,
    ___, EMACS_MarkNextLikeThis, ___,           ___,            ___,          ___, ___,
    ___, ___,                    ___,           ___,
 
@@ -596,8 +600,13 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
     break; 
 
   case MACRO_SAVE_FILE:
-    return FNtoAHK(0,0);
-
+    //return FNtoAHK(0,0);
+    return MACRODOWN(D(LeftControl), D(LeftShift), T(F8), U(LeftControl), U(LeftShift));
+    
+    //  case MACRO_FIND:
+    //    //return FNtoAHK(0,0);
+    //    return MACRODOWN(D(LeftControl), D(LeftShift), T(F8), U(LeftControl), U(LeftShift));
+    
     // Note: Umlaute are not realized through AHK anymore.
     // I installed a special Dvorak-based European keyboard layout
     // on Windows, via which umlaute are activated holding the
