@@ -144,6 +144,7 @@ enum { MACRO_VERSION_INFO,
        MACRO_DELETE_WINDOW,
        MACRO_FORWARD_DELETE_WORD,
        MACRO_FIND,
+       MACRO_FIND_FILE,
        
        MACRO_SHOW_BOOKMARKS,
        MACRO_SET_BOOKMARK,
@@ -205,11 +206,13 @@ enum { MACRO_VERSION_INFO,
 
        
        ////////////////////////////////////////////////////
-       // Development Keys
+       // IDE Development Keys
        ////////////////////////////////////////////////////
        MACRO_DEV_RENAME,
        MACRO_DEV_GENERATE,
        MACRO_DEV_NEW_CLASS,
+       MACRO_DEV_COMMENT,
+       MACRO_DEV_FIND_IN_PATH,
 
 
 
@@ -345,9 +348,11 @@ LGUI(k)
 #define EMACS_EditLines LCTRL(Key_F14)
 #define EMACS_MarkAllLikeThis LCTRL(Key_F15)
 #define EMACS_MoveToPrevMarkedPos M(MACRO_EMACS_MOVE_TO_PREV_MARKED_POS)
-#define EMACS_MoveLineUp M(MACRO_MOVE_LINE_UP) //LCTRL(Key_F16) 
-#define EMACS_MoveLineDown M(MACRO_MOVE_LINE_DOWN) //LCTRL(Key_F17)
-#define EMACS_CopyLine LCTRL(Key_F18)
+//#define EMACS_MoveLineUp M(MACRO_MOVE_LINE_UP) //LCTRL(Key_F16) 
+//#define EMACS_MoveLineDown M(MACRO_MOVE_LINE_DOWN) //LCTRL(Key_F17)
+#define All_MoveLineUp LCTRL(Key_F16)
+#define All_MoveLineDown LCTRL(Key_F17)
+#define All_CopyLine LCTRL(Key_F18)
 #define EMACS_CutLine LCTRL(Key_F19)
 #define EMACS_Refile M(MACRO_EMACS_ORG_REFILE)// LCTRL(Key_F20) // use C-c C-w since it's view-dependant (agenda, normal)
 #define EMACS_InsertLink LCTRL(Key_F21)
@@ -367,6 +372,7 @@ LGUI(k)
 #define WINDOWS_FocusChrome LGUI(Key_1)
 #define WINDOWS_FocusIDE M(MACRO_FOCUS_IDE)
 #define WINDOWS_Shutdown M(MACRO_SHUTDOWN)
+#define DEV_FindInPath M(MACRO_DEV_FIND_IN_PATH)
 #define All_SaveFile LCTRL(Key_S) //M(MACRO_SAVE_FILE) //LCTRL(Key_S) 
 #define All_Copy LCTRL(Key_C) //M(MACRO_COPY)
 #define All_Cut LCTRL(Key_X) //M(MACRO_CUT)
@@ -408,7 +414,7 @@ KEYMAPS
    ___,
 
    ___,                            ___,                        ___,           ___,           ___,            ___,                   ___,
-   TD(TapDanceKey::RightBrackets), ___,                        EMACS_KeyboardQuit,    Key_UpArrow,   ___,            EMACS_CenterScreen,    Key_Backslash,
+   TD(TapDanceKey::RightBrackets), M(MACRO_FIND_FILE),    EMACS_KeyboardQuit,    Key_UpArrow,   ___,            EMACS_CenterScreen,    Key_Backslash,
    EMACS_ForwardDeleteWord, Key_LeftArrow, Key_DownArrow, Key_RightArrow, All_SaveFile,    ___,
    ___,                            TD(TapDanceKey::Bookmarks), ___,           All_Cut,  ___,            M(MACRO_AUTOCOMPLETE), Key_Pipe,
    ___,                           M(MACRO_SMART_ENTER),           Key_Delete,    ___,
@@ -434,14 +440,14 @@ KEYMAPS
   
   [LFNandRFN] = KEYMAP_STACKED
   (___, ___,              ___, ___,                ___, ___, ___,
-   ___, ___,              ___, EMACS_MoveLineUp,   ___, ___, ___,
-   ___, EMACS_InsertLink, ___, EMACS_MoveLineDown, ___, ___,
+   ___, ___,              ___, All_MoveLineUp,   ___, ___, ___,
+   ___, EMACS_InsertLink, ___, All_MoveLineDown, ___, ___,
    ___, ___,              ___, EMACS_CaptureJournal,                ___, ___, ___,
    ___, ___,              ___, ___,
    ___,
    
    ___, ___,                    ___,           ___,            ___,          ___, ___,
-   ___, EMACS_EditLines,        EMACS_CutLine, EMACS_CopyLine, EMACS_Refile, ___, ___,
+   ___, EMACS_EditLines,        EMACS_CutLine, All_CopyLine, EMACS_Refile, ___, ___,
         EMACS_MarkAllLikeThis,  ___,           EMACS_CaptureTodo,            EMACS_CaptureNote, EMACS_AgendaSearch, ___,
    ___, EMACS_MarkNextLikeThis, ___,           ___,            ___,          ___, ___,
    ___, ___,                    ___,           ___,
@@ -476,8 +482,8 @@ KEYMAPS
 
    
    ___, ___, ___, ___, ___, ___, ___,
-   ___, ___, M(MACRO_DEV_GENERATE), M(MACRO_DEV_NEW_CLASS), M(MACRO_DEV_RENAME), ___, ___,
-        ___, ___, ___, ___, ___, ___,
+   ___, ___, M(MACRO_DEV_GENERATE), M(MACRO_DEV_COMMENT), M(MACRO_DEV_RENAME), ___, ___,
+        ___, ___, ___, ___, DEV_FindInPath, ___,
    ___, ___, ___, ___, ___, ___, ___,
    ___, ___, ___, ___,
    ___),  
@@ -617,9 +623,54 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
     //HeatmapEffect.activate();
     break; 
 
-  case MACRO_SAVE_FILE:
-    //return FNtoAHK(0,0);
-    return MACRODOWN(D(LeftControl), D(LeftShift), T(F8), U(LeftControl), U(LeftShift));
+
+    //////////////////////////////////////////////////////////////
+    // C-F<number>: See #define directives using LCTRL(F<number>)
+    //////////////////////////////////////////////////////////////
+
+
+    ////////////////////////////////////////////////////////////////////////
+    // C-S-M-F<number> shortcuts for development (a reserved range at least)
+    ////////////////////////////////////////////////////////////////////////
+  case MACRO_DEV_FIND_IN_PATH:
+    return MACRODOWN(D(LeftControl), D(LeftShift), D(LeftAlt), T(F1), U(LeftAlt), U(LeftControl), U(LeftShift));
+  case MACRO_DEV_RENAME:
+    return MACRODOWN(D(LeftControl), D(LeftShift), D(LeftAlt), T(F2), U(LeftAlt), U(LeftControl), U(LeftShift));
+  case MACRO_SMART_ENTER: // this is 'C-c C-c' in emacs and 'complete current statement' in intellij
+    return MACRODOWN(D(LeftControl), D(LeftShift), D(LeftAlt), T(F3), U(LeftAlt), U(LeftControl), U(LeftShift));
+  case MACRO_DEV_GENERATE:
+    return MACRODOWN(D(LeftControl), D(LeftShift), D(LeftAlt), T(F4), U(LeftAlt), U(LeftControl), U(LeftShift));
+  case MACRO_DEV_COMMENT:
+    return MACRODOWN(D(LeftControl), D(LeftShift), D(LeftAlt), T(F5), U(LeftAlt), U(LeftControl), U(LeftShift));
+    //  case MACRO_DEV_NEW_CLASS:
+    //    return MACRODOWN(D(LeftControl), D(LeftShift), D(LeftAlt), T(F5), U(LeftAlt), U(LeftControl), U(LeftShift));
+  case MACRO_FIND_FILE:
+    return MACRODOWN(D(LeftControl), D(LeftShift), D(LeftAlt), T(F6), U(LeftAlt), U(LeftControl), U(LeftShift));
+
+  case MACRO_ACE_JUMP:
+    return MACRODOWN(D(LeftControl), D(LeftShift), D(LeftAlt), T(F19), U(LeftAlt), U(LeftControl), U(LeftShift));    
+  case MACRO_SHOW_BUFFERS:
+    return MACRODOWN(D(LeftControl), D(LeftShift), D(LeftAlt), T(F20), U(LeftAlt), U(LeftControl), U(LeftShift));    
+  case MACRO_SHOW_BOOKMARKS:
+    return MACRODOWN(D(LeftControl), D(LeftShift), D(LeftAlt), T(F21), U(LeftAlt), U(LeftControl), U(LeftShift));    
+  case MACRO_SET_BOOKMARK:
+    return MACRODOWN(D(LeftControl), D(LeftShift), D(LeftAlt), T(F22), U(LeftAlt), U(LeftControl), U(LeftShift));    
+    //next, use F24 etc to also see if that works with intellij
+  case MACRO_GOTO_PREV_BUFFER:
+    return MACRODOWN(D(LeftControl), D(LeftShift), D(LeftAlt), T(F23), U(LeftAlt), U(LeftControl), U(LeftShift));    
+  case MACRO_GOTO_NEXT_BUFFER:
+    return MACRODOWN(D(LeftControl), D(LeftShift), D(LeftAlt), T(F24), U(LeftAlt), U(LeftControl), U(LeftShift));    
+    //  case MACRO_AUTOCOMPLETE:
+    //    return MACRODOWN(D(LeftControl), D(LeftShift), D(LeftAlt), T(F6), U(LeftAlt), U(LeftControl), U(LeftShift));
+
+
+
+
+
+    
+    //  case MACRO_SAVE_FILE:
+    //    //return FNtoAHK(0,0);
+     //    return MACRODOWN(D(LeftControl), D(LeftShift), T(F8), U(LeftControl), U(LeftShift));
     
     //  case MACRO_FIND:
     //    //return FNtoAHK(0,0);
@@ -669,21 +720,9 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
 //  case MACRO_DISAPPROVAL:
 //    return FNTOAHK(F);
 
-  case MACRO_ACE_JUMP:
-    return FNtoAHK(0,8);
 
-  case MACRO_GOTO_PREV_BUFFER:
-    return FNtoAHK(0,9);
-
-  case MACRO_GOTO_NEXT_BUFFER:
-    return FNtoAHK(1,0);
-
-  case MACRO_SHOW_BOOKMARKS:
-    return FNtoAHK(1,1);
-
-  case MACRO_SET_BOOKMARK:
-    return FNtoAHK(1,2);
-
+    //9 - 12 are free
+    
   case MACRO_APP_FOOBAR2K_SEEK_FW1MIN:
     return FNtoAHK(1,3);
 
@@ -696,8 +735,6 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
   case MACRO_APP_BROWSER_OPEN_SEARCH:
     return FNtoAHK(1,6);
 
-  case MACRO_SHOW_BUFFERS:
-    return FNtoAHK(1,7);
 
   case MACRO_FOCUS_EMACS:
     return FNtoAHK(1,8);
@@ -747,8 +784,7 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
   case MACRO_LED_KEY:
     return FNtoAHK(3,3);
 
-  case MACRO_AUTOCOMPLETE:
-    return FNtoAHK(3,4);    
+    // FNtoAHK(3,4) not in use
 
   case MACRO_UNDO:
     return FNtoAHK(3,5);
@@ -765,24 +801,8 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
   case MACRO_EMACS_CAPTURE_JOURNAL:
     return FNtoAHK(3,9);
 
-  case MACRO_MOVE_LINE_UP:
-    return FNtoAHK(4,0);
-
-  case MACRO_MOVE_LINE_DOWN:
-    return FNtoAHK(4,1);            
-
-  case MACRO_DEV_RENAME:
-    return FNtoAHK(4,2);            
-
-  case MACRO_SMART_ENTER:
-    return FNtoAHK(4,3);
-
-  case MACRO_DEV_GENERATE:
-    return FNtoAHK(4,4);
-
-  case MACRO_DEV_NEW_CLASS:
-    return FNtoAHK(4,5);                
-
+    //42 till 45 are free
+    
   case MACRO_FOCUS_IDE:
     return FNtoAHK(4,6);
 
