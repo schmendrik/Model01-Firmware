@@ -406,14 +406,14 @@ KEYMAPS
    ShiftToLayer(RFN)),
 
   [LFN] =  KEYMAP_STACKED
-  (WINDOWS_Lockscreen, ___,                ___,           ___,     ___,            ___,            ___,
+  (WINDOWS_Lockscreen, Key_F1,                Key_F2,                Key_F3,                    Key_F4,                    Key_F5,            ___,
    ___,                ___,                ___,           ___,     ___,            All_Paste, ___,
    ___,                Key_Home,           EMACS_SetMark, Key_End, Key_Tab,        EMACS_AceJump,
    ___,                ___,                ___,           ___,     EMACS_KillLine, ___,            ___,
    ___,                EMACS_JustOneSpace, Key_LeftAlt,           ___,
    ___,
 
-   ___,                            ___,                        ___,           ___,           ___,            ___,                   ___,
+   ___, Key_F6, Key_F7, Key_F8, Key_F9, Key_F10, Key_F11,
    TD(TapDanceKey::RightBrackets), M(MACRO_FIND_FILE),    EMACS_KeyboardQuit,    Key_UpArrow,   ___,            EMACS_CenterScreen,    Key_Backslash,
    EMACS_ForwardDeleteWord, Key_LeftArrow, Key_DownArrow, Key_RightArrow, All_SaveFile,    ___,
    ___,                            TD(TapDanceKey::Bookmarks), ___,           All_Cut,  ___,            M(MACRO_AUTOCOMPLETE), Key_Pipe,
